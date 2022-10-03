@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('eway/payment/response', [CheckoutPaymentController::class, 'ewayPayemntResponse']);
 Route::get('paypal/payment/response', [CheckoutPaymentController::class, 'paypalPayemntResponse']);
 
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

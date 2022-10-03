@@ -16,6 +16,7 @@ class CreatePaymentHistoriesTable extends Migration
         Schema::create('payment_histories', function (Blueprint $table) {
             $table->id();
             $table->string('payment_method')->nullable();
+            $table->string('payer_id')->nullable();
             $table->string('payment_amount')->nullable();
             $table->bigInteger('user_id')->nullable();
             $table->string('payment_status')->nullable();
@@ -26,7 +27,7 @@ class CreatePaymentHistoriesTable extends Migration
             $table->string('response_msg')->nullable();
             $table->string('invoice_number')->nullable();
             $table->string('invoice_ref')->nullable();
-            $table->bigInteger('transaction_id');
+            $table->string('transaction_id');
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
             $table->string('company_name')->nullable();

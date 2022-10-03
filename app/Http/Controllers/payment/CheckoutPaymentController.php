@@ -202,203 +202,89 @@ class CheckoutPaymentController extends Controller
         $user_id = 1; //it will come from api
         $lead_id = 1; //it will come from api
 
-       $client_response = '{
-        create_time: '2022-09-29T10:59:10Z', update_time: '2022-09-29T10:59:22Z', id: '5PC23671CH936720Y', intent: 'CAPTURE', status: 'COMPLETED', …}
-                        create_time
-                        : 
-                        "2022-09-29T10:59:10Z"
-                        id
-                        : 
-                        "5PC23671CH936720Y"
-                        intent
-                        : 
-                        "CAPTURE"
-                        links
-                        : 
-                        Array(1)
-                        0
-                        : 
-                        href
-                        : 
-                        "https://api.sandbox.paypal.com/v2/checkout/orders/5PC23671CH936720Y"
-                        method
-                        : 
-                        "GET"
-                        rel
-                        : 
-                        "self"
-                        title
-                        : 
-                        "GET"
-                        [[Prototype]]
-                        : 
-                        Object
-                        length
-                        : 
-                        1
-                        [[Prototype]]
-                        : 
-                        Array(0)
-                        payer
-                        : 
-                        address
-                        : 
-                        country_code
-                        : 
-                        "US"
-                        [[Prototype]]
-                        : 
-                        Object
-                        email_address
-                        : 
-                        "sb-vouos20396551@personal.example.com"
-                        name
-                        : 
-                        given_name
-                        : 
-                        "John"
-                        surname
-                        : 
-                        "Doe"
-                        [[Prototype]]
-                        : 
-                        Object
-                        payer_id
-                        : 
-                        "GGHH982LV896Q"
-                        [[Prototype]]
-                        : 
-                        Object
-                        purchase_units
-                        : 
-                        Array(1)
-                        0
-                        : 
-                        amount
-                        : 
-                        currency_code
-                        : 
-                        "AUD"
-                        value
-                        : 
-                        "10.00"
-                        [[Prototype]]
-                        : 
-                        Object
-                        description
-                        : 
-                        "RLP Course"
-                        payee
-                        : 
-                        email_address
-                        : 
-                        "sb-m8tew18060772@business.example.com"
-                        merchant_id
-                        : 
-                        "2JKYQG6QNCHCE"
-                        [[Prototype]]
-                        : 
-                        Object
-                        payments
-                        : 
-                        captures
-                        : 
-                        [{…}]
-                        [[Prototype]]
-                        : 
-                        Object
-                        reference_id
-                        : 
-                        "default"
-                        shipping
-                        : 
-                        address
-                        : 
-                        address_line_1
-                        : 
-                        "1 Main St"
-                        admin_area_1
-                        : 
-                        "CA"
-                        admin_area_2
-                        : 
-                        "San Jose"
-                        country_code
-                        : 
-                        "US"
-                        postal_code
-                        : 
-                        "95131"
-                        [[Prototype]]
-                        : 
-                        Object
-                        name
-                        : 
-                        full_name
-                        : 
-                        "John Doe"
-                        [[Prototype]]
-                        : 
-                        Object
-                        [[Prototype]]
-                        : 
-                        Object
-                        [[Prototype]]
-                        : 
-                        Object
-                        length
-                        : 
-                        1
-                        [[Prototype]]
-                        : 
-                        Array(0)
-                        status
-                        : 
-                        "COMPLETED"
-                        update_time
-                        : 
-                        "2022-09-29T10:59:22Z"
-                            }';
+        $client_response = [
+            'create_time' => '2022-09-29T10:59:10Z',
+            'update_time' => '2022-09-29T10:59:22Z',
+            'orderID' => '5PC23671CH936720Y',
+            'intent' => 'CAPTURE',
+            'status' => 'COMPLETED',
+            'address' => '',
+            'country_code' =>   "US",
+            'email_address' => "sb-vouos20396551@personal.example.com",
+            'links' => [
+                'href' => "https://api.sandbox.paypal.com/v2/checkout/orders/5PC23671CH936720Y"
+
+            ],
+            'name' => [
+                'given_name' => "John",
+                'surname' =>  "Doe"
+            ],
+            'payer_id'  => "GGHH982LV896Q",
+            'purchase_units' => [
+                'amount' => [
+                    'currency_code' => "AUD",
+                    'value' => "1080.00"
+                ]
+            ],
+            'reference_id' => "default",
+            'shipping' => [
+                'address' => [
+                    'address_line_1' =>   "1 Main St",
+                    'admin_area_1' =>  "CA",
+                    'admin_area_2' =>  "San Jose",
+                    'country_code'  =>   "US",
+                    'postal_code' =>    "95131"
+                ]
+            ]
+
+
+
+
+        ];
+
+
+        $client_response =  json_encode($client_response);
+        $client_response = json_decode($client_response);
 
         PaymentHistory::create([
 
-       /*      'payment_method' => 'Paypal',
-            'payment_amount' => $client_response->TotalAmount,
+            'payment_method' => 'Paypal',
+            'payment_amount' => $client_response->purchase_units->amount->value,
             'user_id' => $user_id, //it will come from api
-            'payment_status' => $client_response->TransactionStatus,
+            'payment_status' => $client_response->status,
             'payment_log' => json_encode($client_response),
             'lead_id' => $lead_id, ////it will come from api
-            'Authorisation_code' => $client_response->AuthorisationCode,
-            'response_code' => $client_response->ResponseCode,
-            'response_msg' => $client_response->ResponseMessage,
-            'invoice_number' => $client_response->InvoiceNumber,
-            'invoice_ref' => $client_response->InvoiceReference,
-            'transaction_id' => $client_response->TransactionID,
-            'first_name' => $client_response->Customer->FirstName,
-            'last_name' => $client_response->Customer->LastName,
-            'company_name' => $client_response->Customer->CompanyName,
-            'job_description' => $client_response->Customer->JobDescription,
-            'street1' => $client_response->Customer->Street1,
-            'street2' => $client_response->Customer->Street2,
-            'city' => $client_response->Customer->City,
-            'state' => $client_response->Customer->State,
-            'postal_code' => $client_response->Customer->PostalCode,
-            'country' => $client_response->Customer->Country,
-            'email' => $client_response->Customer->Email,
-            'phone' => $client_response->Customer->Phone,
-            'mobile' => $client_response->Customer->Mobile,
-            'comments' => $client_response->Customer->Comments,
-            'fax' => $client_response->Customer->Fax,
-            'url' => $client_response->Customer->Url, */
-
+            'Authorisation_code' => $client_response->AuthorisationCode ?? null,
+            'response_code' => $client_response->ResponseCode ?? null,
+            'response_msg' => $client_response->ResponseMessage ?? null,
+            'invoice_number' => $client_response->InvoiceNumber ?? null,
+            'invoice_ref' => $client_response->InvoiceReference ?? null,
+            'transaction_id' => $client_response->orderID,
+            'payer_id' => $client_response->payer_id,
+            'first_name' => $client_response->name->given_name,
+            'last_name' => $client_response->name->surname,
+            'company_name' => $client_response->companyName ?? null,
+            'job_description' => $client_response->JobDescription ?? null,
+            'street1' => $client_response->Street1 ?? null,
+            'street2' => $client_response->Street2 ?? null,
+            'city' => $client_response->City ?? null,
+            'state' => $client_response->State ?? null,
+            'postal_code' => $client_response->shipping->address->postal_code,
+            'country' => $client_response->Country ?? null,
+            'email' => $client_response->email_address,
+            'phone' => $client_response->Phone ?? null,
+            'mobile' => $client_response->Mobile ?? null,
+            'comments' => $client_response->Comments ?? null,
+            'fax' => $client_response->Fax ?? null,
+            'url' => $client_response->Url ?? null,
         ]);
 
-        if ($client_response->TransactionStatus) {
+        if ($client_response->status) {
             //send response 
             return response()->json([
 
                 'key' => 'success',
-                'transaction_id' => $client_response->TransactionID,
+                'transaction_id' => $client_response->orderID,
                 'message' => 'Payment Completed Successfully'
             ], 201);
         } else {
