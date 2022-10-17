@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class PaymentSettingController extends Controller
 {
     /**
-     * Create User
+     * Create Payment Setting
      * @param Request $request
      * @return Payment Setting
      */
@@ -47,7 +47,7 @@ class PaymentSettingController extends Controller
     }
 
     /**
-     * Update User
+     * Update Payment Setting
      * @param Request $request
      * @return boolean
      */
@@ -88,4 +88,49 @@ class PaymentSettingController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Soft Delete Payment Setting
+     * @param Request $request
+     * @return boolean
+     */
+    public function deletePaymentSetting(Request $request)
+    {
+        if(!isset($request->id))
+            return response()->json([
+                'status' => false,
+                'message' => 'Id not found',
+            ], 401);
+
+        try {
+            $paymentSetting = PaymentSettings::find($request->id)->first();
+            if($paymentSetting==""){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Payment Setting Data not found',
+                ], 401);
+            }
+            if(isset($request->api_key))
+                $paymentSetting->api_key = $request->api_key;
+            if(isset($request->api_password))
+                $paymentSetting->api_password = $request->api_password;
+            if(isset($request->payment_method))
+                $paymentSetting->payment_method = $request->payment_method;
+            if(isset($request->payment_email))
+                $paymentSetting->payment_email = $request->payment_email;
+            $paymentSetting->save();
+            return response()->json([
+                'status' => true,
+                'message' => 'Payment Setting Update Successfully',
+            ], 201);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+
 }

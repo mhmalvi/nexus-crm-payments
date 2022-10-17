@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class AccountController extends Controller
 {
-    
+
 
 
 }
