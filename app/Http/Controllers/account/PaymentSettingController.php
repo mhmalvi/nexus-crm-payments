@@ -60,7 +60,7 @@ class PaymentSettingController extends Controller
             ], 401);
 
         try {
-            $paymentSetting = PaymentSettings::find($request->id)->first();
+            $paymentSetting = PaymentSettings::find($request->id);
             if($paymentSetting==""){
                 return response()->json([
                     'status' => false,
@@ -103,7 +103,7 @@ class PaymentSettingController extends Controller
             ], 401);
 
         try {
-            $paymentSetting = PaymentSettings::find($request->id)->first();
+            $paymentSetting = PaymentSettings::find($request->id);
             if($paymentSetting==""){
                 return response()->json([
                     'status' => false,
