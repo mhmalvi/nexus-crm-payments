@@ -15,8 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('eway/payment/response', [CheckoutPaymentController::class, 'ewayPayemntResponse']);
-Route::get('paypal/payment/response', [CheckoutPaymentController::class, 'paypalPayemntResponse']);
+Route::post('eway/payment/response', [CheckoutPaymentController::class, 'ewayPayemntResponse']);
+Route::post('paypal/payment/response', [CheckoutPaymentController::class, 'paypalPayemntResponse']);
 
 Route::post('payment/setting/create', [\App\Http\Controllers\account\PaymentSettingController::class, 'createSetting']);
 Route::put('payment/setting/{id}/update', [\App\Http\Controllers\account\PaymentSettingController::class, 'updatePaymentSetting']);

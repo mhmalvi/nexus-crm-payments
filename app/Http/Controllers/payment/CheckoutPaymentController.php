@@ -5,10 +5,15 @@ namespace App\Http\Controllers\payment;
 use App\Http\Controllers\Controller;
 use App\Models\cr;
 use App\Models\PaymentHistory;
+use App\Models\PaymentSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Omnipay\Omnipay;
+use Throwable;
 
+use function PHPUnit\Framework\throwException;
+
+//require('vendor/autoload.php');
 
 class CheckoutPaymentController extends Controller
 {
@@ -85,7 +90,7 @@ class CheckoutPaymentController extends Controller
         $client = \Eway\Rapid::createClient($apiKey, $apiPassword, $apiEndpoint);
 
         // Query the transaction result.
-        $response = $client->queryTransaction($_GET['AccessCode']);
+        $response = $client->queryTransaction($_GET['successCode']);
 
         $transactionResponse = $response->Transactions[0];
 
@@ -112,81 +117,81 @@ class CheckoutPaymentController extends Controller
      */
     public function ewayPayemntResponse(Request $request)
     {
+        $user_id = $request->user_id; //it will come from api
+        $lead_id = $request->lead_id; //it will come from api
+        $company_id = $request->company_id; //it will come from api
+        $payment_method = $request->payment_method; //it will come from api
+        $accessCode = $request->accessCode;
 
-        //get the response 
-        //$response = Http::get('http://example.com');
-        //$response_body = $response->body();
 
-        $user_id = 1; //it will come from api
-        $lead_id = 1; //it will come from api
 
-        //it will come from api
-        $accessCode = '44DD7TdV8qmLXZlxfM6uCSQPQRclc792WsD_1y8cdIJngfLpnkFFKa2UXQ2RIFpMVnUxV8ZKq7F8ttzc6fZWlfM8rJo68_2bXggf9ZOEtysixIjL38iamDkQsUM9cT2arPmW_agZ_zniHL_XmPAInuWbcDw==';
+        try {
+            // eWAY Credentials
+            $eWayCredentials = PaymentSettings::where('company_id', $company_id)->where('payment_method', $payment_method)->first();
+            $api_key = $eWayCredentials->api_key;
+            $api_password = $eWayCredentials->api_password;
 
-        // eWAY Credentials
-        $api_key = '60CF3C/0J3M6IjagJA/zU9xamgohbhFLJs6sP20t+pdkke8zOUmzsCVkHym5u7Wwc4Ra7R';
-        $api_password = 'g9GMnRNQ';
-        $apiEndpoint = \Eway\Rapid\Client::MODE_SANDBOX;
+            $apiEndpoint = \Eway\Rapid\Client::MODE_SANDBOX;
 
-        $ch = curl_init();
+            $client = \Eway\Rapid::createClient($api_key, $api_password, $apiEndpoint);
 
-        // Note: using the Sandbox API endpoint
-        curl_setopt($ch, CURLOPT_URL, 'https://api.sandbox.ewaypayments.com/Transaction/' . $accessCode);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_USERPWD, $api_key . ":" . $api_password);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+            // Query the transaction result.
+            $response = $client->queryTransaction($accessCode);
 
-        $output = curl_exec($ch);
-        curl_close($ch);
+            //convert data into array
+            $response = json_decode($response);
+            $client_response = $response->Transactions[0];
 
-        $result = json_decode($output);
+            // store all payement information on payment history table
+            PaymentHistory::create([
 
-        $client_response = $result->Transactions[0];
-        //  dd($client_response->Customer->TokenCustomerID);
-
-        PaymentHistory::create([
-
-            'payment_method' => 'eWay',
-            'payment_amount' => $client_response->TotalAmount,
-            'user_id' => $user_id, //it will come from api
-            'payment_status' => $client_response->TransactionStatus,
-            'payment_log' => json_encode($client_response),
-            'lead_id' => $lead_id, ////it will come from api
-            'Authorisation_code' => $client_response->AuthorisationCode,
-            'response_code' => $client_response->ResponseCode,
-            'response_msg' => $client_response->ResponseMessage,
-            'invoice_number' => $client_response->InvoiceNumber,
-            'invoice_ref' => $client_response->InvoiceReference,
-            'transaction_id' => $client_response->TransactionID,
-            'first_name' => $client_response->Customer->FirstName,
-            'last_name' => $client_response->Customer->LastName,
-            'company_name' => $client_response->Customer->CompanyName,
-            'job_description' => $client_response->Customer->JobDescription,
-            'street1' => $client_response->Customer->Street1,
-            'street2' => $client_response->Customer->Street2,
-            'city' => $client_response->Customer->City,
-            'state' => $client_response->Customer->State,
-            'postal_code' => $client_response->Customer->PostalCode,
-            'country' => $client_response->Customer->Country,
-            'email' => $client_response->Customer->Email,
-            'phone' => $client_response->Customer->Phone,
-            'mobile' => $client_response->Customer->Mobile,
-            'comments' => $client_response->Customer->Comments,
-            'fax' => $client_response->Customer->Fax,
-            'url' => $client_response->Customer->Url,
-
-        ]);
-
-        if ($client_response->TransactionStatus) {
-            //send response 
-            return response()->json([
-
-                'key' => 'success',
+                'payment_method' => $payment_method,
+                'payment_amount' => $client_response->TotalAmount,
+                'user_id' => $user_id, //it will come from api
+                'payment_status' => $client_response->TransactionStatus,
+                'payment_log' => json_encode($client_response),
+                'lead_id' => $lead_id, ////it will come from api
+                'Authorisation_code' => $client_response->AuthorisationCode,
+                'response_code' => $client_response->ResponseCode,
+                'response_msg' => $client_response->ResponseMessage,
+                'invoice_number' => $client_response->InvoiceNumber,
+                'invoice_ref' => $client_response->InvoiceReference,
                 'transaction_id' => $client_response->TransactionID,
-                'message' => 'Payment Completed Successfully'
-            ], 201);
-        } else {
-            echo "Transaction declined";
+                'first_name' => $client_response->Customer->FirstName,
+                'last_name' => $client_response->Customer->LastName,
+                'company_name' => $client_response->Customer->CompanyName,
+                'job_description' => $client_response->Customer->JobDescription,
+                'street1' => $client_response->Customer->Street1,
+                'street2' => $client_response->Customer->Street2,
+                'city' => $client_response->Customer->City,
+                'state' => $client_response->Customer->State,
+                'postal_code' => $client_response->Customer->PostalCode,
+                'country' => $client_response->Customer->Country,
+                'email' => $client_response->Customer->Email,
+                'phone' => $client_response->Customer->Phone,
+                'mobile' => $client_response->Customer->Mobile,
+                'comments' => $client_response->Customer->Comments,
+                'fax' => $client_response->Customer->Fax,
+                'url' => $client_response->Customer->Url,
+
+            ]);
+
+            if ($client_response->TransactionStatus) {
+                //send response 
+                return response()->json([
+
+                    'key' => 'success',
+                    'transaction_id' => $client_response->TransactionID,
+                    'message' => 'Payment Completed Successfully'
+                ], 201);
+            } else {
+                echo "Transaction declined";
+            }
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
         }
     }
 
@@ -195,12 +200,9 @@ class CheckoutPaymentController extends Controller
     public function paypalPayemntResponse(Request $request)
     {
 
-        //get the response 
-        //$response = Http::get('http://example.com');
-        //$response_body = $response->body();
-
-        $user_id = 1; //it will come from api
-        $lead_id = 1; //it will come from api
+        $user_id = $request->user_id; //it will come from api
+        $lead_id = $request->lead_id; //it will come from api
+        $payment_method = $request->payment_method; //it will come from api
 
         $client_response = [
             'create_time' => '2022-09-29T10:59:10Z',
@@ -236,10 +238,6 @@ class CheckoutPaymentController extends Controller
                     'postal_code' =>    "95131"
                 ]
             ]
-
-
-
-
         ];
 
 
@@ -248,7 +246,7 @@ class CheckoutPaymentController extends Controller
 
         PaymentHistory::create([
 
-            'payment_method' => 'Paypal',
+            'payment_method' => $payment_method,
             'payment_amount' => $client_response->purchase_units->amount->value,
             'user_id' => $user_id, //it will come from api
             'payment_status' => $client_response->status,
