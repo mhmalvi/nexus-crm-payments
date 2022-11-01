@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\account;
 
 use App\Http\Controllers\Controller;
+use App\Models\PaymentHistory;
 use App\Models\PaymentSettings;
 use Illuminate\Http\Request;
 
@@ -11,7 +12,7 @@ class PaymentSettingController extends Controller
     /**
      * Create Payment Setting
      * @param Request $request
-     * @return Payment Setting
+     * @return \Illuminate\Http\JsonResponse Setting
      */
     public function createSetting(Request $request)
     {
@@ -49,7 +50,7 @@ class PaymentSettingController extends Controller
     /**
      * Update Payment Setting
      * @param Request $request
-     * @return boolean
+     * @return \Illuminate\Http\JsonResponse
      */
     public function updatePaymentSetting(Request $request)
     {
@@ -92,7 +93,7 @@ class PaymentSettingController extends Controller
     /**
      * Soft Delete Payment Setting
      * @param Request $request
-     * @return boolean
+     * @return \Illuminate\Http\JsonResponse
      */
     public function deletePaymentSetting(Request $request)
     {

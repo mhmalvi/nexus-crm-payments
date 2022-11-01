@@ -18,6 +18,46 @@ use function PHPUnit\Framework\throwException;
 class CheckoutPaymentController extends Controller
 {
     /**
+     * Get Payment Histories
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getPaymentHistories(Request $request)
+    {
+
+        try {
+            $paymentList = PaymentHistory::select('payment_method', 'payment_amount', 'payment_status', 'last_name', 'company_name', 'invoice_number',
+                'transaction_id', 'lead_id', 'payment_status', 'company_id', 'user_id', 'created_at');
+            if(isset($request->user_id))
+                $paymentList =$paymentList->where('user_id',$request->user_id);
+
+            if(isset($request->company_id))
+                $paymentList =$paymentList->where('company_id',$request->company_id);
+
+            $paymentList = $paymentList->get();
+            // dd($leadCheckList);
+            if($paymentList==""){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Payment not found',
+                ], 401);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'All Payment',
+                'data'    => $paymentList->toArray()
+            ], 201);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -113,21 +153,25 @@ class CheckoutPaymentController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function ewayPayemntResponse(Request $request)
     {
-        $user_id = $request->user_id; //it will come from api
-        $lead_id = $request->lead_id; //it will come from api
-        $company_id = $request->company_id; //it will come from api
+        $user_id = isset($request->user_id)?$request->user_id:0; //it will come from api
+        $lead_id = isset($request->lead_id)?$request->lead_id:0; //it will come from api
+        $company_id = isset($request->company_id)?$request->company_id:0; //it will come from api
         $payment_method = $request->payment_method; //it will come from api
         $accessCode = $request->accessCode;
-
-
 
         try {
             // eWAY Credentials
             $eWayCredentials = PaymentSettings::where('company_id', $company_id)->where('payment_method', $payment_method)->first();
+            if($eWayCredentials==""){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Company not found',
+                ], 401);
+            }
             $api_key = $eWayCredentials->api_key;
             $api_password = $eWayCredentials->api_password;
 
@@ -140,15 +184,19 @@ class CheckoutPaymentController extends Controller
 
             //convert data into array
             $response = json_decode($response);
+            //dd($response);
             $client_response = $response->Transactions[0];
-
+            $paymentStatus = "FAILED";
+            if($client_response->TransactionStatus==1){
+                $paymentStatus = "COMPLETED";
+            }
             // store all payement information on payment history table
-            PaymentHistory::create([
-
+            PaymentHistory::updateOrcreate([
                 'payment_method' => $payment_method,
                 'payment_amount' => $client_response->TotalAmount,
                 'user_id' => $user_id, //it will come from api
-                'payment_status' => $client_response->TransactionStatus,
+                'company_id' => $company_id,
+                'payment_status' => $paymentStatus,
                 'payment_log' => json_encode($client_response),
                 'lead_id' => $lead_id, ////it will come from api
                 'Authorisation_code' => $client_response->AuthorisationCode,
@@ -173,11 +221,10 @@ class CheckoutPaymentController extends Controller
                 'comments' => $client_response->Customer->Comments,
                 'fax' => $client_response->Customer->Fax,
                 'url' => $client_response->Customer->Url,
-
             ]);
 
             if ($client_response->TransactionStatus) {
-                //send response 
+                //send response
                 return response()->json([
 
                     'key' => 'success',
@@ -278,7 +325,7 @@ class CheckoutPaymentController extends Controller
         ]);
 
         if ($client_response->status) {
-            //send response 
+            //send response
             return response()->json([
 
                 'key' => 'success',
