@@ -223,16 +223,71 @@ class CheckoutPaymentController extends Controller
                 'url' => $client_response->Customer->Url,
             ]);
 
+            //dd('here');
+            $companyServiceAPI = env('COMPANY_SERVICE_API', '');
+            //dd($userServiceAPI);
+            $userData=[
+                //'email'=>$user->email,
+                //'verification_code' => $user->verification_code
+            ];
+
+            $response = Http::get($companyServiceAPI.'/company/'.$company_id.'/details');
+            //dd($response->status());
+
+            if($response->status()!= '200'){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Company Not Find'
+                ], 500);
+            }
+             $companyData = isset(json_decode($response->body())->data[0])?json_decode($response->body())->data[0]:'';
+            $companyLogo = '';
+
+            if(isset($companyData->logo_id) && $companyData->logo_id!=""){
+                $fileServiceAPI = env('FILE_SERVICE_API', '');
+
+                $response = Http::get($fileServiceAPI.'/documents/'.$companyData->logo_id);
+               // dd($response->body());
+
+                if($response->status()!= '200'){
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Company Not Find'
+                    ], 500);
+                }
+                $companyLogo = isset(json_decode($response->body())->data[0]->document_name)?json_decode($response->body())->data[0]->document_name:'';
+            }
+            $companyData->logo = $companyLogo;
+
+             //dd($companyData);
             if ($client_response->TransactionStatus) {
                 //send response
-                return response()->json([
+                $emailServiceAPI = env('EMAIL_SERVICE_API', '');
+                //dd($userServiceAPI);
 
+                $response = Http::post($emailServiceAPI.'/student/payment', [
+                    'data' => json_encode($companyData)
+                ]);
+
+                dd($response->status());
+                $emailStatus = false;
+                if($response->status()== '201'){
+                    $emailStatus = true;
+                }
+
+                return response()->json([
+                    'status' => true,
                     'key' => 'success',
                     'transaction_id' => $client_response->TransactionID,
-                    'message' => 'Payment Completed Successfully'
+                    'message' => 'Payment Completed Successfully ',
+                    'Email Status' => $emailStatus
                 ], 201);
             } else {
-                echo "Transaction declined";
+
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Invalid response'
+                ], 500);
             }
         } catch (\Throwable $th) {
             return response()->json([
@@ -290,50 +345,61 @@ class CheckoutPaymentController extends Controller
 
         $client_response =  json_encode($client_response);
         $client_response = json_decode($client_response);
+        try {
 
-        PaymentHistory::create([
+            PaymentHistory::create([
 
-            'payment_method' => $payment_method,
-            'payment_amount' => $client_response->purchase_units->amount->value,
-            'user_id' => $user_id, //it will come from api
-            'payment_status' => $client_response->status,
-            'payment_log' => json_encode($client_response),
-            'lead_id' => $lead_id, ////it will come from api
-            'Authorisation_code' => $client_response->AuthorisationCode ?? null,
-            'response_code' => $client_response->ResponseCode ?? null,
-            'response_msg' => $client_response->ResponseMessage ?? null,
-            'invoice_number' => $client_response->InvoiceNumber ?? null,
-            'invoice_ref' => $client_response->InvoiceReference ?? null,
-            'transaction_id' => $client_response->orderID,
-            'payer_id' => $client_response->payer_id,
-            'first_name' => $client_response->name->given_name,
-            'last_name' => $client_response->name->surname,
-            'company_name' => $client_response->companyName ?? null,
-            'job_description' => $client_response->JobDescription ?? null,
-            'street1' => $client_response->Street1 ?? null,
-            'street2' => $client_response->Street2 ?? null,
-            'city' => $client_response->City ?? null,
-            'state' => $client_response->State ?? null,
-            'postal_code' => $client_response->shipping->address->postal_code,
-            'country' => $client_response->Country ?? null,
-            'email' => $client_response->email_address,
-            'phone' => $client_response->Phone ?? null,
-            'mobile' => $client_response->Mobile ?? null,
-            'comments' => $client_response->Comments ?? null,
-            'fax' => $client_response->Fax ?? null,
-            'url' => $client_response->Url ?? null,
-        ]);
-
-        if ($client_response->status) {
-            //send response
-            return response()->json([
-
-                'key' => 'success',
+                'payment_method' => $payment_method,
+                'payment_amount' => $client_response->purchase_units->amount->value,
+                'user_id' => $user_id, //it will come from api
+                'payment_status' => $client_response->status,
+                'payment_log' => json_encode($client_response),
+                'lead_id' => $lead_id, ////it will come from api
+                'Authorisation_code' => $client_response->AuthorisationCode ?? null,
+                'response_code' => $client_response->ResponseCode ?? null,
+                'response_msg' => $client_response->ResponseMessage ?? null,
+                'invoice_number' => $client_response->InvoiceNumber ?? null,
+                'invoice_ref' => $client_response->InvoiceReference ?? null,
                 'transaction_id' => $client_response->orderID,
-                'message' => 'Payment Completed Successfully'
-            ], 201);
-        } else {
-            echo "Transaction declined";
+                'payer_id' => $client_response->payer_id,
+                'first_name' => $client_response->name->given_name,
+                'last_name' => $client_response->name->surname,
+                'company_name' => $client_response->companyName ?? null,
+                'job_description' => $client_response->JobDescription ?? null,
+                'street1' => $client_response->Street1 ?? null,
+                'street2' => $client_response->Street2 ?? null,
+                'city' => $client_response->City ?? null,
+                'state' => $client_response->State ?? null,
+                'postal_code' => $client_response->shipping->address->postal_code,
+                'country' => $client_response->Country ?? null,
+                'email' => $client_response->email_address,
+                'phone' => $client_response->Phone ?? null,
+                'mobile' => $client_response->Mobile ?? null,
+                'comments' => $client_response->Comments ?? null,
+                'fax' => $client_response->Fax ?? null,
+                'url' => $client_response->Url ?? null,
+            ]);
+
+            if ($client_response->status) {
+                //send response
+                return response()->json([
+                    'status' => true,
+                    'key' => 'success',
+                    'transaction_id' => $client_response->orderID,
+                    'message' => 'Payment Completed Successfully'
+                ], 201);
+            } else {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Invalid response'
+                ], 500);
+            }
+        }catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
         }
     }
+
 }
