@@ -275,6 +275,9 @@ class CheckoutPaymentController extends Controller
                     $emailStatus = true;
                 }
 
+                //Make Invoice //
+                // Course Details from lead details
+
                 return response()->json([
                     'status' => true,
                     'key' => 'success',
