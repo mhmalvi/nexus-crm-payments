@@ -286,7 +286,7 @@ class CheckoutPaymentController extends Controller
              //dd($companyData);
             $leadDetails = "";
             $userDetails = "";
-            if ($client_response->TransactionStatus) {
+            if (isset($client_response->TransactionStatus) && $client_response->TransactionStatus!="") {
                 //Make Invoice //
 
                 $record = Invoices::latest()->first();
