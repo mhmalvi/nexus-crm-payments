@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\cr;
 use App\Models\PaymentHistory;
 use App\Models\PaymentSettings;
+use App\Models\Invoices;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Omnipay\Omnipay;
@@ -48,6 +50,44 @@ class CheckoutPaymentController extends Controller
                 'message' => 'All Payment',
                 'data'    => $paymentList->toArray()
             ], 201);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get Payment Histories By Lead
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getPaymentHistoriesByLead(Request $request)
+    {
+        if(!isset($request->lead_id))
+            return response()->json([
+                'status' => false,
+                'message' => 'Lead Id not found',
+            ], 404);
+
+        try {
+            $paymentList = Invoices::where('lead_id', $request->lead_id)->get();
+
+           // dd($leadCheckList);
+            if($paymentList==""){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Payment not found',
+                ], 401);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'All Payment',
+                'data'    => $paymentList->toArray()
+            ], 200);
 
         } catch (\Throwable $th) {
             return response()->json([
@@ -157,15 +197,16 @@ class CheckoutPaymentController extends Controller
      */
     public function ewayPayemntResponse(Request $request)
     {
-        $user_id = isset($request->user_id)?$request->user_id:0; //it will come from api
-        $lead_id = isset($request->lead_id)?$request->lead_id:0; //it will come from api
-        $company_id = isset($request->company_id)?$request->company_id:0; //it will come from api
-        $payment_method = $request->payment_method; //it will come from api
+        $userId = isset($request->user_id)?$request->user_id:0; //it will come from api
+        $leadId = isset($request->lead_id)?$request->lead_id:0; //it will come from api
+        $companyId = isset($request->company_id)?$request->company_id:0; //it will come from api
+        $paymentMethod = $request->payment_method; //it will come from api
         $accessCode = $request->accessCode;
-
+        //dd('here');
         try {
             // eWAY Credentials
-            $eWayCredentials = PaymentSettings::where('company_id', $company_id)->where('payment_method', $payment_method)->first();
+            $eWayCredentials = PaymentSettings::where('company_id', $companyId)->where('payment_method', $paymentMethod)->first();
+            //dd($eWayCredentials);
             if($eWayCredentials==""){
                 return response()->json([
                     'status' => false,
@@ -192,13 +233,13 @@ class CheckoutPaymentController extends Controller
             }
             // store all payement information on payment history table
             PaymentHistory::updateOrcreate([
-                'payment_method' => $payment_method,
+                'payment_method' => $paymentMethod,
                 'payment_amount' => $client_response->TotalAmount,
-                'user_id' => $user_id, //it will come from api
-                'company_id' => $company_id,
+                'user_id' => $userId, //it will come from api
+                'company_id' => $companyId,
                 'payment_status' => $paymentStatus,
                 'payment_log' => json_encode($client_response),
-                'lead_id' => $lead_id, ////it will come from api
+                'lead_id' => $leadId, ////it will come from api
                 'Authorisation_code' => $client_response->AuthorisationCode,
                 'response_code' => $client_response->ResponseCode,
                 'response_msg' => $client_response->ResponseMessage,
@@ -226,21 +267,11 @@ class CheckoutPaymentController extends Controller
             //dd('here');
             $companyServiceAPI = env('COMPANY_SERVICE_API', '');
             //dd($userServiceAPI);
-            $userData=[
-                //'email'=>$user->email,
-                //'verification_code' => $user->verification_code
-            ];
 
-            $response = Http::get($companyServiceAPI.'/company/'.$company_id.'/details');
-            //dd($response->status());
+            $response = Http::get($companyServiceAPI.'/company/'.$companyId.'/details');
 
-            if($response->status()!= '200'){
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Company Not Find'
-                ], 500);
-            }
-             $companyData = isset(json_decode($response->body())->data[0])?json_decode($response->body())->data[0]:'';
+            //dd($response->body());
+            $companyData = isset(json_decode($response->body())->data[0])?json_decode($response->body())->data[0]:'';
             $companyLogo = '';
 
             if(isset($companyData->logo_id) && $companyData->logo_id!=""){
@@ -249,33 +280,89 @@ class CheckoutPaymentController extends Controller
                 $response = Http::get($fileServiceAPI.'/documents/'.$companyData->logo_id);
                // dd($response->body());
 
-                if($response->status()!= '200'){
-                    return response()->json([
-                        'status' => false,
-                        'message' => 'Company Not Find'
-                    ], 500);
-                }
                 $companyLogo = isset(json_decode($response->body())->data[0]->document_name)?json_decode($response->body())->data[0]->document_name:'';
             }
             $companyData->logo = $companyLogo;
-
              //dd($companyData);
+            $leadDetails = "";
+            $userDetails = "";
             if ($client_response->TransactionStatus) {
-                //send response
-                $emailServiceAPI = env('EMAIL_SERVICE_API', '');
-                //dd($userServiceAPI);
+                //Make Invoice //
 
-                $response = Http::post($emailServiceAPI.'/student/payment', [
-                    'data' => json_encode($companyData)
+                $record = Invoices::latest()->first();
+
+                $nextInvoiceNumber = date('d/m/Y').'-'.$userId.'000001';
+                if($record!=""){
+
+                    $expNum = explode('-', $record->invoice_id);
+
+                    $nextInvoiceNumber = $expNum[0].'-'. ($expNum[1]+1);
+                }
+
+//                if($leadId>0){
+//                    $leadServiceAPI = env('LEAD_SERVICE_API', '');
+//                    //dd($userServiceAPI);
+//                    $response = Http::post($leadServiceAPI.'/lead/details', [
+//                        'lead_id' => $leadId
+//                    ]);
+//                    $leadDetails = json_decode($response->body());
+//                    //dd(json_decode($response->body()));
+//                }
+
+
+
+//                if($userId>0){
+//
+//                    $userServiceAPI = env('USER_SERVICE_API', '');
+//                    //dd($userServiceAPI);
+//                    $response = Http::post($userServiceAPI.'/user/list', [
+//                        'users' => json_encode(array($userId))
+//                    ]);
+//
+//                    $userDetails = json_decode($response->body());
+//                    //dd($userDetails);
+//
+//                }
+                //dd($userDetails->data[0]->email);
+                //dd($nextInvoiceNumber);
+                $invoiceData = Invoices::updateOrcreate([
+                    'invoice_id' => $nextInvoiceNumber,
+                    'transaction_id' => $client_response->TransactionID,
+                    'lead_id' => isset($request->lead_id)?$request->lead_id:0,
+                    'company_id' => isset($request->company_id)?$request->company_id:0,
+                    'user_id' => isset($request->user_id)?$request->user_id:0,
+                    'company_name' => isset($companyData->name)?$companyData->name:'',
+                    'company_logo' => isset($companyData->logo)?$companyData->logo:'',
+                    'course_code' => isset($request->course_code)?$request->course_code:'',
+                    'course_title' => isset($request->course_title)?$request->course_title:'',
+                    'service_name' => isset($request->service_name)?$request->service_name:'',
+                    'payment_amount' => isset($request->payment_amount)?$request->payment_amount:0,
+                    'payment_method' => isset($request->payment_method)?$request->payment_method:'',
+                    'payer_name' =>  isset($request->full_name)?$request->full_name:'',
+                    'payer_email' => isset($request->email)?$request->email:'',
+                    'company_email' => isset($companyData->business_email)?$companyData->business_email:'',
+                    'company_contact' => isset($companyData->contact)?$companyData->contact:'',
+                    'role_id' => isset($request->role_id)?$request->role_id:'',
                 ]);
 
-                dd($response->status());
+                //dd($invoiceData);
+
+                ///EOF Invoice ////
+                //send response
+                $emailServiceAPI = env('EMAIL_SERVICE_API', '');
+                $invoiceData->invoice_date = Carbon::parse($invoiceData->created_at)->toDateTimeString();
+                //dd($invoiceData);
+                $response = Http::post($emailServiceAPI.'/payment', [
+                    'data' => json_encode($invoiceData)
+                ]);
+
+                //dd( json_decode($response->body()));
                 $emailStatus = false;
                 if($response->status()== '201'){
                     $emailStatus = true;
                 }
+                //dd($companyData);
 
-                //Make Invoice //
                 // Course Details from lead details
 
                 return response()->json([
@@ -305,9 +392,9 @@ class CheckoutPaymentController extends Controller
     public function paypalPayemntResponse(Request $request)
     {
 
-        $user_id = $request->user_id; //it will come from api
-        $lead_id = $request->lead_id; //it will come from api
-        $payment_method = $request->payment_method; //it will come from api
+        $userId = $request->user_id; //it will come from api
+        $leadId = $request->lead_id; //it will come from api
+        $paymentMethod = $request->payment_method; //it will come from api
 
         $client_response = [
             'create_time' => '2022-09-29T10:59:10Z',
@@ -352,12 +439,12 @@ class CheckoutPaymentController extends Controller
 
             PaymentHistory::create([
 
-                'payment_method' => $payment_method,
+                'payment_method' => $paymentMethod,
                 'payment_amount' => $client_response->purchase_units->amount->value,
-                'user_id' => $user_id, //it will come from api
+                'user_id' => $userId, //it will come from api
                 'payment_status' => $client_response->status,
                 'payment_log' => json_encode($client_response),
-                'lead_id' => $lead_id, ////it will come from api
+                'lead_id' => $leadId, ////it will come from api
                 'Authorisation_code' => $client_response->AuthorisationCode ?? null,
                 'response_code' => $client_response->ResponseCode ?? null,
                 'response_msg' => $client_response->ResponseMessage ?? null,
