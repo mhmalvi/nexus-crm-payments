@@ -232,9 +232,10 @@ class CheckoutPaymentController extends Controller
                 $paymentStatus = "COMPLETED";
             }
             // store all payement information on payment history table
+            
             PaymentHistory::updateOrcreate([
                 'payment_method' => $paymentMethod,
-                'payment_amount' => $client_response->TotalAmount,
+                'payment_amount' => ($client_response->TotalAmount>0)? ($client_response->TotalAmount/100):0,
                 'user_id' => $userId, //it will come from api
                 'company_id' => $companyId,
                 'payment_status' => $paymentStatus,
@@ -336,7 +337,7 @@ class CheckoutPaymentController extends Controller
                     'course_code' => isset($request->course_code)?$request->course_code:'',
                     'course_title' => isset($request->course_title)?$request->course_title:'',
                     'service_name' => isset($request->service_name)?$request->service_name:'',
-                    'payment_amount' => isset($request->payment_amount)?$request->payment_amount:0,
+                    'payment_amount' => ($client_response->TotalAmount>0)? ($client_response->TotalAmount/100):0,
                     'payment_method' => isset($request->payment_method)?$request->payment_method:'',
                     'payer_name' =>  isset($request->full_name)?$request->full_name:'',
                     'payer_email' => isset($request->email)?$request->email:'',
