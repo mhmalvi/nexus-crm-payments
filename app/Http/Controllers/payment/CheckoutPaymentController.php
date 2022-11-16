@@ -98,6 +98,45 @@ class CheckoutPaymentController extends Controller
     }
 
     /**
+     * Get Payment Histories
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getInvoiceHistories(Request $request)
+    {
+
+        try {
+            $paymentList = Invoices::select('*');
+            if(isset($request->user_id))
+                $paymentList =$paymentList->where('user_id',$request->user_id);
+
+            if(isset($request->company_id))
+                $paymentList =$paymentList->where('company_id',$request->company_id);
+
+            $paymentList = $paymentList->get();
+            // dd($leadCheckList);
+            if($paymentList==""){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Payment not found',
+                ], 401);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'All Payment',
+                'data'    => $paymentList->toArray()
+            ], 201);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -232,7 +271,7 @@ class CheckoutPaymentController extends Controller
                 $paymentStatus = "COMPLETED";
             }
             // store all payement information on payment history table
-            
+
             PaymentHistory::updateOrcreate([
                 'payment_method' => $paymentMethod,
                 'payment_amount' => ($client_response->TotalAmount>0)? ($client_response->TotalAmount/100):0,
