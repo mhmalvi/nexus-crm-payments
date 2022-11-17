@@ -378,13 +378,15 @@ class CheckoutPaymentController extends Controller
                     'company_logo' => isset($companyData->logo)?$companyData->logo:'',
                     'course_code' => isset($request->course_code)?$request->course_code:'',
                     'course_title' => isset($request->course_title)?$request->course_title:'',
-                    'service_name' => isset($request->service_name)?$request->service_name:'',
+                    'package_id' => isset($request->package_id)?$request->package_id:0,
+                    'package_name' => isset($request->package_name)?$request->package_name:'',
                     'payment_amount' => ($client_response->TotalAmount>0)? ($client_response->TotalAmount/100):0,
                     'payment_method' => isset($request->payment_method)?$request->payment_method:'',
                     'payer_name' =>  isset($request->full_name)?$request->full_name:'',
-                    'payer_email' => isset($request->email)?$request->email:'',
+                    'payer_email' => isset($request->user_email)?$request->user_email:'',
                     'company_email' => isset($companyData->business_email)?$companyData->business_email:'',
                     'company_contact' => isset($companyData->contact)?$companyData->contact:'',
+                    'company_website' => isset($companyData->website)?$companyData->website:'',
                     'role_id' => isset($request->role_id)?$request->role_id:'',
                 ]);
 
