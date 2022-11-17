@@ -107,6 +107,9 @@ class CheckoutPaymentController extends Controller
 
         try {
             $paymentList = Invoices::select('*');
+            if(isset($request->id))
+                $paymentList =$paymentList->where('id',$request->id);
+
             if(isset($request->user_id))
                 $paymentList =$paymentList->where('user_id',$request->user_id);
 
