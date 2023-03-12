@@ -274,7 +274,7 @@ class CheckoutPaymentController extends Controller
                 $paymentStatus = "COMPLETED";
             }
             // store all payement information on payment history table
-
+            
             PaymentHistory::updateOrcreate([
                 'payment_method' => $paymentMethod,
                 'payment_amount' => ($client_response->TotalAmount>0)? ($client_response->TotalAmount/100):0,
@@ -311,22 +311,23 @@ class CheckoutPaymentController extends Controller
             $companyServiceAPI = env('COMPANY_SERVICE_API', '');
             //dd($userServiceAPI);
 
-            $response = Http::get($companyServiceAPI.'/company/'.$companyId.'/details');
+            $response = Http::get('https://crmcompany.quadque.digital/api/company/'.$companyId.'/details');
 
-            //dd($response->body());
+            // dd($response->body());
             $companyData = isset(json_decode($response->body())->data[0])?json_decode($response->body())->data[0]:'';
             $companyLogo = '';
-
+            // dd($companyData->logo_id);
             if(isset($companyData->logo_id) && $companyData->logo_id!=""){
-                $fileServiceAPI = env('FILE_SERVICE_API', '');
+                $fileServiceAPI = env('FILE_SERVICE_API');
 
-                $response = Http::get($fileServiceAPI.'/documents/'.$companyData->logo_id);
-               // dd($response->body());
-
-                $companyLogo = isset(json_decode($response->body())->data[0]->document_name)?json_decode($response->body())->data[0]->document_name:'';
+                $response = Http::get('https://crmcompany.quadque.digital/api/documents/'.$companyData->logo_id);
+                //    dd($response->body());
+                // dd("hello");
+                $companyLogo = isset(json_decode($response->body())->data->document_name)?json_decode($response->body())->data->document_name:'';
             }
             $companyData->logo = $companyLogo;
-             //dd($companyData);
+            // dd($companyData);
+            // dd("hello");
             $leadDetails = "";
             $userDetails = "";
             if (isset($client_response->TransactionStatus) && $client_response->TransactionStatus!="") {
@@ -396,17 +397,15 @@ class CheckoutPaymentController extends Controller
                 //send response
                 $emailServiceAPI = env('EMAIL_SERVICE_API', '');
                 $invoiceData->invoice_date = Carbon::parse($invoiceData->created_at)->toDateTimeString();
-                //dd($invoiceData);
-                $response = Http::post($emailServiceAPI.'/payment', [
+                // dd($invoiceData);
+                $response = Http::post('https://crm-mailer.onrender.com/api/send-payment-mail', [
                     'data' => json_encode($invoiceData)
                 ]);
-
-                //dd( json_decode($response->body()));
                 $emailStatus = false;
-                if($response->status()== '201'){
+                if($response->status()== '200'){
                     $emailStatus = true;
                 }
-                //dd($companyData);
+                // dd($companyData);
 
                 // Course Details from lead details
 
