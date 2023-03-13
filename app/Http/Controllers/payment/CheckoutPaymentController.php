@@ -271,7 +271,7 @@ class CheckoutPaymentController extends Controller
             }
             // store all payement information on payment history table
 
-            PaymentHistory::updateOrcreate([
+            $history = PaymentHistory::updateOrcreate([
                 'payment_method' => $paymentMethod,
                 'payment_amount' => ($client_response->TotalAmount > 0) ? ($client_response->TotalAmount / 100) : 0,
                 'user_id' => $userId, //it will come from api
@@ -302,6 +302,12 @@ class CheckoutPaymentController extends Controller
                 'fax' => $client_response->Customer->Fax,
                 'url' => $client_response->Customer->Url,
             ]);
+
+            // dd($history);
+            // return response()->json([
+            //     'message'=>'success',
+            //     ''
+            // ]);
 
             $companyServiceAPI = env('COMPANY_SERVICE_API', '');
 
@@ -404,7 +410,8 @@ class CheckoutPaymentController extends Controller
                     'key' => 'success',
                     'transaction_id' => $client_response->TransactionID,
                     'message' => 'Payment Completed Successfully ',
-                    'Email Status' => $emailStatus
+                    'Email Status' => $emailStatus,
+                    'payment_details'=> $history
                 ], 201);
             } else {
 
