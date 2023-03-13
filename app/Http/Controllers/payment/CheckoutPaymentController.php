@@ -239,8 +239,9 @@ class CheckoutPaymentController extends Controller
      */
     public function payment_details($lead_id){
         // dd("hello");
-        if($lead_id){
-            $payment_details = PaymentHistory::where('lead_id', $lead_id)->get();
+        
+        $payment_details = PaymentHistory::where('lead_id', $lead_id)->get();
+        if (!$payment_details->isEmpty()) {
             // dd($payment_details);
             return response()->json([
                 'message' => 'success',
@@ -429,8 +430,7 @@ class CheckoutPaymentController extends Controller
                     'key' => 'success',
                     'transaction_id' => $client_response->TransactionID,
                     'message' => 'Payment Completed Successfully ',
-                    'Email Status' => $emailStatus,
-                    'payment_details'=> $history
+                    'Email Status' => $emailStatus
                 ], 201);
             } else {
 
