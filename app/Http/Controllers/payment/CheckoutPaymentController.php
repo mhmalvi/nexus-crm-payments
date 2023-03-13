@@ -239,17 +239,16 @@ class CheckoutPaymentController extends Controller
      */
     public function ewayPayemntResponse(Request $request)
     {
-        $userId = isset($request->user_id)?$request->user_id:0; //it will come from api
-        $leadId = isset($request->lead_id)?$request->lead_id:0; //it will come from api
-        $companyId = isset($request->company_id)?$request->company_id:0; //it will come from api
+
+        $userId = isset($request->user_id) ? $request->user_id : 0; //it will come from api
+        $leadId = isset($request->lead_id) ? $request->lead_id : 0; //it will come from api
+        $companyId = isset($request->company_id) ? $request->company_id : 0; //it will come from api
         $paymentMethod = $request->payment_method; //it will come from api
         $accessCode = $request->accessCode;
-        //dd('here');
         try {
             // eWAY Credentials
             $eWayCredentials = PaymentSettings::where('company_id', $companyId)->where('payment_method', $paymentMethod)->first();
-            //dd($eWayCredentials);
-            if($eWayCredentials==""){
+            if ($eWayCredentials == "") {
                 return response()->json([
                     'status' => false,
                     'message' => 'Company not found',
@@ -261,28 +260,25 @@ class CheckoutPaymentController extends Controller
             $apiEndpoint = \Eway\Rapid\Client::MODE_SANDBOX;
 
             $client = \Eway\Rapid::createClient($api_key, $api_password, $apiEndpoint);
-
             // Query the transaction result.
             $response = $client->queryTransaction($accessCode);
-
             //convert data into array
             $response = json_decode($response);
-            //dd($response);
             $client_response = $response->Transactions[0];
             $paymentStatus = "FAILED";
-            if($client_response->TransactionStatus==1){
+            if ($client_response->TransactionStatus == 1) {
                 $paymentStatus = "COMPLETED";
             }
             // store all payement information on payment history table
-            
+
             PaymentHistory::updateOrcreate([
                 'payment_method' => $paymentMethod,
-                'payment_amount' => ($client_response->TotalAmount>0)? ($client_response->TotalAmount/100):0,
+                'payment_amount' => ($client_response->TotalAmount > 0) ? ($client_response->TotalAmount / 100) : 0,
                 'user_id' => $userId, //it will come from api
                 'company_id' => $companyId,
                 'payment_status' => $paymentStatus,
                 'payment_log' => json_encode($client_response),
-                'lead_id' => $leadId, ////it will come from api
+                'lead_id' => "$leadId", ////it will come from api
                 'Authorisation_code' => $client_response->AuthorisationCode,
                 'response_code' => $client_response->ResponseCode,
                 'response_msg' => $client_response->ResponseMessage,
@@ -307,88 +303,82 @@ class CheckoutPaymentController extends Controller
                 'url' => $client_response->Customer->Url,
             ]);
 
-            //dd('here');
             $companyServiceAPI = env('COMPANY_SERVICE_API', '');
-            //dd($userServiceAPI);
 
-            $response = Http::get('https://crmcompany.quadque.digital/api/company/'.$companyId.'/details');
+            $response = Http::get('https://crmcompany.quadque.digital/api/company/' . $companyId . '/details');
 
             // dd($response->body());
-            $companyData = isset(json_decode($response->body())->data[0])?json_decode($response->body())->data[0]:'';
+            $companyData = isset(json_decode($response->body())->data[0]) ? json_decode($response->body())->data[0] : '';
             $companyLogo = '';
             // dd($companyData->logo_id);
-            if(isset($companyData->logo_id) && $companyData->logo_id!=""){
+            if (isset($companyData->logo_id) && $companyData->logo_id != "") {
                 $fileServiceAPI = env('FILE_SERVICE_API');
 
-                $response = Http::get('https://crmcompany.quadque.digital/api/documents/'.$companyData->logo_id);
-                //    dd($response->body());
-                // dd("hello");
-                $companyLogo = isset(json_decode($response->body())->data->document_name)?json_decode($response->body())->data->document_name:'';
+                $response = Http::get('https://crmcompany.quadque.digital/api/documents/' . $companyData->logo_id);
+                $companyLogo = isset(json_decode($response->body())->data->document_name) ? json_decode($response->body())->data->document_name : '';
             }
             $companyData->logo = $companyLogo;
-            // dd($companyData);
-            // dd("hello");
             $leadDetails = "";
             $userDetails = "";
-            if (isset($client_response->TransactionStatus) && $client_response->TransactionStatus!="") {
+            if (isset($client_response->TransactionStatus) && $client_response->TransactionStatus != "") {
                 //Make Invoice //
 
                 $record = Invoices::latest()->first();
 
-                $nextInvoiceNumber = date('d/m/Y').'-'.$userId.'000001';
-                if($record!=""){
+                $nextInvoiceNumber = date('d/m/Y') . '-' . $userId . '000001';
+                if ($record != "") {
 
                     $expNum = explode('-', $record->invoice_id);
 
-                    $nextInvoiceNumber = $expNum[0].'-'. ($expNum[1]+1);
+                    $nextInvoiceNumber = $expNum[0] . '-' . ($expNum[1] + 1);
                 }
 
-//                if($leadId>0){
-//                    $leadServiceAPI = env('LEAD_SERVICE_API', '');
-//                    //dd($userServiceAPI);
-//                    $response = Http::post($leadServiceAPI.'/lead/details', [
-//                        'lead_id' => $leadId
-//                    ]);
-//                    $leadDetails = json_decode($response->body());
-//                    //dd(json_decode($response->body()));
-//                }
+                //                if($leadId>0){
+                //                    $leadServiceAPI = env('LEAD_SERVICE_API', '');
+                //                    //dd($userServiceAPI);
+                //                    $response = Http::post($leadServiceAPI.'/lead/details', [
+                //                        'lead_id' => $leadId
+                //                    ]);
+                //                    $leadDetails = json_decode($response->body());
+                //                    //dd(json_decode($response->body()));
+                //                }
 
 
 
-//                if($userId>0){
-//
-//                    $userServiceAPI = env('USER_SERVICE_API', '');
-//                    //dd($userServiceAPI);
-//                    $response = Http::post($userServiceAPI.'/user/list', [
-//                        'users' => json_encode(array($userId))
-//                    ]);
-//
-//                    $userDetails = json_decode($response->body());
-//                    //dd($userDetails);
-//
-//                }
+                //                if($userId>0){
+                //
+                //                    $userServiceAPI = env('USER_SERVICE_API', '');
+                //                    //dd($userServiceAPI);
+                //                    $response = Http::post($userServiceAPI.'/user/list', [
+                //                        'users' => json_encode(array($userId))
+                //                    ]);
+                //
+                //                    $userDetails = json_decode($response->body());
+                //                    //dd($userDetails);
+                //
+                //                }
                 //dd($userDetails->data[0]->email);
                 //dd($nextInvoiceNumber);
                 $invoiceData = Invoices::updateOrcreate([
                     'invoice_id' => $nextInvoiceNumber,
                     'transaction_id' => $client_response->TransactionID,
-                    'lead_id' => isset($request->lead_id)?$request->lead_id:0,
-                    'company_id' => isset($request->company_id)?$request->company_id:0,
-                    'user_id' => isset($request->user_id)?$request->user_id:0,
-                    'company_name' => isset($companyData->name)?$companyData->name:'',
-                    'company_logo' => isset($companyData->logo)?$companyData->logo:'',
-                    'course_code' => isset($request->course_code)?$request->course_code:'',
-                    'course_title' => isset($request->course_title)?$request->course_title:'',
-                    'package_id' => isset($request->package_id)?$request->package_id:0,
-                    'package_name' => isset($request->package_name)?$request->package_name:'',
-                    'payment_amount' => ($client_response->TotalAmount>0)? ($client_response->TotalAmount/100):0,
-                    'payment_method' => isset($request->payment_method)?$request->payment_method:'',
-                    'payer_name' =>  isset($request->full_name)?$request->full_name:'',
-                    'payer_email' => isset($request->user_email)?$request->user_email:'',
-                    'company_email' => isset($companyData->business_email)?$companyData->business_email:'',
-                    'company_contact' => isset($companyData->contact)?$companyData->contact:'',
-                    'company_website' => isset($companyData->website)?$companyData->website:'',
-                    'role_id' => isset($request->role_id)?$request->role_id:'',
+                    'lead_id' => isset($request->lead_id) ? $request->lead_id : 0,
+                    'company_id' => isset($request->company_id) ? $request->company_id : 0,
+                    'user_id' => isset($request->user_id) ? $request->user_id : 0,
+                    'company_name' => isset($companyData->name) ? $companyData->name : '',
+                    'company_logo' => isset($companyData->logo) ? $companyData->logo : '',
+                    'course_code' => isset($request->course_code) ? $request->course_code : '',
+                    'course_title' => isset($request->course_title) ? $request->course_title : '',
+                    'package_id' => isset($request->package_id) ? $request->package_id : 0,
+                    'package_name' => isset($request->package_name) ? $request->package_name : '',
+                    'payment_amount' => ($client_response->TotalAmount > 0) ? ($client_response->TotalAmount / 100) : 0,
+                    'payment_method' => isset($request->payment_method) ? $request->payment_method : '',
+                    'payer_name' =>  isset($request->full_name) ? $request->full_name : '',
+                    'payer_email' => isset($request->user_email) ? $request->user_email : '',
+                    'company_email' => isset($companyData->business_email) ? $companyData->business_email : '',
+                    'company_contact' => isset($companyData->contact) ? $companyData->contact : '',
+                    'company_website' => isset($companyData->website) ? $companyData->website : '',
+                    'role_id' => isset($request->role_id) ? $request->role_id : '',
                 ]);
 
                 //dd($invoiceData);
@@ -402,7 +392,7 @@ class CheckoutPaymentController extends Controller
                     'data' => json_encode($invoiceData)
                 ]);
                 $emailStatus = false;
-                if($response->status()== '200'){
+                if ($response->status() == '200') {
                     $emailStatus = true;
                 }
                 // dd($companyData);
