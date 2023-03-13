@@ -237,6 +237,17 @@ class CheckoutPaymentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
+    public function payment_details($lead_id){
+        // dd("hello");
+        $payment_details = PaymentHistory::where('lead_id', $lead_id)->get();
+        // dd($payment_details);
+        return response()->json([
+            'message'=>'success',
+            'status'=>200,
+            'data'=> $payment_details
+        ]);
+    }
+
     public function ewayPayemntResponse(Request $request)
     {
 
