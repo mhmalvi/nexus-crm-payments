@@ -21,6 +21,7 @@ Route::post('payment/list', [CheckoutPaymentController::class, 'getPaymentHistor
 Route::post('invoice/list', [CheckoutPaymentController::class, 'getInvoiceHistories']);
 Route::get('payment/{lead_id}/details', [CheckoutPaymentController::class, 'getPaymentHistoriesByLead']);
 Route::get('payment-details/{lead_id}', [CheckoutPaymentController::class, 'payment_details']);
+Route::post('stripe',[CheckoutPaymentController::class, 'stripePost']);
 
 Route::post('payment/setting/create', [\App\Http\Controllers\account\PaymentSettingController::class, 'createSetting']);
 Route::put('payment/setting/{id}/update', [\App\Http\Controllers\account\PaymentSettingController::class, 'updatePaymentSetting']);

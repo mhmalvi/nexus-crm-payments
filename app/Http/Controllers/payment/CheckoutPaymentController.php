@@ -10,8 +10,11 @@ use App\Models\Invoices;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Omnipay\Omnipay;
+// use Omnipay\Omnipay;
 use Throwable;
+use Session;
+use Stripe;
+
 
 use function PHPUnit\Framework\throwException;
 
@@ -240,6 +243,7 @@ class CheckoutPaymentController extends Controller
     public function payment_details($lead_id)
     {
         $payment_details = PaymentHistory::where('lead_id', $lead_id)->where('payment_status', 'COMPLETED')->get();
+        // $invoice = Invoices::where('lead_id', $lead_id)->
         if (!$payment_details->isEmpty()) {
             // dd($payment_details);
             return response()->json([
@@ -253,6 +257,87 @@ class CheckoutPaymentController extends Controller
                 'status' => 404,
             ], 404);
         }
+    }
+
+    public function stripePost(Request $request)
+    {
+        // Stripe\StripeClient(env('STRIPE_SECRET'));
+        Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+        // Stripe\Charge::create([
+        //     "amount" => 100 * 100,
+        //     "currency" => "INR",
+        //     "source" => $request->stripeToken,
+        //     "description" => "This is test payment",
+        // ]);
+
+        // $payment_intent = \Stripe\PaymentIntent::create([
+        //     'payment_method_types' => ['card'],
+        //     'payment_method' => $method->id,
+        //     'amount' => 1000,
+        //     'currency' => 'aud',
+        //     'automatic_payment_methods' => ['enabled' => true],
+        //     'application_fee_amount' => 123,
+        //     'transfer_data' => [
+        //         'destination' => 'acct_1Mllh7QUyNH9Tbzo',
+        //     ],
+        // ]);
+
+        $method = \Stripe\PaymentMethod::create([
+            'type' => 'card',
+            'card' => [
+                // 'number' => '378282246310005',
+                // 'exp_month' => 12,
+                // 'exp_year' => 2026,
+                // 'cvc' => '314',
+
+                'number' => $request->card_number,
+                'exp_month' => $request->exp_month,
+                'exp_year' => $request->exp_year,
+                'cvc' => $request->cvc,
+            ],
+        ]);
+
+        \Stripe\PaymentIntent::create([
+            'payment_method_types' => ['card'],
+            'payment_method' => $method->id,
+            'amount' => 2 * 100,
+            'currency' => 'AUD',
+        ]);
+
+        // $transfer = \Stripe\Transfer::create([
+        //     'amount' => 2 * 100,
+        //     'currency' => 'USD',
+        //     'destination' => 'acct_1MlcsCQhHfdpdP56',
+        //     // 'transfer_group' => '{ORDER' . $_SESSION['order_id'] . '}',
+        // ]);
+        // dd($request->stripeToken);
+
+
+        // $customer = Stripe\Charge::create(
+        //     [                
+        //         // 'type' => 'card',
+        //         // 'mode' => 'payment',
+        //         "amount" => 100 * 100,
+        //         "currency" => "AUD",
+        //         // 'stripe_account' => 'acct_1MlcsCQhHfdpdP56',
+        //         //   'line_items' => [['price' => '{{PRICE_ID}}', 'quantity' => 1]],
+        //         // 'payment_intent_data' => ['application_fee_amount' => 123],
+        //         "source" => $request->stripeToken,
+        //         "description" => "This is test payment",
+        //         // 'stripe_account' => 'acct_1MlcsCQhHfdpdP56'
+        //         //   'success_url' => 'http://example.com/success',
+        //         //   'cancel_url' => 'http://localhost:8000/',
+        //     ],
+        //     ['stripe_account' => 'acct_1Mllh7QUyNH9Tbzo']
+        // );
+        // $data = json_encode($customer);
+        // dd($data);
+        // return response()->json([
+        //     'data'=>$data
+        // ]);
+        Session::flash('success', 'Payment Successful !');
+
+        return back();
     }
 
     public function ewayPayemntResponse(Request $request)
@@ -281,14 +366,16 @@ class CheckoutPaymentController extends Controller
             // Query the transaction result.
             $response = $client->queryTransaction($accessCode);
             //convert data into array
+            
             $response = json_decode($response);
+            
             $client_response = $response->Transactions[0];
             $paymentStatus = "FAILED";
             if ($client_response->TransactionStatus == 1) {
                 $paymentStatus = "COMPLETED";
             }
             // store all payement information on payment history table
-
+// dd($client_response);
             $history = PaymentHistory::updateOrcreate([
                 'payment_method' => $paymentMethod,
                 'payment_amount' => ($client_response->TotalAmount > 0) ? ($client_response->TotalAmount / 100) : 0,
@@ -405,7 +492,8 @@ class CheckoutPaymentController extends Controller
                     'role_id' => isset($request->role_id) ? $request->role_id : '',
                 ]);
 
-                //dd($invoiceData);
+                $history->invoice_number = $nextInvoiceNumber;
+                $history->save();
 
                 ///EOF Invoice ////
                 //send response
