@@ -31,17 +31,29 @@ class CheckoutPaymentController extends Controller
     {
 
         try {
-            $paymentList = PaymentHistory::select('payment_method', 'payment_amount', 'payment_status', 'last_name', 'company_name', 'invoice_number',
-                'transaction_id', 'lead_id', 'payment_status', 'company_id', 'user_id', 'created_at');
-            if(isset($request->user_id))
-                $paymentList =$paymentList->where('user_id',$request->user_id);
+            $paymentList = PaymentHistory::select(
+                'payment_method',
+                'payment_amount',
+                'payment_status',
+                'last_name',
+                'company_name',
+                'invoice_number',
+                'transaction_id',
+                'lead_id',
+                'payment_status',
+                'company_id',
+                'user_id',
+                'created_at'
+            );
+            if (isset($request->user_id))
+                $paymentList = $paymentList->where('user_id', $request->user_id);
 
-            if(isset($request->company_id))
-                $paymentList =$paymentList->where('company_id',$request->company_id);
+            if (isset($request->company_id))
+                $paymentList = $paymentList->where('company_id', $request->company_id);
 
             $paymentList = $paymentList->get();
             // dd($leadCheckList);
-            if($paymentList==""){
+            if ($paymentList == "") {
                 return response()->json([
                     'status' => false,
                     'message' => 'Payment not found',
@@ -53,7 +65,6 @@ class CheckoutPaymentController extends Controller
                 'message' => 'All Payment',
                 'data'    => $paymentList->toArray()
             ], 201);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -69,7 +80,7 @@ class CheckoutPaymentController extends Controller
      */
     public function getPaymentHistoriesByLead(Request $request)
     {
-        if(!isset($request->lead_id))
+        if (!isset($request->lead_id))
             return response()->json([
                 'status' => false,
                 'message' => 'Lead Id not found',
@@ -78,8 +89,8 @@ class CheckoutPaymentController extends Controller
         try {
             $paymentList = Invoices::where('lead_id', $request->lead_id)->get();
 
-           // dd($leadCheckList);
-            if($paymentList==""){
+            // dd($leadCheckList);
+            if ($paymentList == "") {
                 return response()->json([
                     'status' => false,
                     'message' => 'Payment not found',
@@ -91,7 +102,6 @@ class CheckoutPaymentController extends Controller
                 'message' => 'All Payment',
                 'data'    => $paymentList->toArray()
             ], 200);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -110,18 +120,18 @@ class CheckoutPaymentController extends Controller
 
         try {
             $paymentList = Invoices::select('*');
-            if(isset($request->id))
-                $paymentList =$paymentList->where('id',$request->id);
+            if (isset($request->id))
+                $paymentList = $paymentList->where('id', $request->id);
 
-            if(isset($request->user_id))
-                $paymentList =$paymentList->where('user_id',$request->user_id);
+            if (isset($request->user_id))
+                $paymentList = $paymentList->where('user_id', $request->user_id);
 
-            if(isset($request->company_id))
-                $paymentList =$paymentList->where('company_id',$request->company_id);
+            if (isset($request->company_id))
+                $paymentList = $paymentList->where('company_id', $request->company_id);
 
             $paymentList = $paymentList->get();
             // dd($leadCheckList);
-            if($paymentList==""){
+            if ($paymentList == "") {
                 return response()->json([
                     'status' => false,
                     'message' => 'Payment not found',
@@ -133,7 +143,6 @@ class CheckoutPaymentController extends Controller
                 'message' => 'All Payment',
                 'data'    => $paymentList->toArray()
             ], 201);
-
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -297,11 +306,18 @@ class CheckoutPaymentController extends Controller
             ],
         ]);
 
-        \Stripe\PaymentIntent::create([
+        $data = \Stripe\PaymentIntent::create([
             'payment_method_types' => ['card'],
             'payment_method' => $method->id,
             'amount' => 2 * 100,
             'currency' => 'AUD',
+        ]);
+
+        // $data = json_encode($data);
+
+        return response()->json([
+            'message' => 'success',
+            'data' => $data
         ]);
 
         // $transfer = \Stripe\Transfer::create([
@@ -335,9 +351,9 @@ class CheckoutPaymentController extends Controller
         // return response()->json([
         //     'data'=>$data
         // ]);
-        Session::flash('success', 'Payment Successful !');
+        // Session::flash('success', 'Payment Successful !');
 
-        return back();
+        // return back();
     }
 
     public function ewayPayemntResponse(Request $request)
@@ -366,16 +382,16 @@ class CheckoutPaymentController extends Controller
             // Query the transaction result.
             $response = $client->queryTransaction($accessCode);
             //convert data into array
-            
+
             $response = json_decode($response);
-            
+
             $client_response = $response->Transactions[0];
             $paymentStatus = "FAILED";
             if ($client_response->TransactionStatus == 1) {
                 $paymentStatus = "COMPLETED";
             }
             // store all payement information on payment history table
-// dd($client_response);
+            // dd($client_response);
             $history = PaymentHistory::updateOrcreate([
                 'payment_method' => $paymentMethod,
                 'payment_amount' => ($client_response->TotalAmount > 0) ? ($client_response->TotalAmount / 100) : 0,
@@ -630,12 +646,11 @@ class CheckoutPaymentController extends Controller
                     'message' => 'Invalid response'
                 ], 500);
             }
-        }catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage()
             ], 500);
         }
     }
-
 }
