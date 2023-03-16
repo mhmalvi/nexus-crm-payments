@@ -7,6 +7,7 @@ use App\Models\cr;
 use App\Models\PaymentHistory;
 use App\Models\PaymentSettings;
 use App\Models\Invoices;
+use App\Models\StripeConnect;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -268,6 +269,21 @@ class CheckoutPaymentController extends Controller
         }
     }
 
+    public function get_companies()
+    {
+        $connect = StripeConnect::all();
+        if (!$connect->isEmpty()) {
+            return response()->json([
+                'message' => 'success',
+                'data' => $connect
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'not found'
+            ], 404);
+        }
+    }
+
     public function stripePost(Request $request)
     {
         // Stripe\StripeClient(env('STRIPE_SECRET'));
@@ -327,7 +343,7 @@ class CheckoutPaymentController extends Controller
 
         ///////////////////////////////////////////////////////////////////
         $customer = Stripe\Charge::create(
-            [                
+            [
                 // 'type' => 'card',
                 // 'mode' => 'payment',
                 "amount" => 100 * 100,
@@ -341,17 +357,17 @@ class CheckoutPaymentController extends Controller
                 //   'success_url' => 'http://example.com/success',
                 //   'cancel_url' => 'http://localhost:8000/',
             ],
-            ['stripe_account' => 'acct_1Mllh7QUyNH9Tbzo']
+            ['stripe_account' => 'acct_1MlcsCQhHfdpdP56']
         );
 
         /////////////////////////////////////////////////////////
 
-        
 
-        // return response()->json([
-        //     'message' => 'success',
-        //     'data' => $customer
-        // ]);
+
+        return response()->json([
+            'message' => 'success',
+            'data' => $customer
+        ]);
         // $data = json_encode($customer);
         // dd($data);
         // return response()->json([
@@ -364,12 +380,12 @@ class CheckoutPaymentController extends Controller
 
     public function ewayPayemntResponse(Request $request)
     {
-
+        // dd("dfgdg");
         $userId = isset($request->user_id) ? $request->user_id : 0; //it will come from api
         $leadId = isset($request->lead_id) ? $request->lead_id : 0; //it will come from api
         $companyId = isset($request->company_id) ? $request->company_id : 0; //it will come from api
         $paymentMethod = $request->payment_method; //it will come from api
-        $accessCode = $request->accessCode;
+        // $accessCode = $request->accessCode;
         try {
             // eWAY Credentials
             $eWayCredentials = PaymentSettings::where('company_id', $companyId)->where('payment_method', $paymentMethod)->first();
@@ -379,18 +395,64 @@ class CheckoutPaymentController extends Controller
                     'message' => 'Company not found',
                 ], 401);
             }
-            $api_key = $eWayCredentials->api_key;
-            $api_password = $eWayCredentials->api_password;
+            // $api_key = $eWayCredentials->api_key;
+            // $api_password = $eWayCredentials->api_password;
 
-            $apiEndpoint = \Eway\Rapid\Client::MODE_SANDBOX;
+            // $apiEndpoint = \Eway\Rapid\Client::MODE_SANDBOX;
 
-            $client = \Eway\Rapid::createClient($api_key, $api_password, $apiEndpoint);
-            // Query the transaction result.
-            $response = $client->queryTransaction($accessCode);
+            // $client = \Eway\Rapid::createClient($api_key, $api_password, $apiEndpoint);
+            // // Query the transaction result.
+            // $response = $client->queryTransaction($accessCode);
             //convert data into array
 
-            $response = json_decode($response);
-
+            //////////////////////////////////////////////////////////////////////////////////////////
+            // $key = env('STRIPE_SECRET');
+            // dd($key);
+            // $stripe = Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+            Stripe\Stripe::setApiKey('sk_test_51JCKihHrHTHAD5zZ7ELiP2pz6vTEL8vE120Ed8X0vPSvfzOBoARKkVAFm0VFg958FkXGSRJatofINWoHCXdzEOzW00NLLlB5ps');
+            // dd($stripe);
+            $response = \Stripe\Token::create(array(
+                "card" => array(
+                    "number"    => 4242424242424242,
+                    "exp_month" => 3,
+                    "exp_year"  => 2024,
+                    "cvc"       => 321,
+                    "name"      => "David"
+                )
+            ));
+            $response = $response->id;
+            // $token = $stripe->tokens->create([
+            //     'card' => [
+            //         'number' => '4242424242424242',
+            //         'exp_month' => 3,
+            //         'exp_year' => 2024,
+            //         'cvc' => '314',
+            //     ],
+            // ]);
+            // dd($token);
+            $data = Stripe\Charge::create(
+                [
+                    // 'type' => 'card',
+                    // 'mode' => 'payment',
+                    "amount" => 100 * 100,
+                    "currency" => "AUD",
+                    // "customer" => "acct_1MlcsCQhHfdpdP56",
+                    // 'stripe_account' => 'acct_1MlcsCQhHfdpdP56',
+                    //   'line_items' => [['price' => '{{PRICE_ID}}', 'quantity' => 1]],
+                    // 'payment_intent_data' => ['application_fee_amount' => 123],
+                    // "source" => $request->stripeToken,
+                    "source" => $response,
+                    "description" => "This is test payment",
+                    // 'stripe_account' => 'acct_1MlcsCQhHfdpdP56'
+                    //   'success_url' => 'http://example.com/success',
+                    //   'cancel_url' => 'http://localhost:8000/',
+                ],
+                ['stripe_account' => 'acct_1MlcsCQhHfdpdP56']
+            );
+            // dd("hrllo");
+            // dd($data);
+            $response = json_encode($data);
+            dd($response);
             $client_response = $response->Transactions[0];
             $paymentStatus = "FAILED";
             if ($client_response->TransactionStatus == 1) {
