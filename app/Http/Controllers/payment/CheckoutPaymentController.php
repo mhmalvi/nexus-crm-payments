@@ -291,34 +291,31 @@ class CheckoutPaymentController extends Controller
         //     ],
         // ]);
 
-        $method = \Stripe\PaymentMethod::create([
-            'type' => 'card',
-            'card' => [
-                // 'number' => '378282246310005',
-                // 'exp_month' => 12,
-                // 'exp_year' => 2026,
-                // 'cvc' => '314',
+        // $method = \Stripe\PaymentMethod::create([
+        //     'type' => 'card',
+        //     'card' => [
+        //         // 'number' => '378282246310005',
+        //         // 'exp_month' => 12,
+        //         // 'exp_year' => 2026,
+        //         // 'cvc' => '314',
 
-                'number' => $request->card_number,
-                'exp_month' => $request->exp_month,
-                'exp_year' => $request->exp_year,
-                'cvc' => $request->cvc,
-            ],
-        ]);
+        //         'number' => $request->card_number,
+        //         'exp_month' => $request->exp_month,
+        //         'exp_year' => $request->exp_year,
+        //         'cvc' => $request->cvc,
+        //     ],
+        // ]);
 
-        $data = \Stripe\PaymentIntent::create([
-            'payment_method_types' => ['card'],
-            'payment_method' => $method->id,
-            'amount' => 2 * 100,
-            'currency' => 'AUD',
-        ]);
+        // $data = \Stripe\PaymentIntent::create([
+        //     'payment_method_types' => ['card'],
+        //     'payment_method' => $method->id,
+        //     'amount' => 2 * 100,
+        //     'currency' => 'AUD',
+        // ]);
 
         // $data = json_encode($data);
 
-        return response()->json([
-            'message' => 'success',
-            'data' => $data
-        ]);
+
 
         // $transfer = \Stripe\Transfer::create([
         //     'amount' => 2 * 100,
@@ -328,24 +325,33 @@ class CheckoutPaymentController extends Controller
         // ]);
         // dd($request->stripeToken);
 
+        ///////////////////////////////////////////////////////////////////
+        $customer = Stripe\Charge::create(
+            [                
+                // 'type' => 'card',
+                // 'mode' => 'payment',
+                "amount" => 100 * 100,
+                "currency" => "AUD",
+                // 'stripe_account' => 'acct_1MlcsCQhHfdpdP56',
+                //   'line_items' => [['price' => '{{PRICE_ID}}', 'quantity' => 1]],
+                // 'payment_intent_data' => ['application_fee_amount' => 123],
+                "source" => $request->stripeToken,
+                "description" => "This is test payment for us",
+                // 'stripe_account' => 'acct_1MlcsCQhHfdpdP56'
+                //   'success_url' => 'http://example.com/success',
+                //   'cancel_url' => 'http://localhost:8000/',
+            ],
+            ['stripe_account' => 'acct_1Mllh7QUyNH9Tbzo']
+        );
 
-        // $customer = Stripe\Charge::create(
-        //     [                
-        //         // 'type' => 'card',
-        //         // 'mode' => 'payment',
-        //         "amount" => 100 * 100,
-        //         "currency" => "AUD",
-        //         // 'stripe_account' => 'acct_1MlcsCQhHfdpdP56',
-        //         //   'line_items' => [['price' => '{{PRICE_ID}}', 'quantity' => 1]],
-        //         // 'payment_intent_data' => ['application_fee_amount' => 123],
-        //         "source" => $request->stripeToken,
-        //         "description" => "This is test payment",
-        //         // 'stripe_account' => 'acct_1MlcsCQhHfdpdP56'
-        //         //   'success_url' => 'http://example.com/success',
-        //         //   'cancel_url' => 'http://localhost:8000/',
-        //     ],
-        //     ['stripe_account' => 'acct_1Mllh7QUyNH9Tbzo']
-        // );
+        /////////////////////////////////////////////////////////
+
+        
+
+        // return response()->json([
+        //     'message' => 'success',
+        //     'data' => $customer
+        // ]);
         // $data = json_encode($customer);
         // dd($data);
         // return response()->json([
