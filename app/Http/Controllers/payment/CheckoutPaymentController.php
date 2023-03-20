@@ -252,7 +252,7 @@ class CheckoutPaymentController extends Controller
      */
     public function payment_details($lead_id)
     {
-        $payment_details = PaymentHistory::where('lead_id', $lead_id)->where('payment_status', 'COMPLETED')->get();
+        $payment_details = PaymentHistory::where('lead_id', $lead_id)->where('payment_status', 'succeeded')->get();
         // $invoice = Invoices::where('lead_id', $lead_id)->
         if (!$payment_details->isEmpty()) {
             // dd($payment_details);
@@ -430,14 +430,14 @@ class CheckoutPaymentController extends Controller
             //     )
             // ));
             // $response = $response->id;
-            // $token = $stripe->tokens->create([
-            //     'card' => [
-            //         'number' => '4242424242424242',
-            //         'exp_month' => 3,
-            //         'exp_year' => 2024,
-            //         'cvc' => '314',
-            //     ],
-            // ]);
+            $token = $stripe->tokens->create([
+                'card' => [
+                    'number' => '4242424242424242',
+                    'exp_month' => 3,
+                    'exp_year' => 2024,
+                    'cvc' => '314',
+                ],
+            ]);
             // dd($token);
             // $stripe->customers->create([
             //     'name'=>$request->full_name,
@@ -454,7 +454,7 @@ class CheckoutPaymentController extends Controller
                     // 'stripe_account' => 'acct_1MlcsCQhHfdpdP56',
                     //   'line_items' => [['price' => '{{PRICE_ID}}', 'quantity' => 1]],
                     // 'payment_intent_data' => ['application_fee_amount' => 123],
-                    "source" => $request->token,
+                    "source" => $token,
                     // "source" => $response,
                     "description" => "This is test payment",
                     // 'stripe_account' => 'acct_1MlcsCQhHfdpdP56'
@@ -474,10 +474,11 @@ class CheckoutPaymentController extends Controller
             // }
             // store all payement information on payment history table
             // dd($client_response);
-            dd($payment_response->status);
+            // dd($payment_response->status);
             $history = PaymentHistory::updateOrcreate([
-                'payment_method' => $payment_response->payment_method,
+                'payment_method' => $payment_response->payment_method_details->card->brand,
                 'payment_amount' => $request->amount,
+                'campaign_id'=>$request->campaign_id,
                 'user_id' => $userId, //it will come from api
                 'company_id' => $companyId,
                 'payment_status' => $payment_response->status,
@@ -573,7 +574,7 @@ class CheckoutPaymentController extends Controller
                     'invoice_id' => $nextInvoiceNumber,
                     'transaction_id' => $payment_response->balance_transaction,
                     'lead_id' => isset($request->lead_id) ? $request->lead_id : 0,
-                    'company_id' => isset($request->company_id) ? $request->company_id : 0,
+                    'company_id' => isset($companyId) ? $companyId : 0,
                     'user_id' => isset($request->user_id) ? $request->user_id : 0,
                     'company_name' => isset($companyData->name) ? $companyData->name : '',
                     'company_logo' => isset($companyData->logo) ? $companyData->logo : '',
@@ -582,7 +583,7 @@ class CheckoutPaymentController extends Controller
                     'package_id' => isset($request->package_id) ? $request->package_id : 0,
                     'package_name' => isset($request->package_name) ? $request->package_name : '',
                     'payment_amount' => ($payment_response->amount > 0) ? ($payment_response->amount) : 0,
-                    'payment_method' => isset($payment_response->payment_method) ? $payment_response->payment_method : '',
+                    'payment_method' => isset($payment_response->payment_method_details->brand) ? $payment_response->payment_method_details->brand : '',
                     'payer_name' =>  isset($request->full_name) ? $request->full_name : '',
                     'payer_email' => isset($request->user_email) ? $request->user_email : '',
                     'company_email' => isset($companyData->business_email) ? $companyData->business_email : '',
