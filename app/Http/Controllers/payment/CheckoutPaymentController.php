@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Http;
 use Throwable;
 use Session;
 use Stripe;
+use DB;
 
 
 use function PHPUnit\Framework\throwException;
@@ -448,7 +449,7 @@ class CheckoutPaymentController extends Controller
                 [
                     // 'type' => 'card',
                     // 'mode' => 'payment',
-                    "amount" => $request->amount *100,
+                    "amount" => $request->amount * 100,
                     "currency" => "AUD",
                     // "customer" => "acct_1MlcsCQhHfdpdP56",
                     // 'stripe_account' => 'acct_1MlcsCQhHfdpdP56',
@@ -478,7 +479,7 @@ class CheckoutPaymentController extends Controller
             $history = PaymentHistory::updateOrcreate([
                 'payment_method' => $payment_response->payment_method_details->card->brand,
                 'payment_amount' => $request->amount,
-                'campaign_id'=>$request->campaign_id,
+                'campaign_id' => $request->campaign_id,
                 'user_id' => $userId, //it will come from api
                 'company_id' => $companyId,
                 'payment_status' => $payment_response->status,
@@ -532,93 +533,93 @@ class CheckoutPaymentController extends Controller
             $leadDetails = "";
             $userDetails = "";
             // if (isset($client_response->TransactionStatus) && $client_response->TransactionStatus != "") {
-                //Make Invoice //
+            //Make Invoice //
 
-                // $record = Invoices::latest()->first();
+            // $record = Invoices::latest()->first();
 
-                $nextInvoiceNumber = date('d/m/Y') . '-' . $userId . '000001';
-                // if ($record != "") {
+            $nextInvoiceNumber = date('d/m/Y') . '-' . $userId . '000001';
+            // if ($record != "") {
 
-                //     $expNum = explode('-', $record->invoice_id);
+            //     $expNum = explode('-', $record->invoice_id);
 
-                //     $nextInvoiceNumber = $expNum[0] . '-' . ($expNum[1] + 1);
-                // }
+            //     $nextInvoiceNumber = $expNum[0] . '-' . ($expNum[1] + 1);
+            // }
 
-                //                if($leadId>0){
-                //                    $leadServiceAPI = env('LEAD_SERVICE_API', '');
-                //                    //dd($userServiceAPI);
-                //                    $response = Http::post($leadServiceAPI.'/lead/details', [
-                //                        'lead_id' => $leadId
-                //                    ]);
-                //                    $leadDetails = json_decode($response->body());
-                //                    //dd(json_decode($response->body()));
-                //                }
+            //                if($leadId>0){
+            //                    $leadServiceAPI = env('LEAD_SERVICE_API', '');
+            //                    //dd($userServiceAPI);
+            //                    $response = Http::post($leadServiceAPI.'/lead/details', [
+            //                        'lead_id' => $leadId
+            //                    ]);
+            //                    $leadDetails = json_decode($response->body());
+            //                    //dd(json_decode($response->body()));
+            //                }
 
 
 
-                //                if($userId>0){
-                //
-                //                    $userServiceAPI = env('USER_SERVICE_API', '');
-                //                    //dd($userServiceAPI);
-                //                    $response = Http::post($userServiceAPI.'/user/list', [
-                //                        'users' => json_encode(array($userId))
-                //                    ]);
-                //
-                //                    $userDetails = json_decode($response->body());
-                //                    //dd($userDetails);
-                //
-                //                }
-                //dd($userDetails->data[0]->email);
-                //dd($nextInvoiceNumber);
-                $invoiceData = Invoices::updateOrcreate([
-                    'invoice_id' => $nextInvoiceNumber,
-                    'transaction_id' => $payment_response->balance_transaction,
-                    'lead_id' => isset($request->lead_id) ? $request->lead_id : 0,
-                    'company_id' => isset($companyId) ? $companyId : 0,
-                    'user_id' => isset($request->user_id) ? $request->user_id : 0,
-                    'company_name' => isset($companyData->name) ? $companyData->name : '',
-                    'company_logo' => isset($companyData->logo) ? $companyData->logo : '',
-                    'course_code' => isset($request->course_code) ? $request->course_code : '',
-                    'course_title' => isset($request->course_title) ? $request->course_title : '',
-                    'package_id' => isset($request->package_id) ? $request->package_id : 0,
-                    'package_name' => isset($request->package_name) ? $request->package_name : '',
-                    'payment_amount' => ($payment_response->amount > 0) ? ($payment_response->amount) : 0,
-                    'payment_method' => isset($payment_response->payment_method_details->brand) ? $payment_response->payment_method_details->brand : '',
-                    'payer_name' =>  isset($request->full_name) ? $request->full_name : '',
-                    'payer_email' => isset($request->user_email) ? $request->user_email : '',
-                    'company_email' => isset($companyData->business_email) ? $companyData->business_email : '',
-                    'company_contact' => isset($companyData->contact) ? $companyData->contact : '',
-                    'company_website' => isset($companyData->website) ? $companyData->website : '',
-                    'role_id' => isset($request->role_id) ? $request->role_id : '',
-                ]);
+            //                if($userId>0){
+            //
+            //                    $userServiceAPI = env('USER_SERVICE_API', '');
+            //                    //dd($userServiceAPI);
+            //                    $response = Http::post($userServiceAPI.'/user/list', [
+            //                        'users' => json_encode(array($userId))
+            //                    ]);
+            //
+            //                    $userDetails = json_decode($response->body());
+            //                    //dd($userDetails);
+            //
+            //                }
+            //dd($userDetails->data[0]->email);
+            //dd($nextInvoiceNumber);
+            $invoiceData = Invoices::updateOrcreate([
+                'invoice_id' => $nextInvoiceNumber,
+                'transaction_id' => $payment_response->balance_transaction,
+                'lead_id' => isset($request->lead_id) ? $request->lead_id : 0,
+                'company_id' => isset($companyId) ? $companyId : 0,
+                'user_id' => isset($request->user_id) ? $request->user_id : 0,
+                'company_name' => isset($companyData->name) ? $companyData->name : '',
+                'company_logo' => isset($companyData->logo) ? $companyData->logo : '',
+                'course_code' => isset($request->course_code) ? $request->course_code : '',
+                'course_title' => isset($request->course_title) ? $request->course_title : '',
+                'package_id' => isset($request->package_id) ? $request->package_id : 0,
+                'package_name' => isset($request->package_name) ? $request->package_name : '',
+                'payment_amount' => ($payment_response->amount > 0) ? ($payment_response->amount) : 0,
+                'payment_method' => isset($payment_response->payment_method_details->brand) ? $payment_response->payment_method_details->brand : '',
+                'payer_name' =>  isset($request->full_name) ? $request->full_name : '',
+                'payer_email' => isset($request->user_email) ? $request->user_email : '',
+                'company_email' => isset($companyData->business_email) ? $companyData->business_email : '',
+                'company_contact' => isset($companyData->contact) ? $companyData->contact : '',
+                'company_website' => isset($companyData->website) ? $companyData->website : '',
+                'role_id' => isset($request->role_id) ? $request->role_id : '',
+            ]);
 
-                $history->invoice_number = $nextInvoiceNumber;
-                $history->save();
+            $history->invoice_number = $nextInvoiceNumber;
+            $history->save();
 
-                ///EOF Invoice ////
-                //send response
-                $emailServiceAPI = env('EMAIL_SERVICE_API', '');
-                $invoiceData->invoice_date = Carbon::parse($invoiceData->created_at)->toDateTimeString();
-                // dd($invoiceData);
-                $response = Http::post('https://crm-mailer.onrender.com/api/send-payment-mail', [
-                    'data' => json_encode($invoiceData)
-                ]);
-                $emailStatus = false;
-                if ($response->status() == '200') {
-                    $emailStatus = true;
-                }
-                // dd($companyData);
+            ///EOF Invoice ////
+            //send response
+            $emailServiceAPI = env('EMAIL_SERVICE_API', '');
+            $invoiceData->invoice_date = Carbon::parse($invoiceData->created_at)->toDateTimeString();
+            // dd($invoiceData);
+            $response = Http::post('https://crm-mailer.onrender.com/api/send-payment-mail', [
+                'data' => json_encode($invoiceData)
+            ]);
+            $emailStatus = false;
+            if ($response->status() == '200') {
+                $emailStatus = true;
+            }
+            // dd($companyData);
 
-                // Course Details from lead details
+            // Course Details from lead details
 
-                return response()->json([
-                    'message' => true,
-                    'status'=>200,
-                    'key' => 'success',
-                    'transaction_id' => $payment_response->balance_transaction,
-                    'message' => 'Payment Completed Successfully ',
-                    'Email Status' => $emailStatus
-                ], 200);
+            return response()->json([
+                'message' => true,
+                'status' => 200,
+                'key' => 'success',
+                'transaction_id' => $payment_response->balance_transaction,
+                'message' => 'Payment Completed Successfully ',
+                'Email Status' => $emailStatus
+            ], 200);
             // } else {
 
             //     return response()->json([
@@ -634,6 +635,46 @@ class CheckoutPaymentController extends Controller
         }
     }
 
+    public function campaign_wise_payment(Request $request)
+    {
+        $payments = PaymentHistory::select(
+            DB::raw('sum(payment_amount) as sums'),
+            DB::raw('campaign_id as campaigns'),
+        )
+            ->groupBy('campaigns')->where('company_id', $request->company_id)->get();
+    }
+
+    public function monthlyPayment(Request $request)
+    {
+        $payments = PaymentHistory::select(
+            DB::raw('sum(payment_amount) as revenue'),
+            DB::raw("DATE_FORMAT(created_at,'%M %Y') as months")
+        )
+            ->groupBy('months',)
+            ->where('company_id', $request->company_id)
+            ->get();
+
+        // $payments = PaymentHistory::select(
+        //     DB::raw('sum(payment_amount) as sums'),
+        //     DB::raw("DATE_FORMAT(created_at,'%M') as months")
+        // )
+        //     ->whereYear('created_at', date('Y'))
+        //     ->where('company_id', $request->company_id)
+        //     ->groupBy('months')
+        //     ->get();
+        if ($payments) {
+            return response()->json([
+                'message' => 'success',
+                'status' => 200,
+                'data' => $payments
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'failed',
+                'status' => 500,
+            ], 500);
+        }
+    }
 
     // store paypal info in payment history table and send response
     public function paypalPayemntResponse(Request $request)
