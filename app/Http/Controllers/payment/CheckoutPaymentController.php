@@ -346,7 +346,7 @@ class CheckoutPaymentController extends Controller
             [
                 // 'type' => 'card',
                 // 'mode' => 'payment',
-                "amount" => 100 * 100,
+                "amount" => $request->amount * 100,
                 "currency" => "AUD",
                 // 'stripe_account' => 'acct_1MlcsCQhHfdpdP56',
                 //   'line_items' => [['price' => '{{PRICE_ID}}', 'quantity' => 1]],
@@ -383,18 +383,19 @@ class CheckoutPaymentController extends Controller
         // dd("dfgdg");
         $userId = isset($request->user_id) ? $request->user_id : 0; //it will come from api
         $leadId = isset($request->lead_id) ? $request->lead_id : 0; //it will come from api
-        $companyId = isset($request->company_id) ? $request->company_id : 0; //it will come from api
+        $companyId = isset($request->client_id) ? $request->client_id : 0; //it will come from api
         $paymentMethod = $request->payment_method; //it will come from api
+        // dd($paymentMethod);
         // $accessCode = $request->accessCode;
         try {
             // eWAY Credentials
-            $eWayCredentials = PaymentSettings::where('company_id', $companyId)->where('payment_method', $paymentMethod)->first();
-            if ($eWayCredentials == "") {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Company not found',
-                ], 401);
-            }
+            // $eWayCredentials = PaymentSettings::where('company_id', $companyId)->where('payment_method', $paymentMethod)->first();
+            // if ($eWayCredentials == "") {
+            //     return response()->json([
+            //         'status' => false,
+            //         'message' => 'Company not found',
+            //     ], 401);
+            // }
             // $api_key = $eWayCredentials->api_key;
             // $api_password = $eWayCredentials->api_password;
 
@@ -409,18 +410,26 @@ class CheckoutPaymentController extends Controller
             // $key = env('STRIPE_SECRET');
             // dd($key);
             // $stripe = Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+            // dd($companyId);
+            $connect_id = Http::get('https://crmcompany.quadque.digital/api/company/' . $companyId . '/details');
+            $connect = json_decode($connect_id->body())->data[0]->connect;
+            // dd($response);
             Stripe\Stripe::setApiKey('sk_test_51JCKihHrHTHAD5zZ7ELiP2pz6vTEL8vE120Ed8X0vPSvfzOBoARKkVAFm0VFg958FkXGSRJatofINWoHCXdzEOzW00NLLlB5ps');
+
+            $stripe = new \Stripe\StripeClient(
+                'sk_test_51JCKihHrHTHAD5zZ7ELiP2pz6vTEL8vE120Ed8X0vPSvfzOBoARKkVAFm0VFg958FkXGSRJatofINWoHCXdzEOzW00NLLlB5ps'
+            );
             // dd($stripe);
-            $response = \Stripe\Token::create(array(
-                "card" => array(
-                    "number"    => 4242424242424242,
-                    "exp_month" => 3,
-                    "exp_year"  => 2024,
-                    "cvc"       => 321,
-                    "name"      => "David"
-                )
-            ));
-            $response = $response->id;
+            // $response = \Stripe\Token::create(array(
+            //     "card" => array(
+            //         "number"    => 4242424242424242,
+            //         "exp_month" => 3,
+            //         "exp_year"  => 2024,
+            //         "cvc"       => 321,
+            //         "name"      => "David"
+            //     )
+            // ));
+            // $response = $response->id;
             // $token = $stripe->tokens->create([
             //     'card' => [
             //         'number' => '4242424242424242',
@@ -430,66 +439,72 @@ class CheckoutPaymentController extends Controller
             //     ],
             // ]);
             // dd($token);
-            $data = Stripe\Charge::create(
+            // $stripe->customers->create([
+            //     'name'=>$request->full_name,
+            //     'email'=>$request->user_email,
+            //     'description' => 'customer',
+            // ], ['stripe_account' => 'acct_1MlcsCQhHfdpdP56']);
+            $payment_response = Stripe\Charge::create(
                 [
                     // 'type' => 'card',
                     // 'mode' => 'payment',
-                    "amount" => 100 * 100,
+                    "amount" => $request->amount *100,
                     "currency" => "AUD",
                     // "customer" => "acct_1MlcsCQhHfdpdP56",
                     // 'stripe_account' => 'acct_1MlcsCQhHfdpdP56',
                     //   'line_items' => [['price' => '{{PRICE_ID}}', 'quantity' => 1]],
                     // 'payment_intent_data' => ['application_fee_amount' => 123],
-                    // "source" => $request->stripeToken,
-                    "source" => $response,
+                    "source" => $request->token,
+                    // "source" => $response,
                     "description" => "This is test payment",
                     // 'stripe_account' => 'acct_1MlcsCQhHfdpdP56'
                     //   'success_url' => 'http://example.com/success',
                     //   'cancel_url' => 'http://localhost:8000/',
                 ],
-                ['stripe_account' => 'acct_1MlcsCQhHfdpdP56']
+                ['stripe_account' => $connect]
             );
             // dd("hrllo");
             // dd($data);
-            $response = json_encode($data);
-            dd($response);
-            $client_response = $response->Transactions[0];
-            $paymentStatus = "FAILED";
-            if ($client_response->TransactionStatus == 1) {
-                $paymentStatus = "COMPLETED";
-            }
+            // $response = json_encode($data);
+            // dd($response);
+            // $client_response = $response->Transactions[0];
+            // $paymentStatus = "FAILED";
+            // if ($client_response->TransactionStatus == 1) {
+            //     $paymentStatus = "COMPLETED";
+            // }
             // store all payement information on payment history table
             // dd($client_response);
+            dd($payment_response->status);
             $history = PaymentHistory::updateOrcreate([
-                'payment_method' => $paymentMethod,
-                'payment_amount' => ($client_response->TotalAmount > 0) ? ($client_response->TotalAmount / 100) : 0,
+                'payment_method' => $payment_response->payment_method,
+                'payment_amount' => $request->amount,
                 'user_id' => $userId, //it will come from api
                 'company_id' => $companyId,
-                'payment_status' => $paymentStatus,
-                'payment_log' => json_encode($client_response),
+                'payment_status' => $payment_response->status,
+                'payment_log' => json_encode($payment_response),
                 'lead_id' => "$leadId", ////it will come from api
-                'Authorisation_code' => $client_response->AuthorisationCode,
-                'response_code' => $client_response->ResponseCode,
-                'response_msg' => $client_response->ResponseMessage,
-                'invoice_number' => $client_response->InvoiceNumber,
-                'invoice_ref' => $client_response->InvoiceReference,
-                'transaction_id' => $client_response->TransactionID,
-                'first_name' => $client_response->Customer->FirstName,
-                'last_name' => $client_response->Customer->LastName,
-                'company_name' => $client_response->Customer->CompanyName,
-                'job_description' => $client_response->Customer->JobDescription,
-                'street1' => $client_response->Customer->Street1,
-                'street2' => $client_response->Customer->Street2,
-                'city' => $client_response->Customer->City,
-                'state' => $client_response->Customer->State,
-                'postal_code' => $client_response->Customer->PostalCode,
-                'country' => $client_response->Customer->Country,
-                'email' => $client_response->Customer->Email,
-                'phone' => $client_response->Customer->Phone,
-                'mobile' => $client_response->Customer->Mobile,
-                'comments' => $client_response->Customer->Comments,
-                'fax' => $client_response->Customer->Fax,
-                'url' => $client_response->Customer->Url,
+                // 'Authorisation_code' => $client_response->AuthorisationCode,
+                // 'response_code' => $client_response->ResponseCode,
+                // 'response_msg' => $client_response->ResponseMessage,
+                // 'invoice_number' => $response->InvoiceNumber,
+                // 'invoice_ref' => $client_response->InvoiceReference,
+                'transaction_id' => $payment_response->balance_transaction,
+                // 'first_name' => $client_response->Customer->FirstName,
+                // 'last_name' => $client_response->Customer->LastName,
+                // 'company_name' => $client_response->Customer->CompanyName,
+                // 'job_description' => $client_response->Customer->JobDescription,
+                // 'street1' => $client_response->Customer->Street1,
+                // 'street2' => $client_response->Customer->Street2,
+                // 'city' => $client_response->Customer->City,
+                // 'state' => $client_response->Customer->State,
+                // 'postal_code' => $client_response->Customer->PostalCode,
+                // 'country' => $client_response->Customer->Country,
+                // 'email' => $client_response->Customer->Email,
+                // 'phone' => $client_response->Customer->Phone,
+                // 'mobile' => $client_response->Customer->Mobile,
+                // 'comments' => $client_response->Customer->Comments,
+                // 'fax' => $client_response->Customer->Fax,
+                // 'url' => $client_response->Customer->Url,
             ]);
 
             // dd($history);
@@ -515,18 +530,18 @@ class CheckoutPaymentController extends Controller
             $companyData->logo = $companyLogo;
             $leadDetails = "";
             $userDetails = "";
-            if (isset($client_response->TransactionStatus) && $client_response->TransactionStatus != "") {
+            // if (isset($client_response->TransactionStatus) && $client_response->TransactionStatus != "") {
                 //Make Invoice //
 
-                $record = Invoices::latest()->first();
+                // $record = Invoices::latest()->first();
 
                 $nextInvoiceNumber = date('d/m/Y') . '-' . $userId . '000001';
-                if ($record != "") {
+                // if ($record != "") {
 
-                    $expNum = explode('-', $record->invoice_id);
+                //     $expNum = explode('-', $record->invoice_id);
 
-                    $nextInvoiceNumber = $expNum[0] . '-' . ($expNum[1] + 1);
-                }
+                //     $nextInvoiceNumber = $expNum[0] . '-' . ($expNum[1] + 1);
+                // }
 
                 //                if($leadId>0){
                 //                    $leadServiceAPI = env('LEAD_SERVICE_API', '');
@@ -556,7 +571,7 @@ class CheckoutPaymentController extends Controller
                 //dd($nextInvoiceNumber);
                 $invoiceData = Invoices::updateOrcreate([
                     'invoice_id' => $nextInvoiceNumber,
-                    'transaction_id' => $client_response->TransactionID,
+                    'transaction_id' => $payment_response->balance_transaction,
                     'lead_id' => isset($request->lead_id) ? $request->lead_id : 0,
                     'company_id' => isset($request->company_id) ? $request->company_id : 0,
                     'user_id' => isset($request->user_id) ? $request->user_id : 0,
@@ -566,8 +581,8 @@ class CheckoutPaymentController extends Controller
                     'course_title' => isset($request->course_title) ? $request->course_title : '',
                     'package_id' => isset($request->package_id) ? $request->package_id : 0,
                     'package_name' => isset($request->package_name) ? $request->package_name : '',
-                    'payment_amount' => ($client_response->TotalAmount > 0) ? ($client_response->TotalAmount / 100) : 0,
-                    'payment_method' => isset($request->payment_method) ? $request->payment_method : '',
+                    'payment_amount' => ($payment_response->amount > 0) ? ($payment_response->amount) : 0,
+                    'payment_method' => isset($payment_response->payment_method) ? $payment_response->payment_method : '',
                     'payer_name' =>  isset($request->full_name) ? $request->full_name : '',
                     'payer_email' => isset($request->user_email) ? $request->user_email : '',
                     'company_email' => isset($companyData->business_email) ? $companyData->business_email : '',
@@ -596,19 +611,20 @@ class CheckoutPaymentController extends Controller
                 // Course Details from lead details
 
                 return response()->json([
-                    'status' => true,
+                    'message' => true,
+                    'status'=>200,
                     'key' => 'success',
-                    'transaction_id' => $client_response->TransactionID,
+                    'transaction_id' => $payment_response->balance_transaction,
                     'message' => 'Payment Completed Successfully ',
                     'Email Status' => $emailStatus
-                ], 201);
-            } else {
+                ], 200);
+            // } else {
 
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Invalid response'
-                ], 500);
-            }
+            //     return response()->json([
+            //         'status' => false,
+            //         'message' => 'Invalid response'
+            //     ], 500);
+            // }
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
