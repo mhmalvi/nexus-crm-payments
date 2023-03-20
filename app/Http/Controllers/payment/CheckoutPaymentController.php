@@ -651,6 +651,7 @@ class CheckoutPaymentController extends Controller
             DB::raw("DATE_FORMAT(created_at,'%M %Y') as months")
         )
             ->groupBy('months',)
+            ->whereYear('created_at', date('Y'))
             ->where('company_id', $request->company_id)
             ->get();
 
