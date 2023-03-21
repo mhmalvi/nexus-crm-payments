@@ -642,6 +642,18 @@ class CheckoutPaymentController extends Controller
             DB::raw('campaign_id as campaigns'),
         )
             ->groupBy('campaigns')->where('company_id', $request->company_id)->get();
+        if ($payments) {
+            return response()->json([
+                'message' => 'success',
+                'status' => 200,
+                'data' => $payments
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'failed',
+                'status' => 500,
+            ], 500);
+        }
     }
 
     public function monthlyPayment(Request $request)
