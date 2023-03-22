@@ -635,6 +635,26 @@ class CheckoutPaymentController extends Controller
         }
     }
 
+    public function weekly_payment(Request $request)
+    {
+        $date = Carbon::now()->subDays(7);
+
+        $payments = PaymentHistory::select(DB::raw('sum(payment_amount) as sum'), DB::raw("DATE_FORMAT(created_at,'%D') as dates"))->groupBy('dates')->whereYear('created_at', date('Y'))->where('created_at', '>=', $date)->where('company_id', $request->company_id)->get();
+
+        if ($payments) {
+            return response()->json([
+                'message' => 'success',
+                'status' => 200,
+                'data' => $payments
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'failed',
+                'status' => 500,
+            ], 500);
+        }
+    }
+
     public function campaign_wise_payment(Request $request)
     {
         $payments = PaymentHistory::select(
