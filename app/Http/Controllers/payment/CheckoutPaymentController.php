@@ -381,7 +381,8 @@ class CheckoutPaymentController extends Controller
 
     public function ewayPayemntResponse(Request $request)
     {
-        // dd("dfgdg");
+
+        // dd($request->all());
         $userId = isset($request->user_id) ? $request->user_id : 0; //it will come from api
         $leadId = isset($request->lead_id) ? $request->lead_id : 0; //it will come from api
         $companyId = isset($request->client_id) ? $request->client_id : 0; //it will come from api
@@ -415,10 +416,10 @@ class CheckoutPaymentController extends Controller
             $connect_id = Http::get('https://crmcompany.quadque.digital/api/company/' . $companyId . '/details');
             $connect = json_decode($connect_id->body())->data[0]->connect;
             // dd($response);
-            Stripe\Stripe::setApiKey('sk_test_51JCKihHrHTHAD5zZ7ELiP2pz6vTEL8vE120Ed8X0vPSvfzOBoARKkVAFm0VFg958FkXGSRJatofINWoHCXdzEOzW00NLLlB5ps');
+            Stripe\Stripe::setApiKey('sk_test_51MncAiHYVGevDAUyrCwFvesW14K8ofYjOpPZEuDw6u47OGj9VtQmfZ1vmcCZX1odsHxezq0RQ3K6ixmLfGkB7Px300vKXJiFg8');
 
             $stripe = new \Stripe\StripeClient(
-                'sk_test_51JCKihHrHTHAD5zZ7ELiP2pz6vTEL8vE120Ed8X0vPSvfzOBoARKkVAFm0VFg958FkXGSRJatofINWoHCXdzEOzW00NLLlB5ps'
+                'sk_test_51MncAiHYVGevDAUyrCwFvesW14K8ofYjOpPZEuDw6u47OGj9VtQmfZ1vmcCZX1odsHxezq0RQ3K6ixmLfGkB7Px300vKXJiFg8'
             );
             // dd($stripe);
             // $response = \Stripe\Token::create(array(
@@ -475,13 +476,13 @@ class CheckoutPaymentController extends Controller
             // }
             // store all payement information on payment history table
             // dd($client_response);
-            // dd($payment_response->status);
             $history = PaymentHistory::updateOrcreate([
+                // 'payment_method' => $payment_response->payment_method,
                 'payment_method' => $payment_response->payment_method_details->card->brand,
                 'payment_amount' => $request->amount,
-                'campaign_id' => $request->campaign_id,
                 'user_id' => $userId, //it will come from api
                 'company_id' => $companyId,
+                // 'campaign_id' => $request->campaign_id,
                 'payment_status' => $payment_response->status,
                 'payment_log' => json_encode($payment_response),
                 'lead_id' => "$leadId", ////it will come from api
@@ -537,7 +538,7 @@ class CheckoutPaymentController extends Controller
 
             // $record = Invoices::latest()->first();
 
-            $nextInvoiceNumber = date('d/m/Y') . '-' . $userId . '000001';
+            $nextInvoiceNumber = date('dmY') . '-' . $userId . '000001';
             // if ($record != "") {
 
             //     $expNum = explode('-', $record->invoice_id);
@@ -571,20 +572,27 @@ class CheckoutPaymentController extends Controller
             //                }
             //dd($userDetails->data[0]->email);
             //dd($nextInvoiceNumber);
+
+
+            // dd($companyId);
+
             $invoiceData = Invoices::updateOrcreate([
                 'invoice_id' => $nextInvoiceNumber,
                 'transaction_id' => $payment_response->balance_transaction,
                 'lead_id' => isset($request->lead_id) ? $request->lead_id : 0,
-                'company_id' => isset($companyId) ? $companyId : 0,
+                // 'company_id' => isset($companyId) ? $companyId : 0,
+                'company_id' => $companyId,
                 'user_id' => isset($request->user_id) ? $request->user_id : 0,
                 'company_name' => isset($companyData->name) ? $companyData->name : '',
                 'company_logo' => isset($companyData->logo) ? $companyData->logo : '',
-                'course_code' => isset($request->course_code) ? $request->course_code : '',
-                'course_title' => isset($request->course_title) ? $request->course_title : '',
+                // 'course_code' => isset($request->course_code) ? $request->course_code : '',
+                'course_code' => $request->course_code,
+                // 'course_title' => isset($request->course_title) ? $request->course_title : '',
+                'course_title' => $request->course_title,
                 'package_id' => isset($request->package_id) ? $request->package_id : 0,
                 'package_name' => isset($request->package_name) ? $request->package_name : '',
-                'payment_amount' => ($payment_response->amount > 0) ? ($payment_response->amount) : 0,
-                'payment_method' => isset($payment_response->payment_method_details->brand) ? $payment_response->payment_method_details->brand : '',
+                'payment_amount' => $request->amount,
+                'payment_method' => isset($payment_response->payment_method_details->card->brand) ? $payment_response->payment_method_details->card->brand : '',
                 'payer_name' =>  isset($request->full_name) ? $request->full_name : '',
                 'payer_email' => isset($request->user_email) ? $request->user_email : '',
                 'company_email' => isset($companyData->business_email) ? $companyData->business_email : '',
@@ -612,14 +620,10 @@ class CheckoutPaymentController extends Controller
 
             // Course Details from lead details
 
-            return response()->json([
-                'message' => true,
-                'status' => 200,
-                'key' => 'success',
-                'transaction_id' => $payment_response->balance_transaction,
-                'message' => 'Payment Completed Successfully ',
-                'Email Status' => $emailStatus
-            ], 200);
+            
+
+
+            
             // } else {
 
             //     return response()->json([
@@ -627,9 +631,17 @@ class CheckoutPaymentController extends Controller
             //         'message' => 'Invalid response'
             //     ], 500);
             // }
+
+            return response()->json([
+                'status' => 201,
+                'key' => 'success',
+                'transaction_id' => $payment_response->balance_transaction,
+                'message' => 'Payment Completed Successfully ',
+                'Email Status' => $emailStatus
+            ], 201);
         } catch (\Throwable $th) {
             return response()->json([
-                'status' => false,
+                'status' => 500,
                 'message' => $th->getMessage()
             ], 500);
         }
