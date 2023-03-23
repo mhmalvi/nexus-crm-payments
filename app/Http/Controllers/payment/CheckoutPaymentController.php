@@ -575,7 +575,7 @@ class CheckoutPaymentController extends Controller
 
 
             // dd($companyId);
-
+// dd($request->user_email);
             $invoiceData = Invoices::updateOrcreate([
                 'invoice_id' => $nextInvoiceNumber,
                 'transaction_id' => $payment_response->balance_transaction,
