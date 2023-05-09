@@ -56,6 +56,15 @@ class PaymentHistoryController extends Controller
                     'first_name' => isset($request->first_name) ? $request->first_name : '',
                     'last_name' => isset($request->last_name) ? $request->last_name : '',
                     'company_name' => isset($request->company_name) ? $request->company_name : '',
+                    'street1' => isset($request->street1) ? $request->street1 : '',
+                    'street2' => isset($request->street2) ? $request->street2 : '',
+                    'city' => isset($request->city) ? $request->city : '',
+                    'state' => isset($request->state) ? $request->state : '',
+                    'postal_code' => isset($request->postal_code) ? $request->postal_code : '',
+                    'country' => isset($request->country) ? $request->country : '',
+                    'email' => isset($request->email) ? $request->email : '',
+                    'phone' => isset($request->phone) ? $request->phone : '',
+                    'mobile' => isset($request->mobile) ? $request->mobile : '',
                 ]);
                 if ($save) {
                     return response()->json([
