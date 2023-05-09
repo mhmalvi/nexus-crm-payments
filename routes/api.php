@@ -29,6 +29,7 @@ Route::post('last-week-payment', [CheckoutPaymentController::class, 'weekly_paym
 
 Route::post('payment/setting/create', [\App\Http\Controllers\account\PaymentSettingController::class, 'createSetting']);
 Route::put('payment/setting/{id}/update', [\App\Http\Controllers\account\PaymentSettingController::class, 'updatePaymentSetting']);
+Route::post('store-payment-history', [\App\Http\Controllers\payment\PaymentHistoryController::class, 'store']);
 
 
 

@@ -11,7 +11,6 @@ use App\Models\StripeConnect;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-// use Omnipay\Omnipay;
 use Throwable;
 use Session;
 use Stripe;
@@ -575,7 +574,7 @@ class CheckoutPaymentController extends Controller
 
 
             // dd($companyId);
-// dd($request->user_email);
+            // dd($request->user_email);
             $invoiceData = Invoices::updateOrcreate([
                 'invoice_id' => $nextInvoiceNumber,
                 'transaction_id' => $payment_response->balance_transaction,
@@ -609,9 +608,11 @@ class CheckoutPaymentController extends Controller
             $emailServiceAPI = env('EMAIL_SERVICE_API', '');
             $invoiceData->invoice_date = Carbon::parse($invoiceData->created_at)->toDateTimeString();
             // dd($invoiceData);
-            $response = Http::post('https://crm-mailer.onrender.com/api/send-payment-mail', [
-                'data' => json_encode($invoiceData)
-            ]);
+            // $response = Http::post('https://crm-mailer.onrender.com/api/send-payment-mail', [
+            //     'data' => json_encode($invoiceData)
+            // ]);
+
+
             $emailStatus = false;
             if ($response->status() == '200') {
                 $emailStatus = true;
@@ -620,10 +621,10 @@ class CheckoutPaymentController extends Controller
 
             // Course Details from lead details
 
-            
 
 
-            
+
+
             // } else {
 
             //     return response()->json([
@@ -637,7 +638,8 @@ class CheckoutPaymentController extends Controller
                 'key' => 'success',
                 'transaction_id' => $payment_response->balance_transaction,
                 'message' => 'Payment Completed Successfully ',
-                'Email Status' => $emailStatus
+                'data' => $invoiceData
+                // 'Email Status' => $emailStatus
             ], 201);
         } catch (\Throwable $th) {
             return response()->json([
