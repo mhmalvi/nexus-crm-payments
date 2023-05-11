@@ -65,6 +65,8 @@ class PaymentHistoryController extends Controller
                     'email' => isset($request->email) ? $request->email : '',
                     'phone' => isset($request->phone) ? $request->phone : '',
                     'mobile' => isset($request->mobile) ? $request->mobile : '',
+                    'course_title' => isset($request->course_title) ? $request->course_title : '',
+                    'course_code' => isset($request->course_code) ? $request->course_code : '',
                 ]);
                 if ($save) {
                     return response()->json([
