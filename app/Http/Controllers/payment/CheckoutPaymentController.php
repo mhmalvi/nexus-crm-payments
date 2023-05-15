@@ -11,6 +11,7 @@ use App\Models\StripeConnect;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+// use Omnipay\Omnipay;
 use Throwable;
 use Session;
 use Stripe;
@@ -44,13 +45,15 @@ class CheckoutPaymentController extends Controller
                 'payment_status',
                 'company_id',
                 'user_id',
+                'course_title',
+                'course_code',
                 'created_at'
             );
             if (isset($request->user_id))
-                $paymentList = $paymentList->where('user_id', $request->user_id);
+                $paymentList = $paymentList->where('user_id', $request->user_id)->orderBy('id', 'DESC');
 
             if (isset($request->company_id))
-                $paymentList = $paymentList->where('company_id', $request->company_id);
+                $paymentList = $paymentList->where('company_id', $request->company_id)->orderBy('id', 'DESC');
 
             $paymentList = $paymentList->get();
             // dd($leadCheckList);
@@ -351,7 +354,7 @@ class CheckoutPaymentController extends Controller
                 // 'stripe_account' => 'acct_1MlcsCQhHfdpdP56',
                 //   'line_items' => [['price' => '{{PRICE_ID}}', 'quantity' => 1]],
                 // 'payment_intent_data' => ['application_fee_amount' => 123],
-                "source" => $request->stripeToken,
+                "source" => $request->token,
                 "description" => "This is test payment for us",
                 // 'stripe_account' => 'acct_1MlcsCQhHfdpdP56'
                 //   'success_url' => 'http://example.com/success',
@@ -378,10 +381,74 @@ class CheckoutPaymentController extends Controller
         // return back();
     }
 
+    public function campaign_wise_payment(Request $request)
+    {
+        $payments = PaymentHistory::select(
+            DB::raw('sum(payment_amount) as sums'),
+            DB::raw('campaign_id as campaigns'),
+        )
+            ->groupBy('campaigns')->where('company_id', $request->company_id)->get();
+
+        if ($payments) {
+            return response()->json([
+                'message' => 'success',
+                'status' => 200,
+                'data' => $payments
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'failed',
+                'status' => 500,
+            ], 500);
+        }
+    }
+
+    public function weekly_payment(Request $request)
+    {
+        $date = Carbon::now()->subDays(7);
+
+        $payments = PaymentHistory::select(DB::raw('sum(payment_amount) as Income'), DB::raw("DATE_FORMAT(created_at,'%D') as dates"))->groupBy('dates')->whereYear('created_at', date('Y'))->where('created_at', '>=', $date)->where('company_id', $request->company_id)->get();
+
+        if ($payments) {
+            return response()->json([
+                'message' => 'success',
+                'status' => 200,
+                'data' => $payments
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'failed',
+                'status' => 500,
+            ], 500);
+        }
+    }
+
+    public function monthlyPayment(Request $request)
+    {
+        $payments = PaymentHistory::select(
+            DB::raw('sum(payment_amount) as Income'),
+            DB::raw("DATE_FORMAT(created_at,'%M %Y') as month")
+        )
+            ->groupBy('month')
+            ->whereYear('created_at', date('Y'))
+            ->where('company_id', $request->company_id)
+            ->get();
+        if ($payments) {
+            return response()->json([
+                'message' => 'success',
+                'status' => 200,
+                'data' => $payments
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'failed',
+                'status' => 500,
+            ], 500);
+        }
+    }
+
     public function ewayPayemntResponse(Request $request)
     {
-
-        // dd($request->all());
         $userId = isset($request->user_id) ? $request->user_id : 0; //it will come from api
         $leadId = isset($request->lead_id) ? $request->lead_id : 0; //it will come from api
         $companyId = isset($request->client_id) ? $request->client_id : 0; //it will come from api
@@ -431,14 +498,14 @@ class CheckoutPaymentController extends Controller
             //     )
             // ));
             // $response = $response->id;
-            $token = $stripe->tokens->create([
-                'card' => [
-                    'number' => '4242424242424242',
-                    'exp_month' => 3,
-                    'exp_year' => 2024,
-                    'cvc' => '314',
-                ],
-            ]);
+            // $token = $stripe->tokens->create([
+            //     'card' => [
+            //         'number' => '4242424242424242',
+            //         'exp_month' => 3,
+            //         'exp_year' => 2024,
+            //         'cvc' => '314',
+            //     ],
+            // ]);
             // dd($token);
             // $stripe->customers->create([
             //     'name'=>$request->full_name,
@@ -455,7 +522,7 @@ class CheckoutPaymentController extends Controller
                     // 'stripe_account' => 'acct_1MlcsCQhHfdpdP56',
                     //   'line_items' => [['price' => '{{PRICE_ID}}', 'quantity' => 1]],
                     // 'payment_intent_data' => ['application_fee_amount' => 123],
-                    "source" => $token,
+                    "source" => $request->token,
                     // "source" => $response,
                     "description" => "This is test payment",
                     // 'stripe_account' => 'acct_1MlcsCQhHfdpdP56'
@@ -481,7 +548,7 @@ class CheckoutPaymentController extends Controller
                 'payment_amount' => $request->amount,
                 'user_id' => $userId, //it will come from api
                 'company_id' => $companyId,
-                // 'campaign_id' => $request->campaign_id,
+                'campaign_id' => $request->campaign_id,
                 'payment_status' => $payment_response->status,
                 'payment_log' => json_encode($payment_response),
                 'lead_id' => "$leadId", ////it will come from api
@@ -574,7 +641,7 @@ class CheckoutPaymentController extends Controller
 
 
             // dd($companyId);
-            // dd($request->user_email);
+
             $invoiceData = Invoices::updateOrcreate([
                 'invoice_id' => $nextInvoiceNumber,
                 'transaction_id' => $payment_response->balance_transaction,
@@ -605,14 +672,13 @@ class CheckoutPaymentController extends Controller
 
             ///EOF Invoice ////
             //send response
+
             $emailServiceAPI = env('EMAIL_SERVICE_API', '');
             $invoiceData->invoice_date = Carbon::parse($invoiceData->created_at)->toDateTimeString();
             // dd($invoiceData);
             // $response = Http::post('https://crm-mailer.onrender.com/api/send-payment-mail', [
             //     'data' => json_encode($invoiceData)
             // ]);
-
-
             $emailStatus = false;
             if ($response->status() == '200') {
                 $emailStatus = true;
@@ -622,9 +688,6 @@ class CheckoutPaymentController extends Controller
             // Course Details from lead details
 
 
-
-
-
             // } else {
 
             //     return response()->json([
@@ -632,7 +695,6 @@ class CheckoutPaymentController extends Controller
             //         'message' => 'Invalid response'
             //     ], 500);
             // }
-
             return response()->json([
                 'status' => 201,
                 'key' => 'success',
@@ -649,79 +711,6 @@ class CheckoutPaymentController extends Controller
         }
     }
 
-    public function weekly_payment(Request $request)
-    {
-        $date = Carbon::now()->subDays(7);
-
-        $payments = PaymentHistory::select(DB::raw('sum(payment_amount) as sum'), DB::raw("DATE_FORMAT(created_at,'%D') as dates"))->groupBy('dates')->whereYear('created_at', date('Y'))->where('created_at', '>=', $date)->where('company_id', $request->company_id)->get();
-
-        if ($payments) {
-            return response()->json([
-                'message' => 'success',
-                'status' => 200,
-                'data' => $payments
-            ], 200);
-        } else {
-            return response()->json([
-                'message' => 'failed',
-                'status' => 500,
-            ], 500);
-        }
-    }
-
-    public function campaign_wise_payment(Request $request)
-    {
-        $payments = PaymentHistory::select(
-            DB::raw('sum(payment_amount) as sums'),
-            DB::raw('campaign_id as campaigns'),
-        )
-            ->groupBy('campaigns')->where('company_id', $request->company_id)->get();
-        if ($payments) {
-            return response()->json([
-                'message' => 'success',
-                'status' => 200,
-                'data' => $payments
-            ], 200);
-        } else {
-            return response()->json([
-                'message' => 'failed',
-                'status' => 500,
-            ], 500);
-        }
-    }
-
-    public function monthlyPayment(Request $request)
-    {
-        $payments = PaymentHistory::select(
-            DB::raw('sum(payment_amount) as revenue'),
-            DB::raw("DATE_FORMAT(created_at,'%M %Y') as months")
-        )
-            ->groupBy('months',)
-            ->whereYear('created_at', date('Y'))
-            ->where('company_id', $request->company_id)
-            ->get();
-
-        // $payments = PaymentHistory::select(
-        //     DB::raw('sum(payment_amount) as sums'),
-        //     DB::raw("DATE_FORMAT(created_at,'%M') as months")
-        // )
-        //     ->whereYear('created_at', date('Y'))
-        //     ->where('company_id', $request->company_id)
-        //     ->groupBy('months')
-        //     ->get();
-        if ($payments) {
-            return response()->json([
-                'message' => 'success',
-                'status' => 200,
-                'data' => $payments
-            ], 200);
-        } else {
-            return response()->json([
-                'message' => 'failed',
-                'status' => 500,
-            ], 500);
-        }
-    }
 
     // store paypal info in payment history table and send response
     public function paypalPayemntResponse(Request $request)
