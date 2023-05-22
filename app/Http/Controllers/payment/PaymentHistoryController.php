@@ -136,6 +136,29 @@ class PaymentHistoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $history = PaymentHistory::find($id);
+            if ($history) {
+                $flag = $history->delete();
+                if ($flag) {
+                    return response()->json([
+                        'message' => 'deleted',
+                        'status' => 200
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'message' => 'failed',
+                        'status' => 500
+                    ], 500);
+                }
+            } else {
+                return response()->json([
+                    'message' => 'not found',
+                    'status' => 404
+                ], 404);
+            }
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
