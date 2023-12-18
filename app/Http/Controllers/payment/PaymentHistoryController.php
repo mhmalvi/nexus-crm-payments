@@ -36,6 +36,7 @@ class PaymentHistoryController extends Controller
      */
     public function store(Request $request)
     {
+        // dd("fgfgfdg");
         try {
             $nextInvoiceNumber = date('dmY') . '-' . '1' . rand(111111, 999999);
             $invoice_is_exist = PaymentHistory::where('invoice_number', $nextInvoiceNumber)->exists();
