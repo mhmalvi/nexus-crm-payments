@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\payment\CardDetailsController;
 use App\Http\Controllers\payment\CheckoutPaymentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,7 @@ Route::post('store-payment-history', [\App\Http\Controllers\payment\PaymentHisto
 Route::get('payment-history-delete/{id}', [\App\Http\Controllers\payment\PaymentHistoryController::class, 'destroy']);
 
 
+Route::post('card-details-save',[CardDetailsController::class,'insertCardDetails']);
 
 //
 //Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
