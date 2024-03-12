@@ -29,14 +29,14 @@ class CardDetailsController extends Controller
     public function insertCardDetails(CardDetailsInsertRequest $request, InsertCardDetailsInterface $insertCardDetails)
     {
         $card_data = [
-            $email = $request->data['email'],
-            $type = $request->data['type'],
-            $name = $request->data['name'],
-            $client_id = $request->data['client_id'],
-            $user_id = $request->data['user_id'],
-            $card_number = $request->data['card_number'],
-            $exp_date = $request->data['exp_date'],
-            $cvc = $request->data['cvc'],
+            $email = $request->email,
+            $type = $request->type,
+            $name = $request->name,
+            $client_id = $request->client_id,
+            $user_id = $request->user_id,
+            $card_number = $request->card_number,
+            $exp_date = $request->exp_date,
+            $cvc = $request->cvc,
         ];
         $response = $insertCardDetails->saveCardDetails($card_data);
         if ($response) {
