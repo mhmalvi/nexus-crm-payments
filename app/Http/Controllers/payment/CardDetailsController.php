@@ -5,19 +5,24 @@ namespace App\Http\Controllers\payment;
 use App\Models\CardDetails;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DestroyCardRequest;
 use App\Services\CardDetailsInsertService;
 use App\Http\Requests\GetCardDetailsRequest;
 use App\Http\Requests\CardDetailsInsertRequest;
 use App\Http\Requests\UpdateCardDetailsRequest;
+use App\Services\cardDetails\DestroyCardService;
 use App\Services\cardDetails\GetCardDetailsService;
 use App\Services\cardDetails\UpdateCardDetailsService;
 
 class CardDetailsController extends Controller
 {
     private $updateCardDetailsService;
-    public function __construct(UpdateCardDetailsService $updateCardDetailsService)
+    private $destroyCardService;
+    public function __construct(UpdateCardDetailsService $updateCardDetailsService, DestroyCardService
+    $destroyCardService)
     {
         $this->updateCardDetailsService = $updateCardDetailsService;
+        $this->destroyCardService = $destroyCardService;
     }
     public function insertCardDetails(CardDetailsInsertRequest $request)
     {
@@ -89,6 +94,22 @@ class CardDetailsController extends Controller
                 'message' => 'No data found',
                 'status' => 404,
             ], 404);
+        }
+    }
+
+    public function destroyCard(DestroyCardRequest $request)
+    {
+        $response = $this->destroyCardService->destroyCard($request->card_id);
+        if ($response) {
+            return response()->json([
+                'message' => 'Deleted',
+                'status' => 201
+            ], 201);
+        } else {
+            return response()->json([
+                'message' => 'Failed',
+                'status' => 500
+            ], 500);
         }
     }
 }
