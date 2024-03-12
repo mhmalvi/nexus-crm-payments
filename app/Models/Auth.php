@@ -9,4 +9,5 @@ class Auth extends Model
 {
     use HasFactory;
     protected $connection = 'token';
+    protected $table = 'token';
 }
