@@ -3,28 +3,23 @@
 namespace App\Services;
 
 use App\Interfaces\CardDetailsInterface;
+use App\Interfaces\InsertCardDetailsInterface;
 use App\Models\CardDetails;
 
-class CardDetailsInsertService
+class CardDetailsInsertService implements InsertCardDetailsInterface
 {
-    public $card_data;
-    public function __construct($card_data)
-    {
-        $this->card_data = $card_data;
-    }
 
-    public function saveCardDetails()
+    public function saveCardDetails($card_data)
     {
-        $response = CardDetails::create([
-            'email' => $this->card_data[0],
-            'type' => $this->card_data[1],
-            'name' => $this->card_data[2],
-            'client_id' => $this->card_data[3],
-            'user_id' => $this->card_data[4],
-            'card_number' => $this->card_data[5],
-            'exp_date' => $this->card_data[6],
-            'cvc' => $this->card_data[7],
+        return CardDetails::create([
+            'email' => $card_data[0],
+            'type' => $card_data[1],
+            'name' => $card_data[2],
+            'client_id' => $card_data[3],
+            'user_id' => $card_data[4],
+            'card_number' => $card_data[5],
+            'exp_date' => $card_data[6],
+            'cvc' => $card_data[7],
         ]);
-        return $response;
     }
 }

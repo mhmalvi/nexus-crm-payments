@@ -11,6 +11,7 @@ use App\Http\Requests\GetCardDetailsRequest;
 use App\Http\Requests\CardDetailsInsertRequest;
 use App\Http\Requests\UpdateCardDetailsRequest;
 use App\Interfaces\CardDetailsInterface;
+use App\Interfaces\InsertCardDetailsInterface;
 use App\Services\cardDetails\DestroyCardService;
 use App\Services\cardDetails\GetCardDetailsService;
 use App\Services\cardDetails\UpdateCardDetailsService;
@@ -25,7 +26,7 @@ class CardDetailsController extends Controller
         $this->updateCardDetailsService = $updateCardDetailsService;
         $this->destroyCardService = $destroyCardService;
     }
-    public function insertCardDetails(CardDetailsInsertRequest $request)
+    public function insertCardDetails(CardDetailsInsertRequest $request, InsertCardDetailsInterface $insertCardDetails)
     {
         $card_data = [
             $email = $request->email,
@@ -37,8 +38,7 @@ class CardDetailsController extends Controller
             $exp_date = $request->exp_date,
             $cvc = $request->cvc,
         ];
-        $cardDetailsInsertService = new CardDetailsInsertService($card_data);
-        $response = $cardDetailsInsertService->saveCardDetails();
+        $response = $insertCardDetails->saveCardDetails($card_data);
         if ($response) {
             return response()->json([
                 'message' => 'success',
@@ -56,7 +56,7 @@ class CardDetailsController extends Controller
 
     public function getCardDetails(GetCardDetailsRequest $request, CardDetailsInterface $cardDetails)
     {
-        $result =$cardDetails->getCardDetails($request->client_id);
+        $result = $cardDetails->getCardDetails($request->client_id);
         if ($result) {
             return response()->json([
                 'message' => 'success',

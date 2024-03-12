@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
-use App\Interfaces\CardDetailsInterface;
-use App\Services\cardDetails\GetCardDetailsService;
 use Illuminate\Support\ServiceProvider;
+use App\Interfaces\CardDetailsInterface;
+use App\Services\CardDetailsInsertService;
+use App\Interfaces\InsertCardDetailsInterface;
+use App\Services\cardDetails\GetCardDetailsService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(CardDetailsInterface::class, GetCardDetailsService::class);
+        $this->app->singleton(InsertCardDetailsInterface::class, CardDetailsInsertService::class);
     }
 
     /**
