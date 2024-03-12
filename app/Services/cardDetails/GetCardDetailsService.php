@@ -3,18 +3,14 @@
 namespace App\Services\cardDetails;
 
 use App\Models\CardDetails;
+use App\Interfaces\CardDetailsInterface;
 
-class GetCardDetailsService
+class GetCardDetailsService implements CardDetailsInterface
 {
-    public $client_id;
-    public function __construct($client_id)
-    {
-        $this->client_id = $client_id;
-    }
 
-    public function getCardDetails()
+    public function getCardDetails($client_id)
     {
-        $response = CardDetails::where('client_id', $this->client_id)->first();
+        $response = CardDetails::where('client_id', $client_id)->first();
         return $response;
     }
 }

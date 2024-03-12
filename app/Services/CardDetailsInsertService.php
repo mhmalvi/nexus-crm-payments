@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Interfaces\CardDetailsInterface;
 use App\Models\CardDetails;
 
 class CardDetailsInsertService

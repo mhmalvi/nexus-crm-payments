@@ -10,6 +10,7 @@ use App\Services\CardDetailsInsertService;
 use App\Http\Requests\GetCardDetailsRequest;
 use App\Http\Requests\CardDetailsInsertRequest;
 use App\Http\Requests\UpdateCardDetailsRequest;
+use App\Interfaces\CardDetailsInterface;
 use App\Services\cardDetails\DestroyCardService;
 use App\Services\cardDetails\GetCardDetailsService;
 use App\Services\cardDetails\UpdateCardDetailsService;
@@ -53,10 +54,9 @@ class CardDetailsController extends Controller
         }
     }
 
-    public function getCardDetails(GetCardDetailsRequest $request)
+    public function getCardDetails(GetCardDetailsRequest $request, CardDetailsInterface $cardDetails)
     {
-        $getCardDetailsService = new GetCardDetailsService($request->client_id);
-        $result = $getCardDetailsService->getCardDetails();
+        $result =$cardDetails->getCardDetails($request->client_id);
         if ($result) {
             return response()->json([
                 'message' => 'success',
