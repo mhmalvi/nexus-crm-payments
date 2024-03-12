@@ -26,7 +26,7 @@ class CardDetailsController extends Controller
         $this->updateCardDetailsService = $updateCardDetailsService;
         $this->destroyCardService = $destroyCardService;
     }
-    public function insertCardDetails(CardDetailsInsertRequest $request, InsertCardDetailsInterface $insertCardDetails)
+    public function insertCardDetails(Request $request, InsertCardDetailsInterface $insertCardDetails)
     {
         $card_data = [
             $email = $request->email,
