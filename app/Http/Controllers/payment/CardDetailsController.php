@@ -29,7 +29,7 @@ class CardDetailsController extends Controller
     public function insertCardDetails(Request $request, InsertCardDetailsInterface $insertCardDetails)
     {
         $card_data = [
-            $email = $request->data->email,
+            $email = $request->data['email'],
             $type = $request->data->type,
             $name = $request->data->name,
             $client_id = $request->data->client_id,
