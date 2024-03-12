@@ -22,9 +22,9 @@ Route::post('payment/list', [CheckoutPaymentController::class, 'getPaymentHistor
 Route::post('invoice/list', [CheckoutPaymentController::class, 'getInvoiceHistories']);
 Route::get('payment/{lead_id}/details', [CheckoutPaymentController::class, 'getPaymentHistoriesByLead']);
 Route::get('payment-details/{lead_id}', [CheckoutPaymentController::class, 'payment_details']);
-Route::post('stripe',[CheckoutPaymentController::class, 'stripePost']);
+Route::post('stripe', [CheckoutPaymentController::class, 'stripePost']);
 Route::post('campaign-wise-payment', [CheckoutPaymentController::class, 'campaign_wise_payment']);
-Route::post('monthly-payment',[CheckoutPaymentController::class,'monthlyPayment']);
+Route::post('monthly-payment', [CheckoutPaymentController::class, 'monthlyPayment']);
 Route::post('last-week-payment', [CheckoutPaymentController::class, 'weekly_payment']);
 
 Route::post('payment/setting/create', [\App\Http\Controllers\account\PaymentSettingController::class, 'createSetting']);
@@ -33,10 +33,10 @@ Route::post('store-payment-history', [\App\Http\Controllers\payment\PaymentHisto
 Route::get('payment-history-delete/{id}', [\App\Http\Controllers\payment\PaymentHistoryController::class, 'destroy']);
 
 
-Route::post('card-details-save',[CardDetailsController::class,'insertCardDetails']);
-Route::put('card-details-update',[CardDetailsController::class,'updateCardDetails']);
-Route::get('card-details',[CardDetailsController::class,'getCardDetails']);
+
 //
-//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
+Route::group(['middleware' => 'companyAuthentication'], function () {
+    Route::post('card-details-save', [CardDetailsController::class, 'insertCardDetails']);
+    Route::put('card-details-update', [CardDetailsController::class, 'updateCardDetails']);
+    Route::get('card-details', [CardDetailsController::class, 'getCardDetails']);
+});
