@@ -30,13 +30,13 @@ class CardDetailsController extends Controller
     {
         $card_data = [
             $email = $request->data['email'],
-            $type = $request->data->type,
-            $name = $request->data->name,
-            $client_id = $request->data->client_id,
-            $user_id = $request->data->user_id,
-            $card_number = $request->data->card_number,
-            $exp_date = $request->data->exp_date,
-            $cvc = $request->data->cvc,
+            $type = $request->data['type'],
+            $name = $request->data['name'],
+            $client_id = $request->data['client_id'],
+            $user_id = $request->data['user_id'],
+            $card_number = $request->data['card_number'],
+            $exp_date = $request->data['exp_date'],
+            $cvc = $request->data['cvc'],
         ];
         $response = $insertCardDetails->saveCardDetails($card_data);
         if ($response) {
