@@ -8,10 +8,17 @@ use App\Http\Controllers\Controller;
 use App\Services\CardDetailsInsertService;
 use App\Http\Requests\GetCardDetailsRequest;
 use App\Http\Requests\CardDetailsInsertRequest;
+use App\Http\Requests\UpdateCardDetailsRequest;
 use App\Services\cardDetails\GetCardDetailsService;
+use App\Services\cardDetails\UpdateCardDetailsService;
 
 class CardDetailsController extends Controller
 {
+    private $updateCardDetailsService;
+    public function __construct(UpdateCardDetailsService $updateCardDetailsService)
+    {
+        $this->updateCardDetailsService = $updateCardDetailsService;
+    }
     public function insertCardDetails(CardDetailsInsertRequest $request)
     {
         $card_data = [
@@ -56,6 +63,32 @@ class CardDetailsController extends Controller
                 'message' => 'failed',
                 'status' => 500
             ], 500);
+        }
+    }
+
+    public function updateCardDetails(Request $request)
+    {
+        // dd($request->cvc);
+        $card_data = [
+            $card_number = $request->card_number,
+            $exp_date = $request->exp_date,
+            $cvc = $request->cvc,
+            $client_id = $request->client_id,
+            $type = $request->type,
+            $name = $request->name,
+            $email = $request->email,
+        ];
+        $result = $this->updateCardDetailsService->updateCardDetails($card_data);
+        if ($result == 1) {
+            return response()->json([
+                'message' => 'Updated',
+                'status' => 201,
+            ], 201);
+        } else if ($result == 3) {
+            return response()->json([
+                'message' => 'No data found',
+                'status' => 404,
+            ], 404);
         }
     }
 }

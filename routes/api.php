@@ -34,6 +34,7 @@ Route::get('payment-history-delete/{id}', [\App\Http\Controllers\payment\Payment
 
 
 Route::post('card-details-save',[CardDetailsController::class,'insertCardDetails']);
+Route::put('card-details-update',[CardDetailsController::class,'updateCardDetails']);
 Route::get('card-details',[CardDetailsController::class,'getCardDetails']);
 //
 //Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
