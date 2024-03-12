@@ -25,11 +25,11 @@ class CardDetailsInsertRequest extends FormRequest
             'card_number' => 'required|min:16|max:16|unique:card_details',
             'exp_date' => 'required',
             'cvc' => 'required|max:3|min:3',
-            'user_id' => 'required|unique:card_details',
-            'client_id' => 'required|unique:card_details',
+            'user_id' => 'required',
+            'client_id' => 'required',
             'type' => 'required',
             'name' => 'required',
-            'email' => 'email|unique:card_details'
+            'email' => 'email'
         ];
     }
 }
