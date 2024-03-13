@@ -27,7 +27,7 @@ class CardDetailsController extends Controller
         $this->updateCardDetailsService = $updateCardDetailsService;
         $this->destroyCardService = $destroyCardService;
     }
-    public function insertCardDetails(Request $request, InsertCardDetailsInterface $insertCardDetails, StripeInterface $stripeDetails)
+    public function insertCardDetails(CardDetailsInsertRequest $request, InsertCardDetailsInterface $insertCardDetails, StripeInterface $stripeDetails)
     {
         // dd($request-);
         $card_data = [
