@@ -12,6 +12,7 @@ use App\Http\Requests\CardDetailsInsertRequest;
 use App\Http\Requests\UpdateCardDetailsRequest;
 use App\Interfaces\CardDetailsInterface;
 use App\Interfaces\InsertCardDetailsInterface;
+use App\Interfaces\StripeInterface;
 use App\Services\cardDetails\DestroyCardService;
 use App\Services\cardDetails\GetCardDetailsService;
 use App\Services\cardDetails\UpdateCardDetailsService;
@@ -26,8 +27,9 @@ class CardDetailsController extends Controller
         $this->updateCardDetailsService = $updateCardDetailsService;
         $this->destroyCardService = $destroyCardService;
     }
-    public function insertCardDetails(CardDetailsInsertRequest $request, InsertCardDetailsInterface $insertCardDetails)
+    public function insertCardDetails(Request $request, InsertCardDetailsInterface $insertCardDetails, StripeInterface $stripeDetails)
     {
+        // dd($request-);
         $card_data = [
             $email = $request->email,
             $type = $request->type,
@@ -38,6 +40,10 @@ class CardDetailsController extends Controller
             $exp_date = $request->exp_date,
             $cvc = $request->cvc,
         ];
+        // dd($card_data);
+        $stripe_response = $stripeDetails->stripeCreate($card_data);
+        array_push($card_data,$stripe_response->id);
+        // dd($card_data);
         $response = $insertCardDetails->saveCardDetails($card_data);
         if ($response) {
             return response()->json([

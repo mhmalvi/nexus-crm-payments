@@ -28,6 +28,8 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
+    'stripe_secret'=>env('STRIPE_SECRET','sk_test_51Ot2bOGeh9PhcWp4xA9lwPULEmbeJacm812lQnRCrsVqe9Qq99TW0CubibwAdICxXxSQpUS0YX7pjKglHuC7kcvv00FnD0uR70'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode
