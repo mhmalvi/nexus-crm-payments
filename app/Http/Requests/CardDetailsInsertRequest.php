@@ -22,9 +22,6 @@ class CardDetailsInsertRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'card_number' => 'required|min:16|max:16|unique:card_details',
-            'exp_date' => 'required',
-            'cvc' => 'required|max:3|min:3',
             'user_id' => 'required',
             'client_id' => 'required',
             'type' => 'required',
