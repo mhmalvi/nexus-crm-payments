@@ -10,7 +10,7 @@ class GetCardDetailsService implements CardDetailsInterface
 
     public function getCardDetails($client_id)
     {
-        $response = CardDetails::where('client_id', $client_id)->first();
+        $response = CardDetails::where('client_id', $client_id)->get();
         return $response;
     }
 }
