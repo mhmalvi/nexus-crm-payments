@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('exp_date');
             $table->integer('cvc');
             $table->string('stripe_customer_id');
+            $table->integer('zip_code');
             $table->timestamps();
         });
     }
