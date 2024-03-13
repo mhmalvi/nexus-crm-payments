@@ -19,8 +19,6 @@ class StripeCustomerService implements StripeInterface
     public function stripeRead($data){
         $stripe =  new \Stripe\StripeClient(config("app.stripe_secret"));
 return $stripe->customers->all(['email'=>$data[1]]);
-// $stripe->customers->retrieve('cus_PjDJAtUOooJVZT', []);
-// dd($result);
     }
 
 }

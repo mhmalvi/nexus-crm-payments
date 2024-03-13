@@ -23,6 +23,7 @@ class GetCardDetailsRequest extends FormRequest
     {
         return [
             'client_id' => 'required',
+            'email'=>'required'
         ];
     }
 }
