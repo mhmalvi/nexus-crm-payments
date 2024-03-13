@@ -4,7 +4,7 @@ namespace App\Services\stripe;
 
 use App\Interfaces\StripeInterface;
 
-class CreateCustomerService implements StripeInterface
+class StripeCustomerService implements StripeInterface
 {
     public function stripeCreate($card_data)
     {
@@ -15,4 +15,12 @@ class CreateCustomerService implements StripeInterface
             'email' => $card_data[0],
         ]);
     }
+
+    public function stripeRead($data){
+        $stripe =  new \Stripe\StripeClient(config("app.stripe_secret"));
+return $stripe->customers->all(['limit' => 3, 'email'=>$data[1]]);
+// $stripe->customers->retrieve('cus_PjDJAtUOooJVZT', []);
+// dd($result);
+    }
+
 }

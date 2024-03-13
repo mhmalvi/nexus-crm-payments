@@ -60,14 +60,22 @@ class CardDetailsController extends Controller
         }
     }
 
-    public function getCardDetails(GetCardDetailsRequest $request, CardDetailsInterface $cardDetails)
+    public function getCardDetails(GetCardDetailsRequest $request, CardDetailsInterface $cardDetails, StripeInterface $stripeGetCustomers)
     {
-        $result = $cardDetails->getCardDetails($request->client_id);
-        if ($result) {
+        $data=[
+            $client_id=$request->client_id,
+            $email = $request->email
+        ];
+        // dd($data);
+        $customers = $stripeGetCustomers->stripeRead($data);
+        
+        // $result = $cardDetails->getCardDetails($request->client_id);
+
+        if ($customers) {
             return response()->json([
                 'message' => 'success',
                 'status' => 200,
-                'data' => $result
+                'data' => $customers
             ], 200);
         } else {
             return response()->json([
