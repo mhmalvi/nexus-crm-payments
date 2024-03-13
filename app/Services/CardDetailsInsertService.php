@@ -17,9 +17,9 @@ class CardDetailsInsertService implements InsertCardDetailsInterface
             'name' => $card_data[2],
             'client_id' => $card_data[3],
             'user_id' => $card_data[4],
-            'card_number' => $card_data[5],
-            'exp_date' => $card_data[6],
-            'cvc' => $card_data[7],
+            // 'card_number' => $card_data[5],
+            // 'exp_date' => $card_data[6],
+            // 'cvc' => $card_data[7],
             'stripe_customer_id' => $card_data[8],
         ]);
     }

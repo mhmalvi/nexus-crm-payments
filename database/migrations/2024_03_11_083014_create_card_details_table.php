@@ -18,11 +18,11 @@ return new class extends Migration
             $table->string('email');
             $table->integer('client_id');
             $table->integer('user_id');
-            $table->bigInteger('card_number');
-            $table->string('exp_date');
-            $table->integer('cvc');
+            // $table->bigInteger('card_number');
+            // $table->string('exp_date');
+            // $table->integer('cvc');
             $table->string('stripe_customer_id');
-            $table->integer('zip_code');
+            // $table->integer('zip_code');
             $table->timestamps();
         });
     }

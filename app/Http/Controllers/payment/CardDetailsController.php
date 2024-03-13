@@ -36,9 +36,9 @@ class CardDetailsController extends Controller
             $name = $request->name,
             $client_id = $request->client_id,
             $user_id = $request->user_id,
-            $card_number = $request->card_number,
-            $exp_date = $request->exp_date,
-            $cvc = $request->cvc,
+            // $card_number = $request->card_number,
+            // $exp_date = $request->exp_date,
+            // $cvc = $request->cvc,
         ];
         // dd($card_data);
         $stripe_response = $stripeDetails->stripeCreate($card_data);
