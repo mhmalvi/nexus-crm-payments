@@ -36,7 +36,7 @@ Route::get('payment-history-delete/{id}', [\App\Http\Controllers\payment\Payment
 
 //
 Route::group(['middleware' => 'companyAuthentication'], function () {
-    Route::get('card-details', [CardDetailsController::class, 'getCardDetails']);
+    Route::post('card-details', [CardDetailsController::class, 'getCardDetails']);
     Route::post('card-details-save', [CardDetailsController::class, 'insertCardDetails']);
     Route::put('card-details-update', [CardDetailsController::class, 'updateCardDetails']);    
     Route::post('card-destroy', [CardDetailsController::class, 'destroyCard']);
