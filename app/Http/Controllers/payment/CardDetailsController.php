@@ -40,18 +40,18 @@ class CardDetailsController extends Controller
             // $exp_date = $request->exp_date,
             // $cvc = $request->cvc,
         ];
-        $company = Company::where('id',$card_data[3])->where('admin',$card_data[4])->first();
-        if($company){
-            array_push($card_data,$company->connect_id);
+        $company = Company::where('id', $card_data[3])->where('admin', $card_data[4])->first();
+        if ($company) {
+            array_push($card_data, $company->connect_id);
         }
         // $stripe_response = $stripeDetails->stripeCardCreate($card_data);
         // dd($stripe_response)
         $stripe_response = Http::withHeaders([
-            'Authorization'=> 'Bearer '.config("app.stripe_secret"),
-    'Content-Type'=>'application/x-www-form-urlencoded',   
-    
-])->post("https://api.stripe.com/v1/customers/".$card_data[6]."/sources",['source'=>$card_data[5]]);
-dd($stripe_response->body());
+            'Authorization' => 'Bearer ' . config("app.stripe_secret"),
+            'Content-Type' => 'application/x-www-form-urlencoded',
+
+        ])->post("https://api.stripe.com/v1/customers/" . $card_data[6] . "/sources", ['source' => $card_data[5]]);
+        dd($stripe_response->body());
 
         // array_push($card_data,$stripe_response->id);
         $response = $insertCardDetails->saveCardDetails($card_data);
@@ -72,8 +72,8 @@ dd($stripe_response->body());
 
     public function getCardDetails(GetCardDetailsRequest $request, CardDetailsInterface $cardDetails, StripeInterface $stripeGetCards)
     {
-        $data=[
-            $client_id=$request->client_id,
+        $data = [
+            $client_id = $request->client_id,
             $email = $request->email
         ];
         $customers = $stripeGetCards->stripeRead($data);
@@ -119,9 +119,9 @@ dd($stripe_response->body());
 
     public function destroyCard(DestroyCardRequest $request, StripeInterface $destroyCardService)
     {
-        $data=[
-            'card_id'=>$request->card_id,
-            'client_id'=>$request->client_id
+        $data = [
+            'card_id' => $request->card_id,
+            'client_id' => $request->client_id
         ];
         $response = $destroyCardService->stripeDelete($data);
 
