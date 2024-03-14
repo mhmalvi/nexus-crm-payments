@@ -20,7 +20,7 @@ class StripeCustomerService implements StripeInterface
 return Http::withHeaders([
     'Content-Type'=>'application/x-www-form-urlencoded',
     'source'=>$card_data[5]
-])->bearerToken(config("app.stripe_secret"))->post("https://api.stripe.com/v1/customers/".$card_data[6]."/sources",['source' => $card_data[5]])
+])->bearerToken(config("app.stripe_secret"))->post("https://api.stripe.com/v1/customers/".$card_data[6]."/sources",['source' => $card_data[5]]);
     }
 
     public function stripeRead($data){
