@@ -16,6 +16,7 @@ use App\Interfaces\StripeInterface;
 use App\Services\cardDetails\DestroyCardService;
 use App\Services\cardDetails\GetCardDetailsService;
 use App\Services\cardDetails\UpdateCardDetailsService;
+use App\Models\Company;
 
 class CardDetailsController extends Controller
 {
@@ -37,7 +38,6 @@ class CardDetailsController extends Controller
             // $exp_date = $request->exp_date,
             // $cvc = $request->cvc,
         ];
-        dd($card_data);
         $company = Company::where('client_id',$card_data[3])->where('admin',$card_data[4])->first();
         if($company){
             array_push($card_data,$company->connect_id);
