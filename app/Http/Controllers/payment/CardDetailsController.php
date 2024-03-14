@@ -20,12 +20,9 @@ use App\Services\cardDetails\UpdateCardDetailsService;
 class CardDetailsController extends Controller
 {
     private $updateCardDetailsService;
-    private $destroyCardService;
-    public function __construct(UpdateCardDetailsService $updateCardDetailsService, DestroyCardService
-    $destroyCardService)
+    public function __construct(UpdateCardDetailsService $updateCardDetailsService)
     {
         $this->updateCardDetailsService = $updateCardDetailsService;
-        $this->destroyCardService = $destroyCardService;
     }
     public function insertCardDetails(CardDetailsInsertRequest $request, InsertCardDetailsInterface $insertCardDetails, StripeInterface $stripeDetails)
     {
@@ -41,7 +38,8 @@ class CardDetailsController extends Controller
             // $cvc = $request->cvc,
         ];
         // dd($card_data);
-        $stripe_response = $stripeDetails->stripeCreate($card_data);
+        
+        $stripe_response = $stripeDetails->stripeCardCreate($card_data);
         array_push($card_data,$stripe_response->id);
         // dd($card_data);
         $response = $insertCardDetails->saveCardDetails($card_data);
@@ -107,9 +105,14 @@ class CardDetailsController extends Controller
         }
     }
 
-    public function destroyCard(DestroyCardRequest $request)
+    public function destroyCard(DestroyCardRequest $request, StripeInterface $destroyCardService)
     {
-        $response = $this->destroyCardService->destroyCard($request->card_id);
+        $data=[
+            'card_id'=>$request->card_id,
+            'client_id'=>$request->client_id
+        ];
+        $response = $destroyCardService->stripeDelete($data);
+
         if ($response) {
             return response()->json([
                 'message' => 'Deleted',

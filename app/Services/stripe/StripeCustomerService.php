@@ -6,7 +6,7 @@ use App\Interfaces\StripeInterface;
 
 class StripeCustomerService implements StripeInterface
 {
-    public function stripeCreate($card_data)
+    public function stripeCardCreate($card_data)
     {
         // dd(config("app.stripe_secret"));
         $stripe = new \Stripe\StripeClient(config("app.stripe_secret"));
@@ -17,8 +17,10 @@ class StripeCustomerService implements StripeInterface
     }
 
     public function stripeRead($data){
-        $stripe =  new \Stripe\StripeClient(config("app.stripe_secret"));
-return $stripe->customers->all(['email'=>$data[1]]);
+//         $stripe =  new \Stripe\StripeClient(config("app.stripe_secret"));
+// return $stripe->customers->all(['email'=>$data[1]]);
+$stripe = new \Stripe\StripeClient("app.stripe_secret");
+$stripe->customers->createSource('cus_9s6XGDTHzA66Po', ['source' => 'tok_visa']);
     }
 
 }
