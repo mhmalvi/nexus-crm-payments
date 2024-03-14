@@ -33,12 +33,12 @@ class CardDetailsController extends Controller
             $name = $request->name,
             $client_id = $request->client_id,
             $user_id = $request->user_id,
-            $card_token = $request->token,
+            $card_token = $request->token->token->id,
             // $card_number = $request->card_number,
             // $exp_date = $request->exp_date,
             // $cvc = $request->cvc,
         ];
-        dd($card_data)
+        // dd($card_data);
         $company = Company::where('id',$card_data[3])->where('admin',$card_data[4])->first();
         if($company){
             array_push($card_data,$company->connect_id);
