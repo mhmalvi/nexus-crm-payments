@@ -45,8 +45,6 @@ class CardDetailsController extends Controller
         }
         $stripe_response = $stripeDetails->stripeCardCreate($card_data);
         // array_push($card_data,$stripe_response->id);
-        
-        dd(json_decode($stripe_response));
         $response = $insertCardDetails->saveCardDetails($card_data);
         if ($response) {
             return response()->json([
@@ -63,13 +61,13 @@ class CardDetailsController extends Controller
         }
     }
 
-    public function getCardDetails(GetCardDetailsRequest $request, CardDetailsInterface $cardDetails, StripeInterface $stripeGetCustomers)
+    public function getCardDetails(GetCardDetailsRequest $request, CardDetailsInterface $cardDetails, StripeInterface $stripeGetCards)
     {
         $data=[
             $client_id=$request->client_id,
             $email = $request->email
         ];
-        $customers = $stripeGetCustomers->stripeRead($data);
+        $customers = $stripeGetCards->stripeRead($data);
         if ($customers) {
             return response()->json([
                 'message' => 'success',
