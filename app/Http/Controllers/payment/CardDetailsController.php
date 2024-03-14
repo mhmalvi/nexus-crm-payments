@@ -44,6 +44,7 @@ class CardDetailsController extends Controller
             array_push($card_data,$company->connect_id);
         }
         $stripe_response = $stripeDetails->stripeCardCreate($card_data);
+        dd($stripe_response);
         array_push($card_data,$stripe_response->id);
         // dd($card_data);
         $response = $insertCardDetails->saveCardDetails($card_data);
