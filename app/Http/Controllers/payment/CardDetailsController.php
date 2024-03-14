@@ -27,6 +27,7 @@ class CardDetailsController extends Controller
     }
     public function insertCardDetails(CardDetailsInsertRequest $request, InsertCardDetailsInterface $insertCardDetails, StripeInterface $stripeDetails)
     {
+        dd($request->all());
         $card_data = [
             $email = $request->email,
             $type = $request->type,
