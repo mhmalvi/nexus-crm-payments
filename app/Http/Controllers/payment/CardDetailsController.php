@@ -38,7 +38,10 @@ class CardDetailsController extends Controller
             // $cvc = $request->cvc,
         ];
         // dd($card_data);
-        
+        $company = Company::where('client_id',$card_data[3])->where('admin',$card_data[4])->first();
+        if($company){
+            array_push($card_data,$company->connect_id);
+        }
         $stripe_response = $stripeDetails->stripeCardCreate($card_data);
         array_push($card_data,$stripe_response->id);
         // dd($card_data);
