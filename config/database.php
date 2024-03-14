@@ -82,7 +82,7 @@ return [
             ]) : [],
         ],
 
-        'token' => [
+        'company' => [
             'driver' => 'mysql',
             'url' => env('COMPANY_DATABASE_URL'),
             'host' => env('COMPANY_DB_HOST', '127.0.0.1'),
