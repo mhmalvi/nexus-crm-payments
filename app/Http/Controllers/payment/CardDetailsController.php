@@ -47,6 +47,7 @@ class CardDetailsController extends Controller
         // $stripe_response = $stripeDetails->stripeCardCreate($card_data);
         // dd($stripe_response)
         $stripe_response = Http::withHeaders([
+    'Content-Type'=>'application/x-www-form-urlencoded',
     'Authorization'=> 'Bearer '.config("app.stripe_secret"),
     'source'=>$card_data[5]
 ])->post("https://api.stripe.com/v1/customers/".$card_data[6]."/sources");
