@@ -15,7 +15,7 @@ class StripeCustomerService implements StripeInterface
         //     'email' => $card_data[0],
         // ]);
         $stripe = new \Stripe\StripeClient(config("app.stripe_secret"));
-$stripe->customers->createSource($card_card[6], ['source' => 'token']);
+$stripe->customers->createSource($card_card[6], ['source' => $card_card[6]]);
     }
 
     public function stripeRead($data){
