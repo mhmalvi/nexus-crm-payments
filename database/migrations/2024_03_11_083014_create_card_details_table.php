@@ -21,6 +21,7 @@ return new class extends Migration
             // $table->bigInteger('card_number');
             // $table->string('exp_date');
             // $table->integer('cvc');
+            $table->bigInteger('stripe_card_id');
             $table->string('stripe_customer_id');
             // $table->integer('zip_code');
             $table->timestamps();
