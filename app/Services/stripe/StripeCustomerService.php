@@ -14,8 +14,13 @@ class StripeCustomerService implements StripeInterface
         //     'email' => $card_data[0],
         // ]);
         // $token = $card_data[5];
-        return new \Stripe\StripeClient(config("app.stripe_secret"));
-$stripe->customers->createSource($card_data[6], ['source' => $card_data[5]]);
+//         return new \Stripe\StripeClient(config("app.stripe_secret"));
+// $stripe->customers->createSource($card_data[6], ['source' => $card_data[5]]);
+
+return Http::withHeaders([
+    'Content-Type'=>'application/x-www-form-urlencoded',
+    'source'=>$card_data[5]
+])->bearerToken(config("app.stripe_secret"))->post("https://api.stripe.com/v1/customers/".$card_data[6]."/sources",[('source' => $card_data[5])])
     }
 
     public function stripeRead($data){
