@@ -34,7 +34,7 @@ class CardDetailsController extends Controller
             $name = $request->name,
             $client_id = $request->client_id,
             $user_id = $request->user_id,
-            $card_token = $request->tokenStripe['token'],
+            $card_token = $request->tokenStripe[0]->token[0]->id,
             // $card_number = $request->card_number,
             // $exp_date = $request->exp_date,
             // $cvc = $request->cvc,
