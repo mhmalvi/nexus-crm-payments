@@ -27,14 +27,14 @@ class CardDetailsController extends Controller
     }
     public function insertCardDetails(CardDetailsInsertRequest $request, InsertCardDetailsInterface $insertCardDetails, StripeInterface $stripeDetails)
     {
-        dd($request->all());
+        // dd($request->all());
         $card_data = [
             $email = $request->email,
             $type = $request->type,
             $name = $request->name,
             $client_id = $request->client_id,
             $user_id = $request->user_id,
-            $card_token = $request->token->token->id,
+            $card_token = $request->tokenStripe->token->id,
             // $card_number = $request->card_number,
             // $exp_date = $request->exp_date,
             // $cvc = $request->cvc,
