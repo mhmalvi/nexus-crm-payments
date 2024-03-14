@@ -51,7 +51,7 @@ class CardDetailsController extends Controller
     'Authorization'=> 'Bearer '.config("app.stripe_secret"),
     'source'=>$card_data[5]
 ])->post("https://api.stripe.com/v1/customers/".$card_data[6]."/sources");
-dd($stripe_response);
+dd($stripe_response->body());
 
         // array_push($card_data,$stripe_response->id);
         $response = $insertCardDetails->saveCardDetails($card_data);
