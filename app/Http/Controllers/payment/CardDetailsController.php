@@ -46,7 +46,7 @@ class CardDetailsController extends Controller
         $stripe_response = $stripeDetails->stripeCardCreate($card_data);
         // array_push($card_data,$stripe_response->id);
         
-        dd($stripe_response);
+        dd(json_decode($stripe_response));
         $response = $insertCardDetails->saveCardDetails($card_data);
         if ($response) {
             return response()->json([
