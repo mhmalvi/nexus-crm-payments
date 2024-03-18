@@ -56,7 +56,7 @@ class CardDetailsController extends Controller
 // $token = json_encode($card_data[5]);
 // dd($token);
         $stripe = new \Stripe\StripeClient(config("app.stripe_secret"));
-$stripe->customers->createSource($card_data[6], ['source' => $token]);
+$stripe->customers->createSource($card_data[6], ['source' => $card_data[5]]);
         dd($stripe);
 
         // array_push($card_data,$stripe_response->id);
