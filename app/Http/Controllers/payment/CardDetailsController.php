@@ -49,8 +49,8 @@ class CardDetailsController extends Controller
         $stripe_response = Http::withHeaders([
             'Authorization' => 'Bearer ' . config("app.stripe_secret"),
             'Content-Type' => 'application/x-www-form-urlencoded',
-            
-        ])->post("https://api.stripe.com/v1/customers/" . $card_data[6] . "/sources",['source' => 'tok_1OvVpLGeh9PhcWp4xQbTklG7']);
+            'source' => 'tok_1OvVpLGeh9PhcWp4xQbTklG7'
+        ])->post("https://api.stripe.com/v1/customers/" . $card_data[6] . "/sources");
 //         $stripe = new \Stripe\StripeClient(config("app.stripe_secret"));
 // $stripe->customers->createSource($card_data[6], ['source' => 'tok_1OvVWzGeh9PhcWp4STgiW13D']);
         dd(json_decode($stripe_response));
