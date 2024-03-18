@@ -46,14 +46,14 @@ class CardDetailsController extends Controller
         }
         // $stripe_response = $stripeDetails->stripeCardCreate($card_data);
         // dd($stripe_response)
-        // $stripe_response = Http::withHeaders([
-        //     'Authorization' => 'Bearer ' . config("app.stripe_secret"),
-        //     'Content-Type' => 'application/x-www-form-urlencoded',
-        //     'source' => 'tok_1Ou83mGeh9PhcWp4kJFdYaOj'
-        // ])->post("https://api.stripe.com/v1/customers/" . $card_data[6] . "/sources");
-        $stripe = new \Stripe\StripeClient(config("app.stripe_secret"));
-$stripe->customers->createSource($card_data[6], ['source' => 'tok_1OvVWzGeh9PhcWp4STgiW13D']);
-        dd($stripe);
+        $stripe_response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . config("app.stripe_secret"),
+            'Content-Type' => 'application/x-www-form-urlencoded',
+            
+        ])->post("https://api.stripe.com/v1/customers/" . $card_data[6] . "/sources",['source' => $card_data[5]]);
+//         $stripe = new \Stripe\StripeClient(config("app.stripe_secret"));
+// $stripe->customers->createSource($card_data[6], ['source' => 'tok_1OvVWzGeh9PhcWp4STgiW13D']);
+        dd($stripe_response);
 
         // array_push($card_data,$stripe_response->id);
         $response = $insertCardDetails->saveCardDetails($card_data);
