@@ -53,7 +53,7 @@ class CardDetailsController extends Controller
     //     ])->post("https://api.stripe.com/v1/customers/" . $card_data[6] . "/sources", [
     // 'source' => $card_data[5],
 // ]);
-$token = json_encode($card_data[5]);
+// $token = json_encode($card_data[5]);
 // dd($token);
         $stripe = new \Stripe\StripeClient(config("app.stripe_secret"));
 $stripe->customers->createSource($card_data[6], ['source' => $token]);
