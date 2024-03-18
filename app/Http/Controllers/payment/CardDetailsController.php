@@ -52,7 +52,7 @@ class CardDetailsController extends Controller
         //     'source' => 'tok_1Ou83mGeh9PhcWp4kJFdYaOj'
         // ])->post("https://api.stripe.com/v1/customers/" . $card_data[6] . "/sources");
         $stripe = new \Stripe\StripeClient(config("app.stripe_secret"));
-$stripe->customers->createSource($card_data[6], ['source' => 'tok_1Ou83mGeh9PhcWp4kJFdYaOj']);
+$stripe->customers->createSource($card_data[6], ['source' => 'tok_1OvVWzGeh9PhcWp4STgiW13D']);
         dd($stripe);
 
         // array_push($card_data,$stripe_response->id);
