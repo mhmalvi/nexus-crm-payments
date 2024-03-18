@@ -52,11 +52,11 @@ class CardDetailsController extends Controller
     //         'Content-Type' => 'application/x-www-form-urlencoded',
     //     ])->post("https://api.stripe.com/v1/customers/" . $card_data[6] . "/sources", [
     // 'source' => $card_data[5],
-]);
+// ]);
 
         $stripe = new \Stripe\StripeClient(config("app.stripe_secret"));
 $stripe->customers->createSource($card_data[6], ['source' => $card_data[5]]);
-        dd(json_decode($stripe_response));
+        dd(json_decode($stripe));
 
         // array_push($card_data,$stripe_response->id);
         $response = $insertCardDetails->saveCardDetails($card_data);
