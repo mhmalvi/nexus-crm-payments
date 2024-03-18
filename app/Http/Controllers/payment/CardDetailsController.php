@@ -40,6 +40,7 @@ class CardDetailsController extends Controller
             // $exp_date = $request->exp_date,
             // $cvc = $request->cvc,
         ];
+        dd($card_data);
         $company = Company::where('id', $card_data[3])->where('admin', $card_data[4])->first();
         if ($company) {
             array_push($card_data, $company->connect_id);
@@ -49,9 +50,10 @@ class CardDetailsController extends Controller
         $stripe_response = Http::withHeaders([
             'Authorization' => 'Bearer ' . config("app.stripe_secret"),
             'Content-Type' => 'application/x-www-form-urlencoded',
-            'source' => 'tok_1OvVpLGeh9PhcWp4xQbTklG7'
-        ])->post("https://api.stripe.com/v1/customers/" . $card_data[6] . "/sources");
-        
+        ])->post("https://api.stripe.com/v1/customers/" . $card_data[6] . "/sources", [
+    'source' => 'your_source_value_here',
+]);
+
 //         $stripe = new \Stripe\StripeClient(config("app.stripe_secret"));
 // $stripe->customers->createSource($card_data[6], ['source' => 'tok_1OvVWzGeh9PhcWp4STgiW13D']);
         dd(json_decode($stripe_response));
