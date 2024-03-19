@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\payment\CardDetailsController;
 use App\Http\Controllers\payment\CheckoutPaymentController;
+use App\Http\Controllers\subscription\SubscriptionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -37,9 +38,9 @@ Route::get('payment-history-delete/{id}', [\App\Http\Controllers\payment\Payment
 //
 Route::group(['middleware' => 'companyAuthentication'], function () {
     
-    
+    Route::post('card-details-save', [CardDetailsController::class, 'insertCardDetails']);
+    Route::post('card-details', [CardDetailsController::class, 'getCardDetails']);
     Route::put('card-details-update', [CardDetailsController::class, 'updateCardDetails']);    
     Route::post('card-destroy', [CardDetailsController::class, 'destroyCard']);
 });
-Route::post('card-details-save', [CardDetailsController::class, 'insertCardDetails']);
-Route::post('card-details', [CardDetailsController::class, 'getCardDetails']);
+Route::get('subscriptions', [SubscriptionController::class, 'getAllSubscriptions']);
