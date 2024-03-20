@@ -6,6 +6,7 @@ use App\Http\Controllers\payment\CardDetailsController;
 use App\Http\Controllers\payment\CheckoutPaymentController;
 use App\Http\Controllers\transaction\TransactionController;
 use App\Http\Controllers\subscription\SubscriptionController;
+use App\Http\Controllers\products\ProductController;
 
 /*
 |--------------------------------------------------------------------------
