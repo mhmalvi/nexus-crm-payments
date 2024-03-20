@@ -19,8 +19,19 @@ class SubscriptionController extends Controller
     }
     public function create_subscription(Request $request)
     {
-        $result = $this->createSubscriptions->createSubscription($request->customer_id);
-        dd($result);
+        $response = $this->createSubscriptions->createSubscription($request->customer_id);
+        if ($response) {
+            return response()->json([
+                'message' => 'success',
+                'status' => 200,
+                'data' => json_decode($response)
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Failed',
+                'status' => 500
+            ], 500);
+        }
     }
     public function getAllSubscriptions()
     {
