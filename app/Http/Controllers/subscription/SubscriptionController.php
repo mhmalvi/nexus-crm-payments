@@ -20,7 +20,7 @@ class SubscriptionController extends Controller
     }
     public function create_subscription(Request $request)
     {
-        $isCompanyExists = Company::where('connect_id',$customerId)->exists();
+        $isCompanyExists = Company::where('connect_id',$request->customer_id)->exists();
         if($isCompanyExists){
             $company = Company::where('connect_id',$customerId)->first();
             if($company->package=="standard"){
