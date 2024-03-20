@@ -48,3 +48,4 @@ Route::group(['middleware' => 'companyAuthentication'], function () {
 });
 Route::get('get-customer-transactions',[TransactionController::class,'retrieve_transactions']);
 Route::get('subscriptions', [SubscriptionController::class, 'getAllSubscriptions']);
+Route::get('get-products', [ProductController::class, 'getProducts']);
