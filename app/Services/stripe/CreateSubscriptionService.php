@@ -3,6 +3,7 @@
 namespace App\Services\stripe;
 
 use Carbon\Carbon;
+use App\Models\Company;
 
 class CreateSubscriptionService
 {
