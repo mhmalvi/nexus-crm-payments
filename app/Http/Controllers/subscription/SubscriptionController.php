@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\subscription;
 
+use App\Models\Company;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\stripe\GetAllSubscription;
