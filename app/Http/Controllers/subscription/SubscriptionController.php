@@ -5,6 +5,7 @@ namespace App\Http\Controllers\subscription;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CustomerIdRequest;
 use App\Services\stripe\GetAllSubscription;
 use App\Services\stripe\CreateSubscriptionService;
 
@@ -18,7 +19,7 @@ class SubscriptionController extends Controller
         $this->getAllSubscriptions = $getAllSubscriptions;
         $this->createSubscriptions = $createSubscriptions;
     }
-    public function create_subscription(Request $request)
+    public function create_subscription(CustomerIdRequest $request)
     {
         $isCompanyExists = Company::where('connect_id',$request->customer_id)->exists();
         if($isCompanyExists){
@@ -29,6 +30,7 @@ class SubscriptionController extends Controller
                 'status' => 500
             ], 500);
             }else{
+                
                 $response = $this->createSubscriptions->createSubscription($request->customer_id);
                 // dd($response);
         if ($response) {
