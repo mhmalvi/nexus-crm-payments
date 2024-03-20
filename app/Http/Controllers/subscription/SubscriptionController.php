@@ -19,7 +19,16 @@ class SubscriptionController extends Controller
     }
     public function create_subscription(Request $request)
     {
-        $response = $this->createSubscriptions->createSubscription($request->customer_id);
+        $isCompanyExists = Company::where('connect_id',$customerId)->exists();
+        if($isCompanyExists){
+            $company = Company::where('connect_id',$customerId)->first();
+            if($company->package=="standard"){
+                return response()->json([
+                'message' => 'Subscription already available',
+                'status' => 500
+            ], 500);
+            }else{
+                $response = $this->createSubscriptions->createSubscription($request->customer_id);
         if ($response) {
             return response()->json([
                 'message' => 'success',
@@ -32,6 +41,9 @@ class SubscriptionController extends Controller
                 'status' => 500
             ], 500);
         }
+            }
+        }
+        
     }
     public function getAllSubscriptions()
     {
