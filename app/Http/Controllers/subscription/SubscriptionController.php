@@ -30,7 +30,7 @@ class SubscriptionController extends Controller
             ], 500);
             }else{
                 $response = $this->createSubscriptions->createSubscription($request->customer_id);
-                dd($response);
+                dd(json_decode($response));
         if ($response) {
             return response()->json([
                 'message' => 'success',
