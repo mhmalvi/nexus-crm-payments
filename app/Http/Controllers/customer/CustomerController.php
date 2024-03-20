@@ -8,9 +8,7 @@ use App\Services\stripe\GetAllSubscription;
 
 class CustomerController extends Controller
 {
-    public function create_subscription(Request $request)
-    {
-    }
+    
 
     public function getAllSubscription(GetAllSubscription $subscriptions)
     {

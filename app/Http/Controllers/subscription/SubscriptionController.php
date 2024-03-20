@@ -5,22 +5,26 @@ namespace App\Http\Controllers\subscription;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\stripe\GetAllSubscription;
+use App\Services\stripe\CreateSubscriptionService;
 
 
 class SubscriptionController extends Controller
 {
     private $getAllSubscriptions;
-    public function __construct(GetAllSubscription $getAllSubscriptions)
+    private $createSubscriptions;
+    public function __construct(GetAllSubscription $getAllSubscriptions, CreateSubscriptionService $createSubscriptions)
     {
         $this->getAllSubscriptions = $getAllSubscriptions;
+        $this->createSubscriptions = $createSubscriptions;
+    }
+    public function create_subscription(Request $request)
+    {
+        $result = $this->createSubscriptions->createSubscription($request->customer_id);
+        dd($result);
     }
     public function getAllSubscriptions()
     {
         $response = $this->getAllSubscriptions->getSubscriptions();
-//         $stripe = new \Stripe\StripeClient(config("app.stripe_secret"));
-// $response= $stripe->subscriptions->all(['limit' => 3]);
-// $response = 
-        // dd(json_decode($response));
         if ($response) {
             return response()->json([
                 'message' => 'success',
