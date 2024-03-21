@@ -329,7 +329,7 @@ class CheckoutPaymentController extends Controller
         } catch (\Exception $e) {
             // Payment failed; store an error message in the session
             // $request->session()->flash('error', $e->getMessage());
-            return $throw->$e
+            return $throw->$e;
             // return redirect()->route('payment.failure');
         }
 

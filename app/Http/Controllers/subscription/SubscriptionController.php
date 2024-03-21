@@ -29,7 +29,7 @@ class SubscriptionController extends Controller
         $isCompanyExists = Company::where('connect_id', $request->customer_id)->exists();
         if ($isCompanyExists) {
             $company = Company::where('connect_id', $request->customer_id)->first();
-            if ($company->package == "standard") {
+            if ($company->package == "standard_m" || $company->package == "standard_y") {
                 return response()->json([
                     'message' => 'Subscription already available',
                     'status' => 500
@@ -47,8 +47,6 @@ class SubscriptionController extends Controller
                 }else if($request->interval=="year"){
                     $response = $this->createYearlySubscriptions->createSubscription($data);
                 }
-                
-                // dd($response);
                 if ($response) {
                     return response()->json([
                         'message' => 'success',
