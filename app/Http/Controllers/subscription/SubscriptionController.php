@@ -29,7 +29,7 @@ class SubscriptionController extends Controller
         $isCompanyExists = Company::where('connect_id', $request->customer_id)->exists();
         if ($isCompanyExists) {
             $company = Company::where('connect_id', $request->customer_id)->first();
-            if ($company->package == "standard_m" || $company->package == "standard_y") {
+            if ($company->package == $request->package_name.'_'.$request->interval) {
                 return response()->json([
                     'message' => 'Subscription already available',
                     'status' => 500
