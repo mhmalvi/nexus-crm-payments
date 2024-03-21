@@ -7,17 +7,17 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CustomerIdRequest;
 use App\Services\stripe\GetAllSubscription;
-use App\Services\stripe\CreateSubscriptionService;
+use App\Services\stripe\CreateMonthlySubscriptionService;
 
 
 class SubscriptionController extends Controller
 {
     private $getAllSubscriptions;
-    private $createSubscriptions;
-    public function __construct(GetAllSubscription $getAllSubscriptions, CreateSubscriptionService $createSubscriptions)
+    private $createMonthlySubscriptions;
+    public function __construct(GetAllSubscription $getAllSubscriptions, CreateMonthlySubscriptionService $createMonthlySubscriptions)
     {
         $this->getAllSubscriptions = $getAllSubscriptions;
-        $this->createSubscriptions = $createSubscriptions;
+        $this->createMonthlySubscriptions = $createMonthlySubscriptions;
     }
     public function create_subscription(CustomerIdRequest $request)
     {
@@ -31,7 +31,7 @@ class SubscriptionController extends Controller
             ], 500);
             }else{
                 
-                $response = $this->createSubscriptions->createSubscription($request->customer_id);
+                $response = $this->createMonthlySubscriptions->createSubscription($request->customer_id);
                 // dd($response);
         if ($response) {
             return response()->json([

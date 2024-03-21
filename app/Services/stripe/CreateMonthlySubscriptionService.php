@@ -4,15 +4,16 @@ namespace App\Services\stripe;
 
 use Carbon\Carbon;
 use App\Models\Company;
+use App\Interfaces\CreateSubscriptionInterface;
 
-class CreateSubscriptionService
+class CreateMonthlySubscriptionService implements CreateSubscriptionInterface
 {
     public function createSubscription($customerId)
     {
         $current_date = Carbon::now();
             $end_date = $current_date->addDays(30);
         $company = Company::where('connect_id',$customerId)->first();
-        $company->package = 'standard';
+        $company->package = 'standard-m';
         $company->end_date = $end_date;
         $company->save();
         $stripe = new
