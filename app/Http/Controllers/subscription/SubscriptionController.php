@@ -36,10 +36,10 @@ class SubscriptionController extends Controller
                 ], 500);
             } else {
                 $data=[
-                    'customer_id'=>$request->customer_id,
-                    'interval'=>$request->interval,
-                    'package_name'=>$request->package_name,
-                    'price_id'=>$request->price_id,
+                    $customer_id=$request->customer_id,
+                    $interval=$request->interval,
+                    $package_name=$request->package_name,
+                    $price_id=$request->price_id,
                 ];
                 dd($data[0]);
                 $response = "";
