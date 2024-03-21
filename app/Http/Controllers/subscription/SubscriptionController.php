@@ -16,7 +16,7 @@ class SubscriptionController extends Controller
 {
     private $getAllSubscriptions;
     private $createMonthlySubscriptions;
-    private $createMonthlySubscriptions;
+    private $createYearlySubscriptions;
     public function __construct(GetAllSubscription $getAllSubscriptions, CreateMonthlySubscriptionService
     $createMonthlySubscriptions, CreateYearlySubscriptionService $createYearlySubscriptions )
     {
@@ -41,6 +41,7 @@ class SubscriptionController extends Controller
                     'package_name'=>$request->package_name,
                     'price_id'=>$request->price_id,
                 ];
+                $response = "";
                 if($request->interval=="month"){
                     $response = $this->createMonthlySubscriptions->createSubscription($data);
                 }else if($request->interval=="year"){
