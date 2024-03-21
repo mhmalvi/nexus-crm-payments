@@ -32,8 +32,8 @@ class SubscriptionController extends Controller
             if ($company->package == $request->package_name && $company->interval == $request->interval) {
                 return response()->json([
                     'message' => 'Subscription already available',
-                    'status' => 500
-                ], 500);
+                    'status' => 423
+                ], 423);
             } else {
                 if (
                     $company->package == $request->package_name && $company->interval == 'year' && $request->interval
@@ -41,10 +41,10 @@ class SubscriptionController extends Controller
                 ) {
                     return response()->json([
                         'message' => 'Cannot use the monthly subscription of this package',
-                        'status' => 500
-                    ], 500);
+                        'status' => 422
+                    ], 422);
                 } else {
-                    
+
                     $data = [
                         $customer_id = $request->customer_id,
                         $interval = $request->interval,
