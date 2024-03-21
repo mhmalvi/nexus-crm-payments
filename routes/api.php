@@ -39,7 +39,7 @@ Route::get('payment-history-delete/{id}', [\App\Http\Controllers\payment\Payment
 
 //
 Route::group(['middleware' => 'companyAuthentication'], function () {
-    Route::post('create-subscriptions', [SubscriptionController::class, 'create_subscription']);
+    
     Route::post('card-details-save', [CardDetailsController::class, 'insertCardDetails']);
     Route::post('card-details', [CardDetailsController::class, 'getCardDetails']);
     Route::put('card-details-update', [CardDetailsController::class, 'updateCardDetails']);    
@@ -47,5 +47,6 @@ Route::group(['middleware' => 'companyAuthentication'], function () {
 
     
 });
+Route::post('create-subscriptions', [SubscriptionController::class, 'create_subscription']);
 Route::get('get-customer-transactions',[TransactionController::class,'retrieve_transactions']);
 Route::get('subscriptions', [SubscriptionController::class, 'getAllSubscriptions']);
