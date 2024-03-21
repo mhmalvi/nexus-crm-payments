@@ -36,8 +36,8 @@ class SubscriptionController extends Controller
                 ], 500);
             } else {
                 if (
-                    $company->package == $request->package_name && $company->interval == 'yearly' && $request->interval
-                    == 'monthly'
+                    $company->package == $request->package_name && $company->interval == 'year' && $request->interval
+                    == 'month'
                 ) {
                     return response()->json([
                         'message' => 'Cannot use the monthly subscription of this package',
