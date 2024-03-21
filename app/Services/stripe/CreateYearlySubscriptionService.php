@@ -12,7 +12,7 @@ class CreateYearlySubscriptionService
         $current_date = Carbon::now();
             $end_date = $current_date->addDays(365);
         $company = Company::where('connect_id',$data[0])->first();
-        $company->package = $data[2];
+        $company->package = $data[2].'_'.$data[1];
         $company->end_date = $end_date;
         $company->save();
         $stripe = new
