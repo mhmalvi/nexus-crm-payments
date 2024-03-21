@@ -37,7 +37,7 @@ class SubscriptionController extends Controller
             } else {
                 if (
                     $company->package == $request->package_name && $company->interval == 'year' && $request->interval
-                    == 'month'
+                    == 'day'
                 ) {
                     return response()->json([
                         'message' => 'Cannot use the monthly subscription of this package',
@@ -52,7 +52,7 @@ class SubscriptionController extends Controller
                         $price_id = $request->price_id,
                     ];
                     $response = "";
-                    if ($request->interval == "month") {
+                    if ($request->interval == "day") {
                         $response = $this->createMonthlySubscriptions->createSubscription($data);
                     } else if ($request->interval == "year") {
                         $response = $this->createYearlySubscriptions->createSubscription($data);
