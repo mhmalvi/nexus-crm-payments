@@ -14,41 +14,39 @@ use App\Services\stripe\CreateMonthlySubscriptionService;
 class SubscriptionController extends Controller
 {
     private $getAllSubscriptions;
-    private $createMonthlySubscriptions;
-    public function __construct(GetAllSubscription $getAllSubscriptions, CreateSubscriptionInterface $createMonthlySubscriptions)
+    public function __construct(GetAllSubscription $getAllSubscriptions)
     {
         $this->getAllSubscriptions = $getAllSubscriptions;
-        $this->createMonthlySubscriptions = $createMonthlySubscriptions;
     }
-    public function create_subscription(CustomerIdRequest $request)
+    public function create_subscription(CustomerIdRequest $request, CreateSubscriptionInterface
+    $createMonthlySubscriptions)
     {
-        $isCompanyExists = Company::where('connect_id',$request->customer_id)->exists();
-        if($isCompanyExists){
-            $company = Company::where('connect_id',$request->customer_id)->first();
-            if($company->package=="standard"){
+        $isCompanyExists = Company::where('connect_id', $request->customer_id)->exists();
+        if ($isCompanyExists) {
+            $company = Company::where('connect_id', $request->customer_id)->first();
+            if ($company->package == "standard") {
                 return response()->json([
-                'message' => 'Subscription already available',
-                'status' => 500
-            ], 500);
-            }else{
-                
-                $response = $this->createMonthlySubscriptions->createSubscription($request->customer_id);
+                    'message' => 'Subscription already available',
+                    'status' => 500
+                ], 500);
+            } else {
+
+                $response = $createMonthlySubscriptions->createSubscription($request->customer_id);
                 // dd($response);
-        if ($response) {
-            return response()->json([
-                'message' => 'success',
-                'status' => 200,
-                'data' => $response
-            ], 200);
-        } else {
-            return response()->json([
-                'message' => 'Failed',
-                'status' => 500
-            ], 500);
-        }
+                if ($response) {
+                    return response()->json([
+                        'message' => 'success',
+                        'status' => 200,
+                        'data' => $response
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'message' => 'Failed',
+                        'status' => 500
+                    ], 500);
+                }
             }
         }
-        
     }
     public function getAllSubscriptions()
     {
