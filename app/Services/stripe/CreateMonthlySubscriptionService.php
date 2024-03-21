@@ -20,6 +20,7 @@ class CreateMonthlySubscriptionService
             \Stripe\StripeClient(config("app.stripe_secret"));
         return $stripe->subscriptions->create([
             'customer' => $data[0],
+            
             'items' => [['price' => $data[3]]],
         ]);
     }
