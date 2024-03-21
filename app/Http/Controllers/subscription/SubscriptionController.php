@@ -45,7 +45,7 @@ class SubscriptionController extends Controller
                 if($request->interval=="month"){
                     $response = $this->createMonthlySubscriptions->createSubscription($data);
                 }else if($request->interval=="year"){
-                    $response = $this->createYearySubscriptions->createSubscription($data);
+                    $response = $this->createYearlySubscriptions->createSubscription($data);
                 }
                 
                 // dd($response);
