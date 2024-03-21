@@ -21,7 +21,7 @@ class CreateYearlySubscriptionService
             'customer' => $data[0],
             'items' => [['price' => $data[3]]],
         ]);
-        $company->subscription_id = $response->data->id;
+        $company->subscription_id = $response->id;
         $company->save();
         return $response;
     }
