@@ -23,7 +23,7 @@ class CreateMonthlySubscriptionService
 
             'items' => [['price' => $data[3]]],
         ]);
-        dd(json_decode($response));
+        // dd($response);
         $company->subscription_id = $response->id;
         $company->save();
         return $response;
