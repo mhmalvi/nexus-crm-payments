@@ -44,6 +44,7 @@ class SubscriptionController extends Controller
                         'status' => 500
                     ], 500);
                 } else {
+                    
                     $data = [
                         $customer_id = $request->customer_id,
                         $interval = $request->interval,
