@@ -2,5 +2,5 @@
 namespace App\Interfaces;
 
 interface CreateSubscriptionInterface{
-    public function createSubscription();
+    public function createSubscription($customerId);
 }
