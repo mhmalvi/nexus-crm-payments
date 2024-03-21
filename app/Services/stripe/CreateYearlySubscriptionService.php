@@ -17,9 +17,12 @@ class CreateYearlySubscriptionService
         $company->save();
         $stripe = new
             \Stripe\StripeClient(config("app.stripe_secret"));
-        return $stripe->subscriptions->create([
+        $response = $stripe->subscriptions->create([
             'customer' => $data[0],
             'items' => [['price' => $data[3]]],
         ]);
+        $company->subscription_id = $response->data->id;
+        $company->save();
+        return $response;
     }
 }
