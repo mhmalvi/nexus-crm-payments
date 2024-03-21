@@ -14,7 +14,7 @@ class SubscriptionController extends Controller
 {
     private $getAllSubscriptions;
     private $createMonthlySubscriptions;
-    public function __construct(GetAllSubscription $getAllSubscriptions, CreateMonthlySubscriptionService $createMonthlySubscriptions)
+    public function __construct(GetAllSubscription $getAllSubscriptions, CreateSubscriptionInterface $createMonthlySubscriptions)
     {
         $this->getAllSubscriptions = $getAllSubscriptions;
         $this->createMonthlySubscriptions = $createMonthlySubscriptions;
