@@ -41,7 +41,7 @@ class SubscriptionController extends Controller
                     'package_name'=>$request->package_name,
                     'price_id'=>$request->price_id,
                 ];
-                dd($data);
+                dd($data[0]);
                 $response = "";
                 if($request->interval=="month"){
                     $response = $this->createMonthlySubscriptions->createSubscription($data);
