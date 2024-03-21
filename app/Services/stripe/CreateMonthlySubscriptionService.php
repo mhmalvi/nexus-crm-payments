@@ -8,19 +8,19 @@ use App\Interfaces\CreateSubscriptionInterface;
 
 class CreateMonthlySubscriptionService
 {
-    public function createSubscription($customerId)
+    public function createSubscription($data)
     {
         $current_date = Carbon::now();
             $end_date = $current_date->addDays(30);
-        $company = Company::where('connect_id',$customerId)->first();
-        $company->package = 'standard-m';
+        $company = Company::where('connect_id',$data[0])->first();
+        $company->package = $data[2];
         $company->end_date = $end_date;
         $company->save();
         $stripe = new
             \Stripe\StripeClient(config("app.stripe_secret"));
         return $stripe->subscriptions->create([
-            'customer' => $customerId,
-            'items' => [['price' => 'price_1OvZEkGeh9PhcWp49mwj2QAM']],
+            'customer' => $data[0],
+            'items' => [['price' => $data[3]]],
         ]);
     }
 }

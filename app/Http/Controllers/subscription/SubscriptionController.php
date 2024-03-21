@@ -32,8 +32,18 @@ class SubscriptionController extends Controller
                     'status' => 500
                 ], 500);
             } else {
-
-                $response = $this->createMonthlySubscriptions->createSubscription($request->customer_id);
+                $data=[
+                    'customer_id'=>$request->customer_id,
+                    'interval'=>$request->interval,
+                    'package_name'=>$request->package_name,
+                    'price_id'=>$request->price_id,
+                ];
+                if($request->interval=="month"){
+                    $response = $this->createMonthlySubscriptions->createSubscription($data);
+                }else if($request->interval=="year"){
+                    $response = $this->createMonthlySubscriptions->createSubscription($data);
+                }
+                
                 // dd($response);
                 if ($response) {
                     return response()->json([
