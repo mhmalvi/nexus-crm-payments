@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use App\Models\Company;
 use App\Interfaces\CreateSubscriptionInterface;
 
-class CreateMonthlySubscriptionService implements CreateSubscriptionInterface
+class CreateMonthlySubscriptionService
 {
     public function createSubscription($customerId)
     {

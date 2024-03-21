@@ -14,12 +14,14 @@ use App\Services\stripe\CreateMonthlySubscriptionService;
 class SubscriptionController extends Controller
 {
     private $getAllSubscriptions;
-    public function __construct(GetAllSubscription $getAllSubscriptions)
+    private $createMonthlySubscriptions;
+    public function __construct(GetAllSubscription $getAllSubscriptions, CreateMonthlySubscriptionService
+    $createMonthlySubscriptions)
     {
         $this->getAllSubscriptions = $getAllSubscriptions;
+        $this->createMonthlySubscriptions = $createMonthlySubscriptions;
     }
-    public function create_subscription(CustomerIdRequest $request, CreateSubscriptionInterface
-    $createMonthlySubscriptions)
+    public function create_subscription(CustomerIdRequest $request)
     {
         $isCompanyExists = Company::where('connect_id', $request->customer_id)->exists();
         if ($isCompanyExists) {
@@ -31,7 +33,7 @@ class SubscriptionController extends Controller
                 ], 500);
             } else {
 
-                $response = $createMonthlySubscriptions->createSubscription($request->customer_id);
+                $response = $this->createMonthlySubscriptions->createSubscription($request->customer_id);
                 // dd($response);
                 if ($response) {
                     return response()->json([
