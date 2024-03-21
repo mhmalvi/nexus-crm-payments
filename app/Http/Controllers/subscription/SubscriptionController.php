@@ -9,6 +9,7 @@ use App\Http\Requests\CustomerIdRequest;
 use App\Services\stripe\GetAllSubscription;
 use App\Interfaces\CreateSubscriptionInterface;
 use App\Services\stripe\CreateMonthlySubscriptionService;
+use App\Services\stripe\CreateYearlySubscriptionService;
 
 
 class SubscriptionController extends Controller
@@ -16,10 +17,11 @@ class SubscriptionController extends Controller
     private $getAllSubscriptions;
     private $createMonthlySubscriptions;
     public function __construct(GetAllSubscription $getAllSubscriptions, CreateMonthlySubscriptionService
-    $createMonthlySubscriptions)
+    $createMonthlySubscriptions, CreateYearlySubscriptionService $createYearlySubscriptions )
     {
         $this->getAllSubscriptions = $getAllSubscriptions;
         $this->createMonthlySubscriptions = $createMonthlySubscriptions;
+        $this->createYearlySubscriptions = $createYearlySubscriptions;
     }
     public function create_subscription(CustomerIdRequest $request)
     {
@@ -41,7 +43,7 @@ class SubscriptionController extends Controller
                 if($request->interval=="month"){
                     $response = $this->createMonthlySubscriptions->createSubscription($data);
                 }else if($request->interval=="year"){
-                    $response = $this->createMonthlySubscriptions->createSubscription($data);
+                    $response = $this->createYearySubscriptions->createSubscription($data);
                 }
                 
                 // dd($response);
