@@ -11,7 +11,7 @@ class CreateMonthlySubscriptionService
     public function createSubscription($data)
     {
         $current_date = Carbon::now();
-            $end_date = $current_date->addDays(30);
+            $end_date = $current_date->addDays(2);
         $company = Company::where('connect_id',$data[0])->first();
         $company->package = $data[2];
         $company->interval = $data[1];
