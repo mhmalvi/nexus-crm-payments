@@ -18,7 +18,7 @@ class SubscriptionController extends Controller
     private $createMonthlySubscriptions;
     private $createYearlySubscriptions;
     public function __construct(GetAllSubscription $getAllSubscriptions, CreateMonthlySubscriptionService
-    $createMonthlySubscriptions, CreateYearlySubscriptionService $createYearlySubscriptions )
+    $createMonthlySubscriptions, CreateYearlySubscriptionService $createYearlySubscriptions)
     {
         $this->getAllSubscriptions = $getAllSubscriptions;
         $this->createMonthlySubscriptions = $createMonthlySubscriptions;
@@ -29,35 +29,45 @@ class SubscriptionController extends Controller
         $isCompanyExists = Company::where('connect_id', $request->customer_id)->exists();
         if ($isCompanyExists) {
             $company = Company::where('connect_id', $request->customer_id)->first();
-            if ($company->package == $request->package_name.'_'.$request->interval ) {
+            if ($company->package == $request->package_name && $company->package == $request->interval) {
                 return response()->json([
                     'message' => 'Subscription already available',
                     'status' => 500
                 ], 500);
             } else {
-                $data=[
-                    $customer_id=$request->customer_id,
-                    $interval=$request->interval,
-                    $package_name=$request->package_name,
-                    $price_id=$request->price_id,
-                ];
-                $response = "";
-                if($request->interval=="month"){
-                    $response = $this->createMonthlySubscriptions->createSubscription($data);
-                }else if($request->interval=="year"){
-                    $response = $this->createYearlySubscriptions->createSubscription($data);
-                }
-                if ($response) {
+                if (
+                    $company->package == $request->package_name && $company->interval == 'yearly' && $request->interval
+                    == 'monthly'
+                ) {
                     return response()->json([
-                        'message' => 'success',
-                        'status' => 200,
-                        'data' => $response
-                    ], 200);
-                } else {
-                    return response()->json([
-                        'message' => 'Failed',
+                        'message' => 'Cannot use the monthly subscription of this package',
                         'status' => 500
                     ], 500);
+                } else {
+                    $data = [
+                        $customer_id = $request->customer_id,
+                        $interval = $request->interval,
+                        $package_name = $request->package_name,
+                        $price_id = $request->price_id,
+                    ];
+                    $response = "";
+                    if ($request->interval == "month") {
+                        $response = $this->createMonthlySubscriptions->createSubscription($data);
+                    } else if ($request->interval == "year") {
+                        $response = $this->createYearlySubscriptions->createSubscription($data);
+                    }
+                    if ($response) {
+                        return response()->json([
+                            'message' => 'success',
+                            'status' => 200,
+                            'data' => $response
+                        ], 200);
+                    } else {
+                        return response()->json([
+                            'message' => 'Failed',
+                            'status' => 500
+                        ], 500);
+                    }
                 }
             }
         }
