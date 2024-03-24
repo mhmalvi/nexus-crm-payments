@@ -94,8 +94,8 @@ class SubscriptionController extends Controller
     public function trialCheck(Request $request)
     {
         $company = Company::find($request->company_id);
-        $company = json_decode($company);
-        dd($company);
+        // $company = json_decode($company);
+        dd($company->business_email);
         // foreach($company as $data){
         // $result = Carbon::createFromFormat('d/m/Y H:i:s',$company->end_date);
         if ($company->package == "trial") {
