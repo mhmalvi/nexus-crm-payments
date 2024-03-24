@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\payment\CardDetailsController;
 use App\Http\Controllers\payment\CheckoutPaymentController;
+use App\Http\Controllers\payment\InvoiceController;
 use App\Http\Controllers\payment\PaymentHistoryController;
 use App\Http\Controllers\transaction\TransactionController;
 use App\Http\Controllers\subscription\SubscriptionController;
@@ -49,5 +50,5 @@ Route::post('create-subscriptions', [SubscriptionController::class, 'create_subs
 Route::get('get-customer-transactions',[PaymentHistoryController::class,'index']);
     
 });
-
+Route::get('get-invoice',[InvoiceController::class,'generatePDF']);
 Route::get('subscriptions', [SubscriptionController::class, 'getAllSubscriptions']);
