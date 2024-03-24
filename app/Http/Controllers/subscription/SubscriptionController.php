@@ -95,7 +95,7 @@ class SubscriptionController extends Controller
         $company = Company::find($request->company_id);
         // dd(json_decode($company));
         // foreach($company as $data){
-            $result = Carbon::createFromFormat($company->end_date)->subDays(-7);
+            $result = Carbon::createFromFormat('d/m/Y H:i:s',$company->end_date)->subDays(-7);
             dd($result);
         // }
 
