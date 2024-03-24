@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\subscription;
 
+use Carbon\Carbon;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CustomerIdRequest;
 use App\Services\stripe\GetAllSubscription;
 use App\Interfaces\CreateSubscriptionInterface;
-use App\Services\stripe\CreateMonthlySubscriptionService;
 use App\Services\stripe\CreateYearlySubscriptionService;
+use App\Services\stripe\CreateMonthlySubscriptionService;
 
 
 class SubscriptionController extends Controller
@@ -94,7 +95,7 @@ class SubscriptionController extends Controller
         $company = Company::find($request->company_id);
         // dd(json_decode($company));
         // foreach($company as $data){
-            $result = $company->end_date->subDays(-7);
+            $result = Carbon::now($company->end_date)->subDays(-7);            
             dd($result);
         // }
 
