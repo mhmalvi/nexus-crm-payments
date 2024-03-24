@@ -5,17 +5,35 @@ namespace App\Http\Controllers\payment;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PaymentHistory;
+use App\Services\stripe\GetCustomerTransactionsService;
 
 class PaymentHistoryController extends Controller
 {
+    private $cus_transactions;
+    public function __construct(GetCustomerTransactionsService $cus_transactions)
+    {
+        $this->cus_transactions = $cus_transactions;
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $response = $this->cus_transactions->getCustomerTransactions($request->customer_id);
+        if ($response) {
+            return response()->json([
+                'message' => 'success',
+                'status' => 200,
+                'data' => $response
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'No data found',
+                'status' => 404
+            ], 404);
+        }
     }
 
     /**
