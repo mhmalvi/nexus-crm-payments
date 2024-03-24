@@ -92,6 +92,6 @@ class SubscriptionController extends Controller
 
     public function trialCheck(Request $request){
         $company = Company::all();
-        dd($company);
+        dd(json_decode($company));
     }
 }
