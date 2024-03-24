@@ -29,7 +29,7 @@ class TrialMail extends Command
      */
     public function handle()
     {
-        $company = Company::where('');
+        $company = Company::where('active',1)->get();
         foreach ($company as $company) {
             if ($company->package == "trial") {
                 $date = $company->end_date;
@@ -40,7 +40,7 @@ class TrialMail extends Command
                 } else if (Carbon::now() == $date_seven) {
                     Mail::to($company->business_email)->queue(new TrialPeriodMail());
                 }
-                if (isset($company->end_date) && Carbon::now() > $company->end_date && $company->active == 1) {
+                if (isset($company->end_date) && Carbon::now() > $company->end_date) {
                     $company->active = 0;
                     $company->save();
                 }
