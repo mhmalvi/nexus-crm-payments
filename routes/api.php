@@ -47,7 +47,7 @@ Route::group(['middleware' => 'companyAuthentication'], function () {
     Route::put('card-details-update', [CardDetailsController::class, 'updateCardDetails']);    
     Route::post('card-destroy', [CardDetailsController::class, 'destroyCard']);
 Route::post('create-subscriptions', [SubscriptionController::class, 'create_subscription']);
-Route::get('get-customer-transactions',[PaymentHistoryController::class,'index']);
+Route::post('get-customer-transactions',[PaymentHistoryController::class,'index']);
     
 });
 Route::get('get-invoice',[InvoiceController::class,'generatePDF']);
