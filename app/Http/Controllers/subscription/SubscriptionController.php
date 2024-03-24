@@ -91,7 +91,12 @@ class SubscriptionController extends Controller
     }
 
     public function trialCheck(Request $request){
-        $company = Company::all();
-        dd(json_decode($company));
+        $company = Company::find($request->company_id);
+        // dd(json_decode($company));
+        // foreach($company as $data){
+            $result = $company->end_date->subDays(-7);
+            dd($result);
+        // }
+
     }
 }
