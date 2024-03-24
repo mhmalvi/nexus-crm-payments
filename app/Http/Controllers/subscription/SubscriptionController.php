@@ -91,7 +91,7 @@ class SubscriptionController extends Controller
     }
 
     public function trialCheck(Request $request){
-        $company = Company::find($request->company_id);
+        $company = Company::all();
         dd($company);
     }
 }
