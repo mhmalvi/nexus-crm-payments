@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\payment\CardDetailsController;
 use App\Http\Controllers\payment\CheckoutPaymentController;
+use App\Http\Controllers\payment\PaymentHistoryController;
 use App\Http\Controllers\transaction\TransactionController;
 use App\Http\Controllers\subscription\SubscriptionController;
 use App\Http\Controllers\products\ProductController;
@@ -48,5 +49,5 @@ Route::group(['middleware' => 'companyAuthentication'], function () {
     
 });
 Route::post('create-subscriptions', [SubscriptionController::class, 'create_subscription']);
-Route::get('get-customer-transactions',[TransactionController::class,'retrieve_transactions']);
+Route::get('get-customer-transactions',[PaymentHistoryController::class,'index']);
 Route::get('subscriptions', [SubscriptionController::class, 'getAllSubscriptions']);
