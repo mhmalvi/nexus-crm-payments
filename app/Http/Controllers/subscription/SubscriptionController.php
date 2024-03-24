@@ -89,4 +89,9 @@ class SubscriptionController extends Controller
             ], 404);
         }
     }
+
+    public function trialCheck(Request $request){
+        $company = Company::find($request->id);
+        dd($company);
+    }
 }

@@ -66,7 +66,7 @@
                                 <td style=" width:50%;">
 
                                     <p style="color:grey;">BILL TO</p>
-                                    <p style="line-height:0.1%"><B>ITEC</B></p>
+                                    <p style="line-height:0.1%"><B>Queleads</B></p>
                                     <p style="line-height:19px"><B></B></p>
 
                                 </td>
@@ -78,13 +78,13 @@
                                             <tr>
                                                 <td><b>Invoice Number</b></td>
                                                 <td>:</td>
-                                                <td style="padding-left:6%;">123456</td>
+                                                <td style="padding-left:6%;">{{ $inv_no }}</td>
 
                                             </tr>
                                             <tr>
-                                                <td><b>Customer ID</b></td>
+                                                <td><b>Company Name</b></td>
                                                 <td>:</td>
-                                                <td style="padding-left:6%;">{{$invoice_date}}</td>
+                                                <td style="padding-left:6%;">{{$company_name}}</td>
 
                                             </tr>
                                             {{-- <tr>
