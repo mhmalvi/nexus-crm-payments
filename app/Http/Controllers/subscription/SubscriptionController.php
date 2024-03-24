@@ -96,7 +96,9 @@ class SubscriptionController extends Controller
         // dd(json_decode($company));
         // foreach($company as $data){
             // $result = Carbon::createFromFormat('d/m/Y H:i:s',$company->end_date);
-            if(Carbon::now()>$company->end_date){
+            $date = $company->end_date;
+            $date = $date->subDays(3);
+            if(Carbon::now()>$date){
                 dd('true');
             }else{
                 dd('false');
