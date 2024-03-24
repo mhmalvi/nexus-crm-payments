@@ -6,9 +6,11 @@ use Carbon\Carbon;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\CustomerIdRequest;
 use App\Services\stripe\GetAllSubscription;
 use App\Interfaces\CreateSubscriptionInterface;
+use App\Mail\TrialPeriodMail;
 use App\Services\stripe\CreateYearlySubscriptionService;
 use App\Services\stripe\CreateMonthlySubscriptionService;
 
@@ -95,17 +97,19 @@ class SubscriptionController extends Controller
     {
         $company = Company::find($request->company_id);
         // $company = json_decode($company);
-        dd($company->business_email);
+        // dd($company->business_email);
         // foreach($company as $data){
         // $result = Carbon::createFromFormat('d/m/Y H:i:s',$company->end_date);
         if ($company->package == "trial") {
             $date = $company->end_date;
-            $date = Carbon::parse($date)->subDays(3);
-            dd($company->business_email);
-            if (Carbon::now() == $date) {
-                // Mail::to()
-            } else {
-                dd('false');
+            $date_three = Carbon::parse($date)->subDays(3);
+            $date_seven = Carbon::parse($date)->subDays(7);
+            // dd($company->business_email);
+            
+            if (Carbon::now() == $date_three) {
+                Mail::to($company->business_email)->queue(new TrialPeriodMail());
+            } else if(Carbon::now() == $date_seven){
+                Mail::to($company->business_email)->queue(new TrialPeriodMail());
             }
         }
 
