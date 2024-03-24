@@ -15,8 +15,14 @@ class InvoiceController extends Controller
     public function generatePDF(Request $request)
     {
             $response = $this->invoice->generate_invoice($request->inv_id);
-            dd($response);
+            dd($response->customer_name);
             $fileName = 'invoice-' . $student->student_name . '.pdf';
+            $data = [
+            'price' => $price,
+            'company_name' => $student->student_name,
+            'course_name' => $student->course_name,
+            'invoice_date' => $invoice_date_to_file
+            ];
             $pdf = PDF::loadView('myPDF', $data);
             $content = $pdf->download()->getOriginalContent();
             $invoice_number = random_int(10000, 99999);
