@@ -26,7 +26,7 @@ class PaymentHistoryController extends Controller
             return response()->json([
                 'message' => 'success',
                 'status' => 200,
-                'data' => $response
+                'data' => $response->paginate()
             ], 200);
         } else {
             return response()->json([

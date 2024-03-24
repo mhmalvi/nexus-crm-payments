@@ -132,7 +132,7 @@
             <tr style="">
                 <td style=" width:50%;">
 
-                    <p><B>{{$company_name}}</B></p>
+                    <p><B>RPL</B></p>
                     {{-- <p style="">{{$course_name}}</p> --}}
 
                 </td>
