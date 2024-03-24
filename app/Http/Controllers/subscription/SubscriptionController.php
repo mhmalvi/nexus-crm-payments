@@ -97,7 +97,7 @@ class SubscriptionController extends Controller
         // foreach($company as $data){
             // $result = Carbon::createFromFormat('d/m/Y H:i:s',$company->end_date);
             $date = $company->end_date;
-            $date = Carbon::parse($date)->subDays(3);
+            $date = Carbon::parse($date)->addDays(3);
             if(Carbon::now()>$date){
                 dd('true');
             }else{
