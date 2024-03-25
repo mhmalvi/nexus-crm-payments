@@ -100,7 +100,7 @@ class SubscriptionController extends Controller
         // dd($company->business_email);
         // foreach($company as $data){
         // $result = Carbon::createFromFormat('d/m/Y H:i:s',$company->end_date);
-        if ($company->package == "trial") {
+        // if ($company->package == "trial") {
             $date = $company->end_date;
             $date_three = Carbon::parse($date)->subDays(3);
             $date_seven = Carbon::parse($date)->subDays(7);
@@ -112,7 +112,7 @@ class SubscriptionController extends Controller
             // } else if(Carbon::now() == $date_seven){
             //     Mail::to($company->business_email)->queue(new TrialPeriodMail());
             // }
-        }
+        // }
 
         // }
 
