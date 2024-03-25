@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\payment\CardDetailsController;
 use App\Http\Controllers\payment\CheckoutPaymentController;
 use App\Http\Controllers\payment\InvoiceController;
+use App\Http\Controllers\payment\MakePaymentController;
 use App\Http\Controllers\payment\PaymentHistoryController;
 use App\Http\Controllers\transaction\TransactionController;
 use App\Http\Controllers\subscription\SubscriptionController;
@@ -52,3 +53,4 @@ Route::group(['middleware' => 'companyAuthentication'], function () {
 // Route::get('get-invoice',[InvoiceController::class,'generatePDF']);
 Route::get('subscriptions', [SubscriptionController::class, 'getAllSubscriptions']);
 Route::post('trial-check', [SubscriptionController::class, 'trialCheck']);
+Route::post('charge', [MakePaymentController::class, 'makePayment']);
