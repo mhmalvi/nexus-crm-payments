@@ -105,7 +105,7 @@ class SubscriptionController extends Controller
             $date_three = Carbon::parse($date)->subDays(3);
             $date_seven = Carbon::parse($date)->subDays(7);
             // dd($company->business_email);
-            $date = date('Y-m-d H:i',$date);
+            // $date = date('Y-m-d H:i',$date);
             dd($date);
             // if (Carbon::now() == $date_three) {
             //     Mail::to($company->business_email)->queue(new TrialPeriodMail());
