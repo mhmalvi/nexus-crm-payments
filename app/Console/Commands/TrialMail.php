@@ -29,15 +29,20 @@ class TrialMail extends Command
      */
     public function handle()
     {
-        $company = Company::where('active',1)->get();
+        $company = Company::where('active', 1)->get();
         foreach ($company as $company) {
             if ($company->package == "trial") {
                 $date = $company->end_date;
+                $date_one = Carbon::parse($date)->subDays(1);
                 $date_three = Carbon::parse($date)->subDays(3);
                 $date_seven = Carbon::parse($date)->subDays(7);
                 if (Carbon::now() == $date_three) {
                     Mail::to($company->business_email)->queue(new TrialPeriodMail());
                 } else if (Carbon::now() == $date_seven) {
+                    Mail::to($company->business_email)->queue(new TrialPeriodMail());
+                } else if (Carbon::now() == $date_one) {
+                    Mail::to($company->business_email)->queue(new TrialPeriodMail());
+                } else if (Carbon::now() == $date) {
                     Mail::to($company->business_email)->queue(new TrialPeriodMail());
                 }
                 if (isset($company->end_date) && Carbon::now() > $company->end_date) {
