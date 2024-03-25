@@ -6,6 +6,6 @@
     <title>Document</title>
 </head>
 <body>
-    Your trial period will end on 
+    Your trial period will end on {{ $end_date }}
 </body>
 </html>
