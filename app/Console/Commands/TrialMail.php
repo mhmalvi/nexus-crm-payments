@@ -46,7 +46,7 @@ class TrialMail extends Command
                     Mail::to($company->business_email)->queue(new TrialPeriodMail($company->end_date));
                 }
                 if (isset($company->end_date) && Carbon::now() > $company->end_date) {
-                    $company->active = 0;
+                    $company->active = 2;
                     $company->save();
                 }
             }
