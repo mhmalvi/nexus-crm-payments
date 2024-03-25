@@ -105,12 +105,13 @@ class SubscriptionController extends Controller
             $date_three = Carbon::parse($date)->subDays(3);
             $date_seven = Carbon::parse($date)->subDays(7);
             // dd($company->business_email);
-            dd(Carbon::parse('d/m/y H:i',$date));
-            if (Carbon::now() == $date_three) {
-                Mail::to($company->business_email)->queue(new TrialPeriodMail());
-            } else if(Carbon::now() == $date_seven){
-                Mail::to($company->business_email)->queue(new TrialPeriodMail());
-            }
+            $date = Carbon::parse('d/m/y H:i',$date);
+            dd($date);
+            // if (Carbon::now() == $date_three) {
+            //     Mail::to($company->business_email)->queue(new TrialPeriodMail());
+            // } else if(Carbon::now() == $date_seven){
+            //     Mail::to($company->business_email)->queue(new TrialPeriodMail());
+            // }
         }
 
         // }
