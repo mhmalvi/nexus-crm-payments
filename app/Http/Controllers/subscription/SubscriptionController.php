@@ -14,19 +14,22 @@ use App\Mail\SubscriptionMail;
 use App\Mail\TrialPeriodMail;
 use App\Services\stripe\CreateYearlySubscriptionService;
 use App\Services\stripe\CreateMonthlySubscriptionService;
-
+use App\Services\stripe\UpgradeSubscriptionService;
 
 class SubscriptionController extends Controller
 {
     private $getAllSubscriptions;
     private $createMonthlySubscriptions;
     private $createYearlySubscriptions;
+    private $upgradeSubscriptions;
     public function __construct(GetAllSubscription $getAllSubscriptions, CreateMonthlySubscriptionService
-    $createMonthlySubscriptions, CreateYearlySubscriptionService $createYearlySubscriptions)
+    $createMonthlySubscriptions, CreateYearlySubscriptionService $createYearlySubscriptions, UpgradeSubscriptionService
+    $upgradeSubscriptions)
     {
         $this->getAllSubscriptions = $getAllSubscriptions;
         $this->createMonthlySubscriptions = $createMonthlySubscriptions;
         $this->createYearlySubscriptions = $createYearlySubscriptions;
+        $this->upgradeSubscriptions = $upgradeSubscriptions;
     }
     public function create_subscription(CustomerIdRequest $request)
     {
@@ -47,16 +50,20 @@ class SubscriptionController extends Controller
                         'message' => 'Cannot use the monthly subscription of this package',
                         'status' => 422
                     ], 422);
-                } else {
+                } else{
 
                     $data = [
                         $customer_id = $request->customer_id,
                         $interval = $request->interval,
                         $package_name = $request->package_name,
                         $price_id = $request->price_id,
-                        $active = 1
+                        $active = 1,
+                        $sub_id = $request->sub_id?$request->sub_id:""
                     ];
                     $response = "";
+                    if($company->interval == 'day'){
+                        $response = $this->upgradeSubscriptions->upgradeSubscription($data);
+                    }
                     if ($request->interval == "day") {
                         $response = $this->createMonthlySubscriptions->createSubscription($data);
                     } else if ($request->interval == "year") {
