@@ -61,7 +61,7 @@ class SubscriptionController extends Controller
                         $sub_id = $request->sub_id?$request->sub_id:""
                     ];
                     $response = "";
-                    if($company->interval == 'day' && $company->interval == 'year'){
+                    if($company->interval == 'day' && $request->interval == 'year'){
                         $response = $this->upgradeSubscriptions->upgradeSubscription($data);
                     }
                     if ($request->interval == "day") {
