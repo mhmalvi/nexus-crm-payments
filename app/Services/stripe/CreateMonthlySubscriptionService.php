@@ -13,6 +13,7 @@ class CreateMonthlySubscriptionService
         $current_date = Carbon::now();
             $end_date = $current_date->addDays(1);            
         $company = Company::where('connect_id',$data[0])->first();
+        $company->active = $data[4];
         $company->package = $data[2];
         $company->interval = $data[1];
         $company->end_date = $end_date;

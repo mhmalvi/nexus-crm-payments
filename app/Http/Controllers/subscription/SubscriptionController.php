@@ -53,6 +53,7 @@ class SubscriptionController extends Controller
                         $interval = $request->interval,
                         $package_name = $request->package_name,
                         $price_id = $request->price_id,
+                        $active = 1
                     ];
                     $response = "";
                     if ($request->interval == "day") {

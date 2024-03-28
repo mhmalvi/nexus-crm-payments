@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\payment;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company;
 use App\Services\stripe\CreateChargeService;
 use Illuminate\Http\Request;
 
@@ -22,6 +23,7 @@ class MakePaymentController extends Controller
         ];
         $response = $this->charge->charge($data);
         if ($response) {
+            // Company::where('id',$data[])
             return response()->json([
                 'message' => 'success',
                 'status' => 201,
