@@ -73,8 +73,8 @@ class SubscriptionController extends Controller
                         array_push($data,$s_id->items->data[0]['id']);
                         $response = $this->upgradeSubscriptions->upgradeSubscription($data);
                     }
-                    dd(json_decode($company)->package_name);
-                    if ($request->interval == "day" && $company->package_name == 'trial') {
+                    dd(json_decode($company)->package);
+                    if ($request->interval == "day" && $company->package == 'trial') {
                         // dd('day');
                         // dd($data);
                         $response = $this->createMonthlySubscriptions->createSubscription($data);
