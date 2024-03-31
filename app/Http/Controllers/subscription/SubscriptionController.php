@@ -14,6 +14,7 @@ use App\Mail\SubscriptionMail;
 use App\Mail\TrialPeriodMail;
 use App\Services\stripe\CreateYearlySubscriptionService;
 use App\Services\stripe\CreateMonthlySubscriptionService;
+use App\Services\stripe\RetrieveASubscriptionService;
 use App\Services\stripe\UpgradeSubscriptionService;
 
 class SubscriptionController extends Controller
@@ -22,9 +23,10 @@ class SubscriptionController extends Controller
     private $createMonthlySubscriptions;
     private $createYearlySubscriptions;
     private $upgradeSubscriptions;
+    private $retrieveSubscription;
     public function __construct(GetAllSubscription $getAllSubscriptions, CreateMonthlySubscriptionService
     $createMonthlySubscriptions, CreateYearlySubscriptionService $createYearlySubscriptions, UpgradeSubscriptionService
-    $upgradeSubscriptions)
+    $upgradeSubscriptions, RetrieveASubscriptionService $retrieveSubscription)
     {
         $this->getAllSubscriptions = $getAllSubscriptions;
         $this->createMonthlySubscriptions = $createMonthlySubscriptions;
@@ -63,6 +65,8 @@ class SubscriptionController extends Controller
                     ];
                     $response = "";
                     if($company->interval == 'day' && $request->interval == 'year'){
+                        $s_id = $this->retrieveSubscription->retrieveSubscription($sub_id);
+                        dd($s_id->items->data[0]->id);
                         $response = $this->upgradeSubscriptions->upgradeSubscription($data);
                     }else if ($request->interval == "day" && $company->package_name == 'trial') {
                         $response = $this->createMonthlySubscriptions->createSubscription($data);
