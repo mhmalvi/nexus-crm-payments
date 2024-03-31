@@ -12,7 +12,6 @@ class UpgradeSubscriptionService
         return $stripe->subscriptions->update(
             $data[5],
             ['items' => ['price' => $data[3]]],
-            ['items' => ['price_data' => ['unit_amount' => 135]]]
         );
     }
 }
