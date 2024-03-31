@@ -72,9 +72,10 @@ class SubscriptionController extends Controller
                         array_push($data,$s_id->items->data[0]['id']);
                         $response = $this->upgradeSubscriptions->upgradeSubscription($data);
                     }else if ($request->interval == "day" && $company->package_name == 'trial') {
-                        dd('fgfghhgdh');
+                        dd('day');
                         $response = $this->createMonthlySubscriptions->createSubscription($data);
                     } else if ($request->interval == "year" && $company->interval != 'day') {
+                        dd('year');
                         $response = $this->createYearlySubscriptions->createSubscription($data);
                     }
                     // dd($response);
