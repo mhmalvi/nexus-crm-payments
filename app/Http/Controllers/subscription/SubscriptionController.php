@@ -68,7 +68,7 @@ class SubscriptionController extends Controller
                     if($company->interval == 'day' && $request->interval == 'year'){
                         $s_id = $this->retrieveSubscription->retrieveSubscription($sub_id);
                         
-                        dd($s_id->items->data[0]->id);
+                        dd($s_id->items);
                         $response = $this->upgradeSubscriptions->upgradeSubscription($data);
                     }else if ($request->interval == "day" && $company->package_name == 'trial') {
                         $response = $this->createMonthlySubscriptions->createSubscription($data);
