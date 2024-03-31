@@ -70,15 +70,17 @@ class SubscriptionController extends Controller
                         array_push($data,$request->sub_id);
                         $s_id = $this->retrieveSubscription->retrieveSubscription($request->sub_id);
                         // dd($s_id->items->data[0]['id']);
-                        
+
                         array_push($data,$s_id->items->data[0]['id']);
                         $response = $this->upgradeSubscriptions->upgradeSubscription($data);
                     }else if ($request->interval == "day" && $company->package_name == 'trial') {
-                        dd('day');
+                        // dd('day');
                         $response = $this->createMonthlySubscriptions->createSubscription($data);
+                        dd($response);
                     } else if ($request->interval == "year" && $company->interval != 'day') {
-                        dd('year');
+                        
                         $response = $this->createYearlySubscriptions->createSubscription($data);
+                        dd($response);
                     }
                     // dd($response);
                     if ($response) {
