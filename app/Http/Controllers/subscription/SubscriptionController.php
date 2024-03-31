@@ -67,10 +67,11 @@ class SubscriptionController extends Controller
                     $response = "";
                     if($company->interval == 'day' && $request->interval == 'year'){
                         // dd($request->sub_id);
-                        array_push($data,$request->sub_id);
+                        // array_push($data,$request->sub_id);
                         $s_id = $this->retrieveSubscription->retrieveSubscription($request->sub_id);
                         // dd($s_id->items->data[0]['id']);
                         array_push($data,$s_id->items->data[0]['id']);
+                        dd($data);
                         $response = $this->upgradeSubscriptions->upgradeSubscription($data);
                     }
                     // dd(json_decode($company)->package);
