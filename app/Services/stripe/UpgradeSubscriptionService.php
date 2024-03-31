@@ -20,7 +20,7 @@ class UpgradeSubscriptionService
         $stripe = new
             \Stripe\StripeClient(config("app.stripe_secret"));
         $response = $stripe->subscriptions->update(
-            $data[4],
+            $data[5],
             ['items' => [[
                 'price' => $data[3]]]]
         );
