@@ -22,7 +22,6 @@ class UpgradeSubscriptionService
         $response = $stripe->subscriptions->update(
             $data[5],
             ['items' => [[
-                'id'=>$data[5],
                 'price' => $data[3]]],]
         );
         $company->subscription_id = $response->id;
