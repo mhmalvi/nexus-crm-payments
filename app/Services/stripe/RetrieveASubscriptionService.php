@@ -6,6 +6,6 @@ class RetrieveASubscriptionService{
     public function retrieveSubscription($data){
         $stripe = new
         \Stripe\StripeClient(config("app.stripe_secret"));
-        return $stripe->subscriptions->retrieve($data[5], []);
+        return $stripe->subscriptions->retrieve($data, []);
     }
 }
