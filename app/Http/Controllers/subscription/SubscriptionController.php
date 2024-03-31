@@ -37,7 +37,7 @@ class SubscriptionController extends Controller
     public function create_subscription(CustomerIdRequest $request)
     {
         $isCompanyExists = Company::where('connect_id', $request->customer_id)->exists();
-        dd($request->all());
+        // dd($request->all());
         if ($isCompanyExists) {
             $company = Company::where('connect_id', $request->customer_id)->first();
             if ($company->package == $request->package_name && $company->interval == $request->interval) {
