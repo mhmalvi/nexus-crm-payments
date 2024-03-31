@@ -6,6 +6,7 @@ class UpgradeSubscriptionService
 {
     public function upgradeSubscription($data)
     {
+        dd($data);
         $stripe = new
             \Stripe\StripeClient(config("app.stripe_secret"));
         return $stripe->subscriptions->update(

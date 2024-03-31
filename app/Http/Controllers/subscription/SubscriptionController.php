@@ -52,7 +52,7 @@ class SubscriptionController extends Controller
                         'status' => 422
                     ], 422);
                 } else{
-dd($request->all());
+// dd($request->all());
                     $data = [
                         $customer_id = $request->customer_id,
                         $interval = $request->interval,
