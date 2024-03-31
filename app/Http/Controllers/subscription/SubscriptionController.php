@@ -32,6 +32,7 @@ class SubscriptionController extends Controller
         $this->createMonthlySubscriptions = $createMonthlySubscriptions;
         $this->createYearlySubscriptions = $createYearlySubscriptions;
         $this->upgradeSubscriptions = $upgradeSubscriptions;
+        $this->retrieveSubscription = $retrieveSubscription;
     }
     public function create_subscription(CustomerIdRequest $request)
     {
