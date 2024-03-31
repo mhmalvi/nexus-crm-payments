@@ -47,6 +47,7 @@ class TrialMail extends Command
                 }
                 if (isset($company->end_date) && Carbon::now() > $company->end_date) {
                     $company->active = 2;
+                    $company->subscription_id = "";
                     $company->save();
                 }
             }
