@@ -73,7 +73,7 @@ class SubscriptionController extends Controller
                         array_push($data,$s_id->items->data[0]['id']);
                         $response = $this->upgradeSubscriptions->upgradeSubscription($data);
                     }
-                    dd(json_decode($company)->package);
+                    // dd(json_decode($company)->package);
                     if ($request->interval == "day" && $company->package == 'trial') {
                         // dd('day');
                         // dd($data);
