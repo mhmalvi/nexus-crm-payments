@@ -66,6 +66,7 @@ class SubscriptionController extends Controller
                     // dd($data);
                     $response = "";
                     if($company->interval == 'day' && $request->interval == 'year'){
+                        dd('upgrade');
                         array_push($data,$request->sub_id);
                         $s_id = $this->retrieveSubscription->retrieveSubscription($request->sub_id);
                         // dd($s_id->items->data[0]['id']);
