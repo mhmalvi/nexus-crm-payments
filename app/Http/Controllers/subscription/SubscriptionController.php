@@ -63,6 +63,7 @@ class SubscriptionController extends Controller
                         $price_id = $request->price_id,
                         $active = 1,
                     ];
+                    dd($data);
                     $response = "";
                     if($company->interval == 'day' && $request->interval == 'year'){
                         array_push($data,$request->sub_id);
