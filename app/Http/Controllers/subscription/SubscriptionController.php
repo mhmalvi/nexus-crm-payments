@@ -71,7 +71,7 @@ class SubscriptionController extends Controller
                         // $s_id = $this->retrieveSubscription->retrieveSubscription($request->sub_id);
                         // dd($s_id->items->data[0]['id']);
                         // array_push($data,$s_id->items->data[0]['id']);
-                        // dd($data);
+                        dd($data);
                         $response = $this->upgradeSubscriptions->upgradeSubscription($data);
                     }
                     // dd(json_decode($company)->package);
