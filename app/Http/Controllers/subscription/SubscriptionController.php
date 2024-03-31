@@ -66,7 +66,7 @@ class SubscriptionController extends Controller
                     // dd($data);
                     $response = "";
                     if($company->interval == 'day' && $request->interval == 'year'){
-                        dd('upgrade');
+                        // dd('upgrade');
                         array_push($data,$request->sub_id);
                         $s_id = $this->retrieveSubscription->retrieveSubscription($request->sub_id);
                         // dd($s_id->items->data[0]['id']);
@@ -76,11 +76,11 @@ class SubscriptionController extends Controller
                     }else if ($request->interval == "day" && $company->package_name == 'trial') {
                         // dd('day');
                         $response = $this->createMonthlySubscriptions->createSubscription($data);
-                        dd($response);
+                        // dd($response);
                     } else if ($request->interval == "year" && $company->interval != 'day') {
                         
                         $response = $this->createYearlySubscriptions->createSubscription($data);
-                        dd($response);
+                        // dd($response);
                     }
                     // dd($response);
                     if ($response) {
