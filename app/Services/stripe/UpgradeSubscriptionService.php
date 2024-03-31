@@ -22,7 +22,7 @@ class UpgradeSubscriptionService
         $response = $stripe->subscriptions->update(
             $data[5],
             ['items' => [[
-                'id'=>'si_PpwM5iFqUCfAvq',
+                'id'=>$data[6],
                 'price' => $data[3]]]]
         );
         // $company->subscription_id = $response->id;
