@@ -20,9 +20,9 @@ class UpgradeSubscriptionService
         $stripe = new
             \Stripe\StripeClient(config("app.stripe_secret"));
         $response = $stripe->subscriptions->update(
-            $data[5],
+            $data[4],
             ['items' => [[
-                'price' => $data[3]]],]
+                'price' => $data[3]]]]
         );
         $company->subscription_id = $response->id;
         $company->save();
