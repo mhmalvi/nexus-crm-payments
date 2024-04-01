@@ -6,7 +6,7 @@ use App\Interfaces\CardDetailsInterface;
 use App\Interfaces\InsertCardDetailsInterface;
 use App\Models\CardDetails;
 
-class CardDetailsInsertService implements InsertCardDetailsInterface
+class CardDetailsInsertService
 {
 
     public function saveCardDetails($card_data)

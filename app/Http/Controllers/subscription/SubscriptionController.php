@@ -5,17 +5,18 @@ namespace App\Http\Controllers\subscription;
 use Carbon\Carbon;
 use App\Models\Company;
 use Illuminate\Http\Request;
+use App\Mail\TrialPeriodMail;
+use App\Mail\SubscriptionMail;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\SubscriptionUpgradeMail;
 use App\Http\Requests\CustomerIdRequest;
 use App\Services\stripe\GetAllSubscription;
 use App\Interfaces\CreateSubscriptionInterface;
-use App\Mail\SubscriptionMail;
-use App\Mail\TrialPeriodMail;
+use App\Services\stripe\UpgradeSubscriptionService;
+use App\Services\stripe\RetrieveASubscriptionService;
 use App\Services\stripe\CreateYearlySubscriptionService;
 use App\Services\stripe\CreateMonthlySubscriptionService;
-use App\Services\stripe\RetrieveASubscriptionService;
-use App\Services\stripe\UpgradeSubscriptionService;
 
 class SubscriptionController extends Controller
 {
@@ -54,8 +55,8 @@ class SubscriptionController extends Controller
                         'message' => 'Cannot use the monthly subscription of this package',
                         'status' => 422
                     ], 422);
-                } else{
-// dd($request->all());
+                } else {
+                    // dd($request->all());
                     $data = [
                         $customer_id = $request->customer_id,
                         $interval = $request->interval,
@@ -63,16 +64,25 @@ class SubscriptionController extends Controller
                         $price_id = $request->price_id,
                         $active = 1,
                     ];
-                    
+
                     $response = "";
-                    if($company->interval == 'day' && $request->interval == 'year'){
+                    if ($company->interval == 'day' && $request->interval == 'year') {
                         // dd($request->sub_id);
-                        array_push($data,$request->sub_id);
+                        array_push($data, $request->sub_id);
                         $s_id = $this->retrieveSubscription->retrieveSubscription($request->sub_id);
                         // dd($s_id->items->data[0]['id']);
-                        array_push($data,$s_id->items->data[0]['id']);
+                        array_push($data, $s_id->items->data[0]['id']);
                         // dd($data);
                         $response = $this->upgradeSubscriptions->upgradeSubscription($data);
+                        if ($response) {
+                            Mail::to($company->business_email)->send(new
+                                SubscriptionUpgradeMail($company->business_email, $company->name, $request->interval, $request->package_name));
+                            return response()->json([
+                                'message' => 'success',
+                                'status' => 200,
+                                'data' => $response
+                            ], 200);
+                        }
                     }
                     // dd(json_decode($company)->package);
                     if ($request->interval == "day" && $company->package == 'trial') {
@@ -81,14 +91,14 @@ class SubscriptionController extends Controller
                         $response = $this->createMonthlySubscriptions->createSubscription($data);
                         // dd($response);
                     }
-                    if ($request->interval == "year" && $company->interval != 'day') {                        
+                    if ($request->interval == "year" && $company->interval != 'day') {
                         $response = $this->createYearlySubscriptions->createSubscription($data);
                         // dd($response);
                     }
                     // dd($response);
                     if ($response) {
                         Mail::to($company->business_email)->send(new
-                        SubscriptionMail($company->business_email,$company->name));
+                            SubscriptionMail($company->business_email, $company->name));
                         return response()->json([
                             'message' => 'success',
                             'status' => 200,
@@ -129,17 +139,17 @@ class SubscriptionController extends Controller
         // foreach($company as $data){
         // $result = Carbon::createFromFormat('d/m/Y H:i:s',$company->end_date);
         // if ($company->package == "trial") {
-            $date = $company->end_date;
-            $date_three = Carbon::parse($date)->subDays(3);
-            $date_seven = Carbon::parse($date)->subDays(7);
-            // dd($company->business_email);
-            // $date = date('Y-m-d H:i',$date);
-            dd($date);
-            // if (Carbon::now() == $date_three) {
-            //     Mail::to($company->business_email)->queue(new TrialPeriodMail());
-            // } else if(Carbon::now() == $date_seven){
-            //     Mail::to($company->business_email)->queue(new TrialPeriodMail());
-            // }
+        $date = $company->end_date;
+        $date_three = Carbon::parse($date)->subDays(3);
+        $date_seven = Carbon::parse($date)->subDays(7);
+        // dd($company->business_email);
+        // $date = date('Y-m-d H:i',$date);
+        dd($date);
+        // if (Carbon::now() == $date_three) {
+        //     Mail::to($company->business_email)->queue(new TrialPeriodMail());
+        // } else if(Carbon::now() == $date_seven){
+        //     Mail::to($company->business_email)->queue(new TrialPeriodMail());
+        // }
         // }
 
         // }
