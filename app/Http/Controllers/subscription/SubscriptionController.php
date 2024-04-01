@@ -96,20 +96,20 @@ class SubscriptionController extends Controller
                         // dd($response);
                     }
                     // dd($response);
-                    if ($response) {
-                        Mail::to($company->business_email)->send(new
-                            SubscriptionMail($company->business_email, $company->name));
-                        return response()->json([
-                            'message' => 'success',
-                            'status' => 200,
-                            'data' => $response
-                        ], 200);
-                    } else {
-                        return response()->json([
-                            'message' => 'Failed',
-                            'status' => 500
-                        ], 500);
-                    }
+                    // if ($response) {
+                    //     Mail::to($company->business_email)->send(new
+                    //         SubscriptionMail($company->business_email, $company->name));
+                    //     return response()->json([
+                    //         'message' => 'success',
+                    //         'status' => 200,
+                    //         'data' => $response
+                    //     ], 200);
+                    // } else {
+                    //     return response()->json([
+                    //         'message' => 'Failed',
+                    //         'status' => 500
+                    //     ], 500);
+                    // }
                 }
             }
         }
