@@ -41,13 +41,13 @@
                 {{-- Company Name: {{ $company_name }}
             Email: {{ $email }} --}}
                 <div>
-                    {{-- <p>Email: {{ $email }}</p> --}}
-                    <p>Email: a@a.com</p>
-                    <p class="" style="font-weight:bold">Thank you for your
-                        upgrading to
-                        fgfd hvfhh package.</p>
+                    <p>Email: {{ $email }}</p>
+                    {{-- <p>Email: a@a.com</p> --}}
                     {{-- <p class="" style="font-weight:bold">Thank you for your
-                        upgrading to {{ $package }} {{ $interval }} package.</p> --}}
+                        upgrading to
+                        fgfd hvfhh package.</p> --}}
+                    <p class="" style="font-weight:bold">Thank you for your
+                        upgrading to {{ $package }} {{ $interval }} package.</p>
 
 
 
