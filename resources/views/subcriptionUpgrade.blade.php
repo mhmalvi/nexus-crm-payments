@@ -14,7 +14,7 @@
 
 
     <div class="card"
-        style="background:#f1f1f1; margin:auto;
+        style="background:black; margin:auto;
 
 
         border-radius: 10px;
@@ -36,7 +36,7 @@
 
 
             </div>
-            <div class="" style="font-weight:bold; display:flex; align-items:center;">
+            <div class="" style="font-weight:bold; display:flex; align-items:center;color:white">
 
                 {{-- Company Name: {{ $company_name }}
             Email: {{ $email }} --}}
