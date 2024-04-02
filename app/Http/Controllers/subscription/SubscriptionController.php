@@ -177,12 +177,12 @@ class SubscriptionController extends Controller
                     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 7));
                 } else if (
                     Carbon::now()->toDateTimeString() >= $date_one->toDateTimeString() &&
-                    Carbon::now()->toDateTimeString() <= $date->toDateTimeString()
+                    Carbon::now()->toDateTimeString() <= $date
                 ) {
                     print_r('true');
                     Mail::to($company->business_email)->send(new
                         TrialPeriodMail($company->end_date, 1));
-                } else if (Carbon::now()->toDateTimeString() == $date->toDateTimeString()) {
+                } else if (Carbon::now()->toDateTimeString() == $date) {
                     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 0));
                 }
                 if (isset($company->end_date) && Carbon::now()->toDateTimeString() >
