@@ -171,9 +171,9 @@ class SubscriptionController extends Controller
                 print_r($date);
                 print_r(Carbon::now()->toDateTimeString());
                 print_r($date_one->toDateTimeString());
-                if (Carbon::now() == $date_three) {
+                if (Carbon::now()->toDateTimeString() == $date_three->toDateTimeString()) {
                     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 3));
-                } else if (Carbon::now() == $date_seven) {
+                } else if (Carbon::now()->toDateTimeString() == $date_seven->toDateTimeString()) {
                     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 7));
                 } else if (
                     Carbon::now()->toDateTimeString() >= $date_one->toDateTimeString() &&
@@ -182,10 +182,11 @@ class SubscriptionController extends Controller
                     print_r('true');
                     Mail::to($company->business_email)->send(new
                         TrialPeriodMail($company->end_date, 1));
-                } else if (Carbon::now() == $date) {
+                } else if (Carbon::now()->toDateTimeString() == $date->toDateTimeString()) {
                     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 0));
                 }
-                if (isset($company->end_date) && Carbon::now() > $company->end_date) {
+                if (isset($company->end_date) && Carbon::now()->toDateTimeString() >
+                $company->end_date->toDateTimeString()) {
                     $company->active = 2;
                     $company->subscription_id = "";
                     $company->save();
