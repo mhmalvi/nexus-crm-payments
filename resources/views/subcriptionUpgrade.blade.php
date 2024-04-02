@@ -19,7 +19,6 @@
 
         border-radius: 10px;
         justify-content: center;
-        width: 36%;
         position: absolute;
         transform: translate(-50%, -50%);
         top: 50%;
@@ -77,8 +76,3 @@
 
 </html>
 
-<style>
-    html {}
-
-    .card {}
-</style>
