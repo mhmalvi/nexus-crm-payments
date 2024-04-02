@@ -7,14 +7,16 @@
     <title>Document</title>
 </head>
 
-<body style="background:#e6e6e6;justify-content: center;">
+<body style="justify-content: center;">
 
 
 
 
 
     <div class="card"
-        style="background: white; margin:auto;
+        style="background:#f1f1f1; margin:auto;
+
+
         border-radius: 10px;
         justify-content: center;
         width: 36%;
@@ -30,7 +32,7 @@
 
 
                 <img style="max-width:60%;justify-content:center;margin:auto;display:flex;"
-                    src="https://crm-payment.queleadscrm.com/assets/thank_you.jpg" />
+                    src="https://crm-payment.queleadscrm.com/assets/conn.jpg" />
 
 
             </div>
@@ -43,9 +45,9 @@
                     <p>Email: a@a.com</p>
                     <p class="" style="font-weight:bold">Thank you for your
                         upgrading to
-                        fgfd hvfhh subscription.</p>
+                        fgfd hvfhh package.</p>
                     {{-- <p class="" style="font-weight:bold">Thank you for your
-                        upgrading to {{ $package }} {{ $interval . 'ly' }} subscription.</p> --}}
+                        upgrading to {{ $package }} {{ $interval }} package.</p> --}}
 
 
 
