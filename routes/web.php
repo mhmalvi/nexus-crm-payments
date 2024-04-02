@@ -16,7 +16,7 @@ use App\Http\Controllers\payway\PaywayController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('subscription');
 });
 Route::get('/upgrade', function () {
 return view('subcriptionUpgrade');
