@@ -12,7 +12,16 @@
 
 
 
-    <div class="card" style="">
+    <div class="card"
+        style="background: white;
+        border-radius: 10px;
+        justify-content: center;
+        width: 36%;
+        position: absolute;
+        transform: translate(-50%, -50%);
+        top: 50%;
+        left: 50%;">
+
 
 
         <div class="" style="align-items:center; margin:10%; padding:4%; justify-content:center;">
@@ -34,7 +43,8 @@
                     {{-- <p class="" style="font-weight:bold">Thank you for your
                         upgrading to
                         fgfd hvfhh subscription.</p> --}}
-                        <p class="m-auto d-flex justify-content-center" style="font-weight:bold">Thank you for your upgrading to {{ $package }} {{ $interval.'ly' }} subscription.</p>
+                    <p class="m-auto d-flex justify-content-center" style="font-weight:bold">Thank you for your
+                        upgrading to {{ $package }} {{ $interval . 'ly' }} subscription.</p>
 
 
 
@@ -43,7 +53,7 @@
             </div><br>
             <div class="">
 
-                
+
 
 
 
@@ -67,15 +77,5 @@
 <style>
     html {}
 
-    .card {
-        background: white;
-        border-radius: 10px;
-        justify-content: center;
-        width: 36%;
-        position: absolute;
-        transform: translate(-50%, -50%);
-        top: 50%;
-        left: 50%;
-
-    }
+    .card {}
 </style>
