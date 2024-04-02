@@ -40,7 +40,7 @@ class TrialMail extends Command
                     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date,3));
                 } else if (Carbon::now() == $date_seven) {
                     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date,7));
-                } else if (Carbon::now() >= $date_one && Carbon::now() <= $date_one) {
+                } else if (Carbon::now() >= $date_one && Carbon::now() <= $date) {
                     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date,1));
                 } else if (Carbon::now() == $date) {
                     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date,0));
