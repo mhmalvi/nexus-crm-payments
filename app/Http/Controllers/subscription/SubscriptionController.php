@@ -92,7 +92,7 @@ class SubscriptionController extends Controller
                         // dd($response);
                         if ($response) {
                             Mail::to($company->business_email)->send(new
-                                SubscriptionUpgradeMail(
+                                SubscriptionMail(
                                     $company->business_email,
                                     $company->name,
                                     $request->interval,
@@ -110,7 +110,7 @@ class SubscriptionController extends Controller
                         // dd($response);
                         if ($response) {
                             Mail::to($company->business_email)->send(new
-                                SubscriptionUpgradeMail(
+                                SubscriptionMail(
                                     $company->business_email,
                                     $company->name,
                                     $request->interval,

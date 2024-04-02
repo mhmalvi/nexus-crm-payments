@@ -12,15 +12,19 @@ use Illuminate\Queue\SerializesModels;
 class SubscriptionMail extends Mailable
 {
     use Queueable, SerializesModels;
-    public $email;
-    public $company_name;
+    private $email;
+    private $name;
+    private $interval;
+    private $package;
     /**
      * Create a new message instance.
      */
-    public function __construct($email,$company_name)
+    public function __construct($email, $name, $interval, $package)
     {
-        $this->email=$email;
-        $this->company_name=$company_name;
+        $this->email = $email;
+        $this->name = $name;
+        $this->interval = $interval;
+        $this->package = $package;
     }
 
     /**
@@ -41,8 +45,9 @@ class SubscriptionMail extends Mailable
         return new Content(
             view: 'subscription',
             with:[
-                'email'=>$this->email,
-                'company_name'=>$this->company_name,
+                'email' => $this->email,
+                'package' => $this->package,
+                'interval' => $this->interval
             ]
         );
     }
