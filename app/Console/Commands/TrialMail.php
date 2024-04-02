@@ -37,7 +37,7 @@ class TrialMail extends Command
                 $date_three = Carbon::parse($date)->subDays(3);
                 $date_seven = Carbon::parse($date)->subDays(7);
                 print_r($date);
-                print_r($date_one->toDateTimeString());
+                print_r($date_one->createFromFormat('Y-m-d')->toDateTimeString());
                 if (Carbon::now() == $date_three) {
                     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date,3));
                 } else if (Carbon::now() == $date_seven) {
