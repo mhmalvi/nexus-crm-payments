@@ -176,8 +176,8 @@ class SubscriptionController extends Controller
                 } else if (Carbon::now()->toDateTimeString() == $date_seven->toDateTimeString()) {
                     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 7));
                 } else if (
-                    Carbon::now()->toDateTimeString() >= Carbon::now($date_one)->format('Y m d H:i') &&
-                    Carbon::now()->toDateTimeString() <= Carbon::now($date)->format('Y m d H:i')
+                    Carbon::now()->toDateTimeString() >= Carbon::parse($date_one)->format('Y m d H:i') &&
+                    Carbon::now()->toDateTimeString() <= Carbon::parse($date)->format('Y m d H:i')
                 ) {
                     print_r('true');
                     Mail::to($company->business_email)->send(new
