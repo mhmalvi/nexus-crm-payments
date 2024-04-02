@@ -43,7 +43,7 @@ class TrialMail extends Command
                 } else if (Carbon::now() == $date_seven) {
                     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date,7));
                 } else if (Carbon::now()->toDateTimeString() >= $date_one->toDateTimeString() &&
-                Carbon::now()->toDateTimeString() <= $date)
+                Carbon::now()->toDateTimeString() <= $date->toDateTimeString())
                     {
                         print_r('true');
                     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date,1));
