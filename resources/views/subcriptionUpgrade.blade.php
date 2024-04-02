@@ -7,13 +7,14 @@
     <title>Document</title>
 </head>
 
-<body style="background:#e6e6e6;">
+<body style="background:#e6e6e6;justify-content: center;">
+
 
 
 
 
     <div class="card"
-        style="background: white;
+        style="background: white; margin:auto;
         border-radius: 10px;
         justify-content: center;
         width: 36%;
@@ -38,13 +39,13 @@
                 {{-- Company Name: {{ $company_name }}
             Email: {{ $email }} --}}
                 <div>
-                    <p>Email: {{ $email }}</p>
-                    {{-- <p>Email: a@a.com</p> --}}
-                    {{-- <p class="" style="font-weight:bold">Thank you for your
+                    {{-- <p>Email: {{ $email }}</p> --}}
+                    <p>Email: a@a.com</p>
+                    <p class="" style="font-weight:bold">Thank you for your
                         upgrading to
-                        fgfd hvfhh subscription.</p> --}}
-                    <p class="m-auto d-flex justify-content-center" style="font-weight:bold">Thank you for your
-                        upgrading to {{ $package }} {{ $interval . 'ly' }} subscription.</p>
+                        fgfd hvfhh subscription.</p>
+                    {{-- <p class="" style="font-weight:bold">Thank you for your
+                        upgrading to {{ $package }} {{ $interval . 'ly' }} subscription.</p> --}}
 
 
 
