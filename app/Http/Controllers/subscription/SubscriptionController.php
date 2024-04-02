@@ -90,10 +90,38 @@ class SubscriptionController extends Controller
                         // dd($data);
                         $response = $this->createMonthlySubscriptions->createSubscription($data);
                         // dd($response);
+                        if ($response) {
+                            Mail::to($company->business_email)->send(new
+                                SubscriptionUpgradeMail(
+                                    $company->business_email,
+                                    $company->name,
+                                    $request->interval,
+                                    $request->package_name
+                                ));
+                            return response()->json([
+                                'message' => 'success',
+                                'status' => 200,
+                                'data' => $response
+                            ], 200);
+                        }
                     }
                     if ($request->interval == "year" && $company->interval != 'day') {
                         $response = $this->createYearlySubscriptions->createSubscription($data);
                         // dd($response);
+                        if ($response) {
+                            Mail::to($company->business_email)->send(new
+                                SubscriptionUpgradeMail(
+                                    $company->business_email,
+                                    $company->name,
+                                    $request->interval,
+                                    $request->package_name
+                                ));
+                            return response()->json([
+                                'message' => 'success',
+                                'status' => 200,
+                                'data' => $response
+                            ], 200);
+                        }
                     }
                     // dd($response);
                     // if ($response) {
