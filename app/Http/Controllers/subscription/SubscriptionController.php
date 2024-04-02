@@ -168,15 +168,15 @@ class SubscriptionController extends Controller
                 $date_one = Carbon::parse($date)->subDays(1);
                 $date_three = Carbon::parse($date)->subDays(3);
                 $date_seven = Carbon::parse($date)->subDays(7);
-                print_r($date);
-                print_r(Carbon::createFromFormat('Y-m-d',$date_one->toDateTimeString())->toDateTimeString());
+                print_r($date->toDateTimeString());
+                print_r($date_one->toDateTimeString());
                 if (Carbon::now() == $date_three) {
                     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 3));
                 } else if (Carbon::now() == $date_seven) {
                     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 7));
                 } else if (
                     Carbon::now()->toDateTimeString() >= $date_one->toDateTimeString() &&
-                    Carbon::now()->toDateTimeString() <= $date
+                    Carbon::now()->toDateTimeString() <= $date->toDateTimeString()
                 ) {
                     print_r('true');
                     Mail::to($company->business_email)->send(new
