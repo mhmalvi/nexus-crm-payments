@@ -12,13 +12,16 @@ use Illuminate\Queue\SerializesModels;
 class TrialPeriodMail extends Mailable
 {
     use Queueable, SerializesModels;
-    public $end_date;
+    private $end_date;
+    private $remaining;
     /**
      * Create a new message instance.
      */
-    public function __construct($end_date)
+    public function __construct($end_date,$remaining)
     {
+
         $this->end_date = $end_date;
+        $this->remaining = $remaining;
     }
 
     /**
@@ -39,6 +42,7 @@ class TrialPeriodMail extends Mailable
         return new Content(
             view: 'view.trialPeriod',
             with: [
+                'days_remaining'=>$this->remaining,
                 'end_date' => $this->end_date
             ]
         );
