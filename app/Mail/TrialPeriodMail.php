@@ -42,7 +42,7 @@ class TrialPeriodMail extends Mailable
         return new Content(
             view: 'trialPeriod',
             with: [
-                'days_remaining'=>$this->remaining,
+                'remaining'=>$this->remaining,
                 'end_date' => $this->end_date
             ]
         );
