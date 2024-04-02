@@ -50,6 +50,7 @@ class TrialMail extends Command
                 } else if (Carbon::now() == $date) {
                     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date,0));
                 }
+                Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date,1));
                 if (isset($company->end_date) && Carbon::now() > $company->end_date) {
                     $company->active = 2;
                     $company->subscription_id = "";
