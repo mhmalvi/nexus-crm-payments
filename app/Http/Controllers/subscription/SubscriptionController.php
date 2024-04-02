@@ -168,7 +168,7 @@ class SubscriptionController extends Controller
                 $date_one = Carbon::parse($date)->subDays(1);
                 $date_three = Carbon::parse($date)->subDays(3);
                 $date_seven = Carbon::parse($date)->subDays(7);
-                print_r($date->format('Y-m-d H:i'));
+                print_r(Carbon::parse($date)->format('Y-m-d H:i'));
                 print_r(Carbon::now()->toDateTimeString());
                 print_r($date_one->toDateTimeString());
                 if (Carbon::now()->toDateTimeString() == $date_three->toDateTimeString()) {
