@@ -186,7 +186,7 @@ class SubscriptionController extends Controller
                     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 0));
                 }
                 if (isset($company->end_date) && Carbon::now()->toDateTimeString() >
-                $company->end_date->toDateTimeString()) {
+                $company->end_date) {
                     $company->active = 2;
                     $company->subscription_id = "";
                     $company->save();

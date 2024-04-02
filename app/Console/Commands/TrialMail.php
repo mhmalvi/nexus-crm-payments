@@ -36,22 +36,23 @@ class TrialMail extends Command
                 $date_one = Carbon::parse($date)->subDays(1);
                 $date_three = Carbon::parse($date)->subDays(3);
                 $date_seven = Carbon::parse($date)->subDays(7);
-                print_r($date);
-                print_r(Carbon::createFromFormat('Y-m-d',$date_one->toDateTimeString())->toDateTimeString());
-                if (Carbon::now() == $date_three) {
-                    Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date,3));
-                } else if (Carbon::now() == $date_seven) {
-                    Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date,7));
-                } else if (Carbon::now()->toDateTimeString() >= $date_one->toDateTimeString() &&
-                Carbon::now()->toDateTimeString() <= $date->toDateTimeString())
-                    {
-                        print_r('true');
-                    Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date,1));
-                } else if (Carbon::now() == $date) {
-                    Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date,0));
+                if (Carbon::now()->toDateTimeString() == $date_three->toDateTimeString()) {
+                    Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 3));
+                } else if (Carbon::now()->toDateTimeString() == $date_seven->toDateTimeString()) {
+                    Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 7));
+                } else if (
+                    Carbon::now()->toDateTimeString() >= $date_one->toDateTimeString() &&
+                    Carbon::now()->toDateTimeString() <= $date
+                ) {
+                    Mail::to($company->business_email)->send(new
+                        TrialPeriodMail($company->end_date, 1));
+                } else if (Carbon::now()->toDateTimeString() == $date) {
+                    Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 0));
                 }
-                Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date,1));
-                if (isset($company->end_date) && Carbon::now() > $company->end_date) {
+                if (
+                    isset($company->end_date) && Carbon::now()->toDateTimeString() >
+                    $company->end_date
+                ) {
                     $company->active = 2;
                     $company->subscription_id = "";
                     $company->save();
