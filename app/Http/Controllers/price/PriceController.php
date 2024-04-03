@@ -16,6 +16,7 @@ class PriceController extends Controller
     }
     public function createPrice(CreatePriceRequest $request)
     {
+        dd($request->all());
         $data = [
             $currency = $request->currency,
             $unit_amount = $request->unit_amount,
