@@ -11,6 +11,9 @@ class ProductController extends Controller
         $stripe = new
         \Stripe\StripeClient(config("app.stripe_secret"));
         $prods = $stripe->products->all(['limit' => 3]);
-        dd($prods);
+        dd($prods->data);
+        for($i=0;$i<count($prods);$i++){
+
+        }
     }
 }
