@@ -15,7 +15,7 @@ class PriceController extends Controller
             'currency' => $request->currency,
             'unit_amount' => $request->unit_amount,
             'recurring' => ['interval' => $request->interval],
-            'product_data' => ['name' => $request->name],
+            'product' => $request->prod_id,
         ]);
         return response()->json([
             'message'=>'inserted',
