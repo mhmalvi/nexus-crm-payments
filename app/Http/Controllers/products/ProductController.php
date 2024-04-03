@@ -7,13 +7,25 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function getProduct(Request $request){
-        $stripe = new
-        \Stripe\StripeClient(config("app.stripe_secret"));
-        $prods = $stripe->products->all(['limit' => 3]);
-        dd($prods->data);
-        for($i=0;$i<count($prods);$i++){
-
+    private $products;
+    public function __construct($products)
+    {
+        $this->products = $products;
+    }
+    public function getProduct(Request $request)
+    {
+        $products = $this->products->getProducts();
+        if ($products) {
+            return response()->json([
+                'messsage' => 'success',
+                'status' => 200,
+                'data' => $products
+            ], 200);
+        } else {
+            return response()->json([
+                'messsage' => 'No product found',
+                'status' => 404
+            ], 404);
         }
     }
 }
