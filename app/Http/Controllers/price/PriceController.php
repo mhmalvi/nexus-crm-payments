@@ -7,15 +7,15 @@ use Illuminate\Http\Request;
 
 class PriceController extends Controller
 {
-    public function createPrice()
+    public function createPrice(Request $request)
     {
         $stripe = new
             \Stripe\StripeClient(config("app.stripe_secret"));
         $response = $stripe->prices->create([
-            'currency' => 'aud',
-            'unit_amount' => 1000,
-            'recurring' => ['interval' => 'month'],
-            'product_data' => ['name' => 'Gold Plan'],
+            'currency' => $request->currency,
+            'unit_amount' => $request->unit_amount,
+            'recurring' => ['interval' => $request->interval],
+            'product_data' => ['name' => $request->name],
         ]);
         return response()->json([
             'message'=>'inserted',
