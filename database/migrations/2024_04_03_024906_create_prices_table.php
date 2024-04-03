@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('unit_amount');
             $table->text('interval')->comment('day,month,week,year')->unique();
             $table->string('prod_id');
+            $table->bigInteger('client_id');
             $table->timestamps();
         });
     }
