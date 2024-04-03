@@ -18,7 +18,7 @@ class CreatePriceService
                 Price::create([
                     'unit_amount' => $data[1],
                     'interval' => $data[2],
-                    'product' => $data[3]
+                    'prod_id' => $data[3]
                 ]);
                 $stripe = new
                     \Stripe\StripeClient(config("app.stripe_secret"));
@@ -32,11 +32,9 @@ class CreatePriceService
             }
         } else {
             Price::create([
-                'currency' => $data[0],
                 'unit_amount' => $data[1],
                 'recurring' => ['interval' => $data[2]],
-                'product' => $data[3],
-                'client_id' => $data[4]
+                'prod_id' => $data[3]
             ]);
             $stripe = new
                 \Stripe\StripeClient(config("app.stripe_secret"));
