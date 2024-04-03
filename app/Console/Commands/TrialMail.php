@@ -37,9 +37,9 @@ class TrialMail extends Command
                 $date_three = Carbon::parse($date)->subDays(3);
                 $date_seven = Carbon::parse($date)->subDays(7);
                 if (Carbon::now()->toDateTimeString() == $date_three->toDateTimeString()) {
-                    Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 3));
+                    Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, $remaining = 3));
                 } else if (Carbon::now()->toDateTimeString() == $date_seven->toDateTimeString()) {
-                    Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 7));
+                    Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, $remaining = 7));
                 } else if (
                     Carbon::now()->toDateTimeString() >= $date_one->toDateTimeString() &&
                     Carbon::now()->toDateTimeString() <= $date
@@ -47,7 +47,7 @@ class TrialMail extends Command
                     // Mail::to($company->business_email)->send(new
                     //     TrialPeriodMail($company->end_date, 1));
                 } else if (Carbon::now()->toDateTimeString() == $date) {
-                    Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 0));
+                    Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, $remaining = 0));
                 }
                 if (
                     isset($company->end_date) && Carbon::now()->toDateTimeString() >
