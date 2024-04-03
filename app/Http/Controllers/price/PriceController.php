@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\price;
 
+use App\Models\Price;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreatePriceRequest;
@@ -23,13 +24,25 @@ class PriceController extends Controller
             $product = $request->prod_id,
             $client_id = $request->client_id
         ];
-        $response = $this->createPrice->createPrice($data);
-        if ($response == 422) {
-            return response()->json([
-                'message' => 'Price already exists',
-                'status' => $response
-            ], $response);
+        $prod = Price::where('prod_id', $data[3])->exists();
+        if ($prod) {
+            $price =
+                Price::orWhere('unit_amount', $data[1])->orWhere('interval', $data[2])->exists();
+            if ($price) {
+                return response()->json([
+                    'message' => 'Price already exists',
+                    'status' => 422
+                ], 422);
+            } else {
+                $response = $this->createPrice->createPrice($data);
+                return response()->json([
+                    'message' => 'inserted',
+                    'status' => 201,
+                    'data' => $response
+                ], 201);
+            }
         } else {
+            $response = $this->createPrice->createPrice($data);
             return response()->json([
                 'message' => 'inserted',
                 'status' => 201,
