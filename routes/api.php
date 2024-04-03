@@ -55,4 +55,4 @@ Route::group(['middleware' => 'companyAuthentication'], function () {
 Route::get('subscriptions', [SubscriptionController::class, 'getAllSubscriptions']);
 Route::post('trial-check', [SubscriptionController::class, 'trialCheck']);
 Route::post('charge', [MakePaymentController::class, 'makePayment']);
-Route::post('create-price', [PriceController::class, 'createPrice']);
+Route::post('create-prices', [PriceController::class, 'createPrice']);
