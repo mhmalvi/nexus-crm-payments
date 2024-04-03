@@ -58,9 +58,9 @@ class PriceController extends Controller
     {
         $prices = $this->getPrices->getPrices($request->prod_id);
         if ($prices) {
-            return response()->json([
+            return response()->json(
                 $prices
-            ], 200);
+            , 200);
         } else {
             return response()->json([
                 'message' => 'failed',
