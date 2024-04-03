@@ -26,8 +26,7 @@ class CreatePriceService
                     'currency' => $data[0],
                     'unit_amount' => $data[1],
                     'recurring' => ['interval' => $data[2]],
-                    'product' => $data[3],
-                    'client_id' => $data[4]
+                    'product' => $data[3]
                 ]);
             }
         } else {
@@ -42,8 +41,7 @@ class CreatePriceService
                 'currency' => $data[0],
                 'unit_amount' => $data[1],
                 'recurring' => ['interval' => $data[2]],
-                'product' => $data[3],
-                'client_id' => $data[4]
+                'product' => $data[3]
             ]);
         }
     }
