@@ -50,4 +50,11 @@ class PriceController extends Controller
             ], 201);
         }
     }
+
+    public function getPrices(Request $request){
+        $stripe = new
+        \Stripe\StripeClient(config("app.stripe_secret"));
+        $response = $stripe->prices->all(['limit' => 3, 'product'=>$request->prod_id]);
+        dd($response);
+    }
 }
