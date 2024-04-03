@@ -18,9 +18,9 @@ use App\Http\Controllers\payway\PaywayController;
 // Route::get('/', function () {
 //     return view('trialPeriod');
 // });
-Route::get('/upgrade', function () {
-return view('subcriptionUpgrade');
-});
+// Route::get('/upgrade', function () {
+// return view('subcriptionUpgrade');
+// });
 Route::get('/payway', [PaywayController::class, 'payway']);
 Route::get('/checkout', [CheckoutPaymentController::class, 'checkout']);
 Route::get('payment/success', [CheckoutPaymentController::class, 'success'])->name('success');
