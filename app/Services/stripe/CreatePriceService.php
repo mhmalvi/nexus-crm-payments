@@ -33,7 +33,7 @@ class CreatePriceService
         } else {
             Price::create([
                 'unit_amount' => $data[1],
-                'recurring' => ['interval' => $data[2]],
+                'interval' => $data[2],
                 'prod_id' => $data[3]
             ]);
             $stripe = new
