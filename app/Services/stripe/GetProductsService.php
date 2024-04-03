@@ -2,7 +2,7 @@
 
 namespace App\Services\stripe;
 
-class GetProductsWithPricesService
+class GetProductsService
 {
     public function getProducts()
     {

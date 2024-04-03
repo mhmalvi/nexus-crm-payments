@@ -4,12 +4,12 @@ namespace App\Http\Controllers\products;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Services\stripe\GetProductsWithPricesService;
+use App\Services\stripe\GetProductsService;
 
 class ProductController extends Controller
 {
     private $products;
-    public function __construct(GetProductsWithPricesService $products)
+    public function __construct(GetProductsService $products)
     {
         $this->products = $products;
     }

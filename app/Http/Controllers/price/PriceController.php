@@ -7,13 +7,16 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreatePriceRequest;
 use App\Services\stripe\CreatePriceService;
+use App\Services\stripe\GetPricesService;
 
 class PriceController extends Controller
 {
     private $createPrice;
-    public function __construct(CreatePriceService $createPrice)
+    private $getPrices;
+    public function __construct(CreatePriceService $createPrice, GetPricesService $getPrices)
     {
         $this->createPrice = $createPrice;
+        $this->getPrices = $getPrices;
     }
     public function createPrice(CreatePriceRequest $request)
     {
@@ -51,10 +54,18 @@ class PriceController extends Controller
         }
     }
 
-    public function getPrices(Request $request){
-        $stripe = new
-        \Stripe\StripeClient(config("app.stripe_secret"));
-        $response = $stripe->prices->all(['limit' => 3, 'product'=>$request->prod_id]);
-        dd($response);
+    public function getPrices(Request $request)
+    {
+        $prices = $this->getPrices->getPrices($request->prod_id);
+        if ($prices) {
+            return response()->json([
+                $prices
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'failed',
+                'status' => 500
+            ], 500);
+        }
     }
 }
