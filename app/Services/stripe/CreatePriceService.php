@@ -16,7 +16,6 @@ class CreatePriceService
                 return 422;
             } else {
                 Price::create([
-                    'currency' => $data[0],
                     'unit_amount' => $data[1],
                     'recurring' => ['interval' => $data[2]],
                     'product' => $data[3],
