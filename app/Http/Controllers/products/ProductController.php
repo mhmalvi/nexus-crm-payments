@@ -18,9 +18,7 @@ class ProductController extends Controller
         $products = $this->products->getProducts();
         if ($products) {
             return response()->json([
-                'messsage' => 'success',
-                'status' => 200,
-                'data' => $products
+                $products
             ], 200);
         } else {
             return response()->json([
