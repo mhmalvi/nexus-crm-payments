@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\products;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Services\stripe\GetProductsWithPricesService;
 
 class ProductController extends Controller
 {
     private $products;
-    public function __construct($products)
+    public function __construct(GetProductsWithPricesService $products)
     {
         $this->products = $products;
     }
