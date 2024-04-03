@@ -25,7 +25,7 @@ class CreatePriceRequest extends FormRequest
             'currency'=>'required',
             'unit_amount'=>'required',
             'interval'=>'required',
-            'product'=>'required'
+            'prod_id'=>'required'
         ];
     }
 }
