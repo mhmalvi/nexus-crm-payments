@@ -4,7 +4,7 @@ namespace App\Services\stripe;
 
 class GetPricesService
 {
-    public function getPrices($data)
+    public function getPricesOfProduct($data)
     {
         $stripe = new
             \Stripe\StripeClient(config("app.stripe_secret"));

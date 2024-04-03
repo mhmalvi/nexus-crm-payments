@@ -56,7 +56,7 @@ class PriceController extends Controller
 
     public function getPrices(Request $request)
     {
-        $prices = $this->getPrices->getPrices($request->prod_id);
+        $prices = $this->getPrices->getPricesOfProduct($request->prod_id);
         if ($prices) {
             return response()->json(
                 $prices
