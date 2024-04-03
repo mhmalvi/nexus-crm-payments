@@ -67,7 +67,7 @@
                     {{-- <p>Email: {{ $email }}</p> --}}
                     <p>Hi</p>
                     <p class="" style="">We hope you enjoyed the first month of your Queleads trial. However
-                        you only have {{ $remaining }} days left before your trial expires.</p>
+                        you only have days left before your trial expires.</p>
 
                     <p class="">Choose from several plans with various features.</p>
 
