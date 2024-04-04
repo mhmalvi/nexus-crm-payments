@@ -189,7 +189,7 @@ class SubscriptionController extends Controller
                 $date_seven = Carbon::parse($date)->subDays(7);
                 
                 print_r('end date');
-                print_r(Carbon::parse($date)->format('Y-m-d H:i'));
+                print_r(Carbon::parse($date)->timezone($tz));
                 print_r('curr date');
                 $current_time = Carbon::parse();
                 $current_time = $current_time->timezone($tz);
