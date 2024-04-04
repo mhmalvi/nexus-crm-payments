@@ -196,7 +196,7 @@ class SubscriptionController extends Controller
                 $date_three = json_encode($date_three->timezone($tz));
                 $date_seven = json_encode($date_seven->timezone($tz));
                 print_r('curr date');
-                $current_time = Carbon::now();
+                $current_time = Carbon::now()->addHours(6);
                 $current_time = $current_time->timezone($tz);
                 print_r($current_time = json_encode($current_time));
                 print_r('date one');
