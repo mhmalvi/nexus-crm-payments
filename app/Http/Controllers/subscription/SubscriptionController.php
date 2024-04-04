@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\subscription;
 
+use DateTimeZone;
 use Carbon\Carbon;
 use App\Models\Company;
 use Illuminate\Http\Request;
@@ -161,6 +162,12 @@ class SubscriptionController extends Controller
 
     public function trialCheck(Request $request)
     {
+        $ip = file_get_contents("http://ipecho.net/plain");
+        $url = 'http://ip-api.com/json/'.$ip;
+        $tz = file_get_contents($url);
+        $tz = json_decode($tz,true)['timezone'];
+
+        dd(Carbon::now($tz));
         dd(Carbon::parse()->setTimezone('Asia/Dhaka')->toDateTimeString());
         $company = Company::where('active', 1)->get();
         foreach ($company as $company) {
