@@ -172,7 +172,7 @@ class SubscriptionController extends Controller
                 print_r('end date');
                 print_r(Carbon::parse($date)->format('Y-m-d H:i'));
                 print_r('curr date');
-                print_r(Carbon::now());
+                print_r(Carbon::parse()->format('Y-m-d H:i'));
                 print_r('date one');
                 print_r($date_one->toDateTimeString());
                 if (Carbon::now()->toDateTimeString() == $date_three->toDateTimeString()) {
