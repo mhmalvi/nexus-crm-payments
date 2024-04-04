@@ -169,7 +169,7 @@ class SubscriptionController extends Controller
         $tz = json_decode($tz,true)['timezone'];
         // dd($tz);
         $zone = json_encode(Carbon::now($tz));
-        dd($zone);
+        dd(Carbon::now($tz));
         $time = substr($zone,12,13);
         // dd($time);
         $time_str = substr($time,0,8);
