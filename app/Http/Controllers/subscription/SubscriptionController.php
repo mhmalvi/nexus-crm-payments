@@ -189,8 +189,9 @@ class SubscriptionController extends Controller
                 $date_seven = Carbon::parse($date)->subDays(7);
 
                 print_r('end date');
-                $date = json_encode($date->timezone($tz));
+                
                 $end_date = Carbon::parse($date);
+                $date = json_encode($date->timezone($tz));
                 print_r($end_date = json_encode($end_date->timezone($tz)));
                 $date_three = json_encode($date_three->timezone($tz));
                 $date_seven = json_encode($date_seven->timezone($tz));
