@@ -27,11 +27,11 @@ class PriceController extends Controller
             $product = $request->prod_id,
             $client_id = $request->client_id
         ];
-        $prod = Price::where('prod_id', $data[3])->exists();
-        if ($prod) {
+        // $prod = Price::where('prod_id', $data[3])->exists();
+        // if ($prod) {
             $price =
-                Price::where('unit_amount', $data[1])->exists();
-            $interval = Price::where('interval', $data[2])->exists();
+                Price::where('unit_amount', $data[1])->where('prod_id', $data[3])->exists();
+            $interval = Price::where('interval', $data[2])->where('prod_id', $data[3])->exists();
             if ($price || $interval) {
                 return response()->json([
                     'message' => 'Price already exists',
@@ -45,14 +45,14 @@ class PriceController extends Controller
                     'data' => $response
                 ], 201);
             }
-        } else {
-            $response = $this->createPrice->createPrice($data);
-            return response()->json([
-                'message' => 'inserted',
-                'status' => 201,
-                'data' => $response
-            ], 201);
-        }
+        // } else {
+        //     $response = $this->createPrice->createPrice($data);
+        //     return response()->json([
+        //         'message' => 'inserted',
+        //         'status' => 201,
+        //         'data' => $response
+        //     ], 201);
+        // }
     }
 
     public function getPrices(Request $request)
