@@ -167,8 +167,8 @@ class SubscriptionController extends Controller
         $tz = file_get_contents($url);
         $tz = json_decode($tz,true)['timezone'];
 
-        dd(Carbon::now($tz));
-        dd(Carbon::parse()->setTimezone('Asia/Dhaka')->toDateTimeString());
+        // dd(Carbon::now($tz));
+        dd(Carbon::parse($tz)->format("Y-m-d H:i:s"));
         $company = Company::where('active', 1)->get();
         foreach ($company as $company) {
             if ($company->package == "trial") {
