@@ -162,15 +162,15 @@ class SubscriptionController extends Controller
 
     public function trialCheck(Request $request)
     {
-        // $ip = $request->ip();
-        $ip="119.18.3.81";
+        $ip = $request->ip();
+        // $ip="119.18.3.81";
         // dd($ip);
         $url = 'http://ip-api.com/json/'.$ip;
         $tz = file_get_contents($url);
         $tz = json_decode($tz,true)['timezone'];
-        dd($tz);
+        // dd($tz);
         $zone = json_encode(Carbon::now($tz));
-        dd(Carbon::now($tz)->date);
+        // dd(Carbon::now($tz)->date);
         $time = substr($zone,12,13);
         // dd($time);
         $time_str = substr($time,0,8);
@@ -178,7 +178,7 @@ class SubscriptionController extends Controller
         $date_str = substr($zone,1,10);
         // dd($sub_str);
         $date_time_str = $date_str.' '.$time_str;
-        dd($date_time_str);
+        // dd($date_time_str);
         // dd(Carbon::parse($tz)->format("Y-m-d H:i:s"));
         $company = Company::where('active', 1)->get();
         foreach ($company as $company) {
@@ -191,7 +191,9 @@ class SubscriptionController extends Controller
                 print_r('end date');
                 print_r(Carbon::parse($date)->format('Y-m-d H:i'));
                 print_r('curr date');
-                print_r(Carbon::parse()->format('Y-m-d H:i'));
+                $current_time = Carbon::parse();
+                $current_time = $current_time->timezone($tz);
+                print_r($current_time);
                 print_r('date one');
                 print_r($date_one->toDateTimeString());
                 if (Carbon::now()->toDateTimeString() == $date_three->toDateTimeString()) {
