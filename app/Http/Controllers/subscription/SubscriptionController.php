@@ -163,12 +163,13 @@ class SubscriptionController extends Controller
     public function trialCheck(Request $request)
     {
         $ip = $request->ip();
+        dd($ip);
         $url = 'http://ip-api.com/json/'.$ip;
         $tz = file_get_contents($url);
         $tz = json_decode($tz,true)['timezone'];
-
-        // dd(Carbon::now($tz));
-        dd(Carbon::parse($tz)->format("Y-m-d H:i:s"));
+        // dd($tz);
+        dd(Carbon::now($tz));
+        // dd(Carbon::parse($tz)->format("Y-m-d H:i:s"));
         $company = Company::where('active', 1)->get();
         foreach ($company as $company) {
             if ($company->package == "trial") {
