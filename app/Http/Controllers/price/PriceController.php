@@ -27,10 +27,7 @@ class PriceController extends Controller
             $product = $request->prod_id,
             $client_id = $request->client_id
         ];
-        $prod = Price::where('prod_id', $data[3])->where('unit_amount', $data[1])->orWhere(
-            'interval',
-            $data[2]
-        )->exists();
+        $prod = Price::where('prod_id', $data[3])->exists();
         if ($prod) {
             $price =
                 Price::where('unit_amount', $data[1])->exists();
