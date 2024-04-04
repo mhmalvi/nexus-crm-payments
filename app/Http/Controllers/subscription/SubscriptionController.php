@@ -162,7 +162,8 @@ class SubscriptionController extends Controller
 
     public function trialCheck(Request $request)
     {
-        $ip = $request->ip();
+        // $ip = $request->ip();
+        $ip="119.18.3.81";
         // dd($ip);
         $url = 'http://ip-api.com/json/'.$ip;
         $tz = file_get_contents($url);
