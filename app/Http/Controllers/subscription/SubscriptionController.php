@@ -190,7 +190,7 @@ class SubscriptionController extends Controller
                 
                 print_r('end date');
                 $end_date = Carbon::parse($date);
-                print_r(json_encode($end_date->timezone($tz)));
+                print_r($end_date = json_encode($end_date->timezone($tz)));
                 print_r('curr date');
                 $current_time = Carbon::parse();
                 $current_time = $current_time->timezone($tz);
