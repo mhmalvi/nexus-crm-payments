@@ -58,3 +58,4 @@ Route::post('charge', [MakePaymentController::class, 'makePayment']);
 Route::post('create-prices', [PriceController::class, 'createPrice']);
 Route::get('products', [ProductController::class, 'getProduct']);
 Route::post('prices', [PriceController::class, 'getPrices']);
+// Route::post('prices', [PriceController::class, 'getPrices']);
