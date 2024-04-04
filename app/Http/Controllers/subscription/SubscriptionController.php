@@ -172,7 +172,7 @@ class SubscriptionController extends Controller
         // dd($zone);
         $time = substr($zone,12,13);
         // dd($time);
-        $time_sub = substr($time,0,7);
+        $time_sub = substr($time,0,8);
         dd($time_sub);
         $sub_str = substr($zone,1,10);
         // dd($sub_str);
