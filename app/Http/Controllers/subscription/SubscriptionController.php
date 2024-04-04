@@ -165,19 +165,19 @@ class SubscriptionController extends Controller
         $ip = $request->ip();
         // $ip="119.18.3.81";
         // dd($ip);
-        $url = 'http://ip-api.com/json/'.$ip;
+        $url = 'http://ip-api.com/json/' . $ip;
         $tz = file_get_contents($url);
-        $tz = json_decode($tz,true)['timezone'];
+        $tz = json_decode($tz, true)['timezone'];
         // dd($tz);
         $zone = json_encode(Carbon::now($tz));
         // dd(Carbon::now($tz)->date);
-        $time = substr($zone,12,13);
+        $time = substr($zone, 12, 13);
         // dd($time);
-        $time_str = substr($time,0,8);
+        $time_str = substr($time, 0, 8);
         // dd($time_sub);
-        $date_str = substr($zone,1,10);
+        $date_str = substr($zone, 1, 10);
         // dd($sub_str);
-        $date_time_str = $date_str.' '.$time_str;
+        $date_time_str = $date_str . ' ' . $time_str;
         // dd($date_time_str);
         // dd(Carbon::parse($tz)->format("Y-m-d H:i:s"));
         $company = Company::where('active', 1)->get();
@@ -187,10 +187,13 @@ class SubscriptionController extends Controller
                 $date_one = Carbon::parse($date)->subDays(1);
                 $date_three = Carbon::parse($date)->subDays(3);
                 $date_seven = Carbon::parse($date)->subDays(7);
-                
+
                 print_r('end date');
+                $date = json_encode($date->timezone($tz));
                 $end_date = Carbon::parse($date);
                 print_r($end_date = json_encode($end_date->timezone($tz)));
+                $date_three = json_encode($date_three->timezone($tz));
+                $date_seven = json_encode($date_seven->timezone($tz));
                 print_r('curr date');
                 $current_time = Carbon::parse();
                 $current_time = $current_time->timezone($tz);
@@ -198,22 +201,24 @@ class SubscriptionController extends Controller
                 print_r('date one');
                 $date_one = json_encode($date_one->timezone($tz));
                 print_r($date_one);
-                if (Carbon::now()->toDateTimeString() == $date_three->toDateTimeString()) {
+                if ($current_time == $date_three) {
                     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 3));
-                } else if (Carbon::now()->toDateTimeString() == $date_seven->toDateTimeString()) {
+                } else if ($current_time == $date_seven) {
                     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 7));
                 } else if (
-                    Carbon::now()->format('Y-m-d H:i') >= Carbon::parse($date_one)->format('Y m d H:i') &&
-                    Carbon::now()->format('Y-m-d H:i') <= Carbon::parse($date)->format('Y m d H:i')
+                    $current_time >= $date_one &&
+                    $current_time <= $date
                 ) {
                     print_r('true');
                     Mail::to($company->business_email)->send(new
                         TrialPeriodMail($company->end_date, 1));
-                } else if (Carbon::now()->toDateTimeString() == $date) {
+                } else if ($current_time == $date) {
                     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 0));
                 }
-                if (isset($company->end_date) && Carbon::now()->toDateTimeString() >
-                $company->end_date) {
+                if (
+                    isset($company->end_date) && $current_time >
+                    $company->end_date
+                ) {
                     $company->active = 2;
                     $company->subscription_id = "";
                     $company->save();
