@@ -176,8 +176,8 @@ class SubscriptionController extends Controller
         // dd($time_sub);
         $date_str = substr($zone,1,10);
         // dd($sub_str);
-        $date_time_str = $date_str.''.$time_str;
-        dd(json_encode($date_time_str));
+        $date_time_str = $date_str.' '.$time_str;
+        dd($date_time_str);
         // dd(Carbon::parse($tz)->format("Y-m-d H:i:s"));
         $company = Company::where('active', 1)->get();
         foreach ($company as $company) {
