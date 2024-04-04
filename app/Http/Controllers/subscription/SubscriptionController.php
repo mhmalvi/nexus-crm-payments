@@ -168,6 +168,9 @@ class SubscriptionController extends Controller
         $tz = file_get_contents($url);
         $tz = json_decode($tz,true)['timezone'];
         // dd($tz);
+        $zone = json_encode(Carbon::now($tz));
+        $sub_str = substr($zone,0,10);
+        dd($sub_str);
         dd(json_encode(Carbon::now($tz)));
         // dd(Carbon::parse($tz)->format("Y-m-d H:i:s"));
         $company = Company::where('active', 1)->get();
