@@ -193,7 +193,7 @@ class SubscriptionController extends Controller
                 print_r('curr date');
                 $current_time = Carbon::parse();
                 $current_time = $current_time->timezone($tz);
-                print_r($current_time);
+                print_r(json_encode($current_time));
                 print_r('date one');
                 print_r($date_one->toDateTimeString());
                 if (Carbon::now()->toDateTimeString() == $date_three->toDateTimeString()) {
