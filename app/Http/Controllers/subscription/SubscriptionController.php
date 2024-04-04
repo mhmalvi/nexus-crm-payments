@@ -170,7 +170,7 @@ class SubscriptionController extends Controller
         // dd($tz);
         $zone = json_encode(Carbon::now($tz));
         // dd($zone);
-        $time = substr($zone,12,19);
+        $time = substr($zone,12,15);
         dd($time);
         $sub_str = substr($zone,1,10);
         // dd($sub_str);
