@@ -194,9 +194,10 @@ class SubscriptionController extends Controller
                 print_r('curr date');
                 $current_time = Carbon::parse();
                 $current_time = $current_time->timezone($tz);
-                print_r(json_encode($current_time));
+                print_r($current_time = json_encode($current_time));
                 print_r('date one');
-                print_r($date_one->toDateTimeString());
+                $date_one = json_encode($date_one->timezone($tz));
+                print_r($date_one);
                 if (Carbon::now()->toDateTimeString() == $date_three->toDateTimeString()) {
                     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 3));
                 } else if (Carbon::now()->toDateTimeString() == $date_seven->toDateTimeString()) {
