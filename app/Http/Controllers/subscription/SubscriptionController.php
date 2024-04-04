@@ -166,7 +166,7 @@ class SubscriptionController extends Controller
         // dd($ip);
         $url = 'http://ip-api.com/json/'.$ip;
         $tz = file_get_contents($url);
-        $tz = json_decode($tz,true)['timezone'];
+        $tz = ($tz)['timezone'];
         // dd($tz);
         dd(json_encode(Carbon::now($tz)));
         // dd(Carbon::parse($tz)->format("Y-m-d H:i:s"));
