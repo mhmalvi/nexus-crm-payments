@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Carbon\Carbon;
 use App\Models\Company;
+use Illuminate\Http\Request;
 use App\Mail\TrialPeriodMail;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
@@ -27,7 +28,7 @@ class TrialMail extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(Request $request)
     {
         $ip = $request->ip();
         // $ip="119.18.3.81";
@@ -49,44 +50,48 @@ class TrialMail extends Command
         // dd(Carbon::parse($tz)->format("Y-m-d H:i:s"));
         $company = Company::where('active', 1)->get();
         foreach ($company as $company) {
-        if ($company->package == "trial") {
-        $date = $company->end_date;
-        $date_one = Carbon::parse($date)->subDays(1);
-        $date_three = Carbon::parse($date)->subDays(3);
-        $date_seven = Carbon::parse($date)->subDays(7);
+            if ($company->package == "trial") {
+                $date = $company->end_date;
+                $date_one = Carbon::parse($date)->subDays(1);
+                $date_three = Carbon::parse($date)->subDays(3);
+                $date_seven = Carbon::parse($date)->subDays(7);
 
-        print_r('end date');
-        $date = json_encode($date->timezone($tz));
-        $end_date = Carbon::parse($date);
-        print_r($end_date = json_encode($end_date->timezone($tz)));
-        $date_three = json_encode($date_three->timezone($tz));
-        $date_seven = json_encode($date_seven->timezone($tz));
-        print_r('curr date');
-        $current_time = Carbon::parse();
-        $current_time = $current_time->timezone($tz);
-        print_r($current_time = json_encode($current_time));
-        print_r('date one');
-        $date_one = json_encode($date_one->timezone($tz));
-        print_r($date_one);
-        if ($current_time == $date_three) {
-        Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 3));
-        } else if ($current_time == $date_seven) {
-        Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 7));
-        } else if (
-        $current_time >= $date_one &&
-        $current_time <= $date ) { print_r('true'); Mail::to($company->business_email)->send(new
-            TrialPeriodMail($company->end_date, 1));
-            } else if ($current_time == $date) {
-            Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 0));
+                print_r('end date');
+                $date = json_encode($date->timezone($tz));
+                $end_date = Carbon::parse($date);
+                print_r($end_date = json_encode($end_date->timezone($tz)));
+                $date_three = json_encode($date_three->timezone($tz));
+                $date_seven = json_encode($date_seven->timezone($tz));
+                print_r('curr date');
+                $current_time = Carbon::parse();
+                $current_time = $current_time->timezone($tz);
+                print_r($current_time = json_encode($current_time));
+                print_r('date one');
+                $date_one = json_encode($date_one->timezone($tz));
+                print_r($date_one);
+                if ($current_time == $date_three) {
+                    Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 3));
+                } else if ($current_time == $date_seven) {
+                    Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 7));
+                } else if (
+                    $current_time >= $date_one &&
+                    $current_time <= $date
+                ) {
+                    print_r('true');
+                    Mail::to($company->business_email)->send(new
+                        TrialPeriodMail($company->end_date, 1));
+                } else if ($current_time == $date) {
+                    Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 0));
+                }
+                if (
+                    isset($company->end_date) && $current_time >
+                    $company->end_date
+                ) {
+                    $company->active = 2;
+                    $company->subscription_id = "";
+                    $company->save();
+                }
             }
-            if (
-            isset($company->end_date) && $current_time >
-            $company->end_date
-            ) {
-            $company->active = 2;
-            $company->subscription_id = "";
-            $company->save();
-            }
-            }
+        }
     }
 }
