@@ -30,7 +30,7 @@ class PriceController extends Controller
         $prod = Price::where('prod_id', $data[3])->exists();
         if ($prod) {
             $price =
-                Price::orWhere('unit_amount', $data[1])->orWhere('interval', $data[2])->exists();
+                Price::where('unit_amount', $data[1])->orWhereIn('interval', $data[2])->exists();
             if ($price) {
                 return response()->json([
                     'message' => 'Price already exists',
