@@ -27,24 +27,27 @@ class PriceController extends Controller
             $product = $request->prod_id,
             $client_id = $request->client_id
         ];
-        $prod = Price::where('prod_id', $data[3])->orWhere('unit_amount', $data[1])->orWhere('interval',
-        $data[2])->exists();
+        $prod = Price::where('prod_id', $data[3])->where('unit_amount', $data[1])->orWhere(
+            'interval',
+            $data[2]
+        )->exists();
         if ($prod) {
-            // $price =
-            //     Price::where('unit_amount', $data[1])->orWhere('interval', $data[2])->exists();
-            // if ($price) {
+            $price =
+                Price::where('unit_amount', $data[1])->exists();
+            $interval = Price::where('interval', $data[2])->exists();
+            if ($price || $interval) {
                 return response()->json([
                     'message' => 'Price already exists',
                     'status' => 422
                 ], 422);
-            // } else {
-            //     $response = $this->createPrice->createPrice($data);
-            //     return response()->json([
-            //         'message' => 'inserted',
-            //         'status' => 201,
-            //         'data' => $response
-            //     ], 201);
-            // }
+            } else {
+                $response = $this->createPrice->createPrice($data);
+                return response()->json([
+                    'message' => 'inserted',
+                    'status' => 201,
+                    'data' => $response
+                ], 201);
+            }
         } else {
             $response = $this->createPrice->createPrice($data);
             return response()->json([
@@ -60,8 +63,9 @@ class PriceController extends Controller
         $prices = $this->getPrices->getPricesOfProduct($request->prod_id);
         if ($prices) {
             return response()->json(
-                $prices
-            , 200);
+                $prices,
+                200
+            );
         } else {
             return response()->json([
                 'message' => 'failed',
