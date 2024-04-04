@@ -161,7 +161,7 @@ class SubscriptionController extends Controller
 
     public function trialCheck(Request $request)
     {
-        dd(Carbon::now());
+        dd(Carbon::now()->date);
         $company = Company::where('active', 1)->get();
         foreach ($company as $company) {
             if ($company->package == "trial") {
