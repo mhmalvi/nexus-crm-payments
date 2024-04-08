@@ -56,7 +56,7 @@ Route::group(['middleware' => 'superAdminAndAdminAuthentication'], function () {
 
     Route::get('products', [ProductController::class, 'getProduct']);
 });
-Route::group(['middleware' => 'superAdminAndAdminAuthentication'], function () {
+Route::group(['middleware' => 'SuperAdminAuthentication'], function () {
 
     Route::post('create-prices', [PriceController::class, 'createPrice']);
     Route::get('subscriptions', [SubscriptionController::class, 'getAllSubscriptions']);
