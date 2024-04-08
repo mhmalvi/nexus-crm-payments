@@ -93,7 +93,7 @@ class SubscriptionController extends Controller
                         'status' => 422
                     ], 422);
                 } else {
-                    dd('dfdfgsdf');
+                    
                     // dd($request->all());
                     $data = [
                         $customer_id = $request->customer_id,
@@ -124,6 +124,7 @@ class SubscriptionController extends Controller
                             ], 200);
                         }
                     }
+                    dd('dfdfgsdf');
                     if (($company->interval == 'day' || $company->interval == 'week' || $company->interval == 'month')
                         && ($company->package != $request->package_name && $company->package != 'trial')
                     ) {
