@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Carbon\Carbon;
+use App\Models\Token;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use App\Mail\TrialPeriodMail;
@@ -51,48 +52,52 @@ class TrialMail extends Command
         $company = Company::where('active', 1)->get();
         foreach ($company as $company) {
             // if ($company->package == "trial") {
-                $date = $company->end_date;
-                // $date_one = Carbon::parse($date)->subDays(1);
-                // $date_three = Carbon::parse($date)->subDays(3);
-                // $date_seven = Carbon::parse($date)->subDays(7);
+            $date = $company->end_date;
+            // $date_one = Carbon::parse($date)->subDays(1);
+            // $date_three = Carbon::parse($date)->subDays(3);
+            // $date_seven = Carbon::parse($date)->subDays(7);
 
-                // print_r('end date');
-                // print_r($date);
-                // $end_date = Carbon::parse($date);
-                // $date = json_encode($date->timezone($tz));
+            // print_r('end date');
+            // print_r($date);
+            // $end_date = Carbon::parse($date);
+            // $date = json_encode($date->timezone($tz));
 
-                // print_r($end_date = date("Y-m-d H:i:s", $date));
+            // print_r($end_date = date("Y-m-d H:i:s", $date));
 
-                // $date_three = json_encode($date_three->timezone($tz));
-                // $date_seven = json_encode($date_seven->timezone($tz));
-                // print_r('curr date');
-                $current_time = Carbon::now();
-                // print_r($current_time);
-                // $current_time = $current_time->timezone($tz);
-                $curr_time=$current_time->getTimeStamp();
-                // print_r('date one');
-                // $date_one = json_encode($date_one->timezone($tz));
-                // if ($current_time == $date_three) {
-                //     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 3));
-                // } else if ($current_time == $date_seven) {
-                //     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 7));
-                // } else if (
-                //     $current_time >= $date_one
-                // ) {
-                //     print_r('true');
-                //     Mail::to($company->business_email)->send(new
-                //         TrialPeriodMail($company->end_date, 1));
-                // } else if ($current_time == $date) {
-                //     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 0));
-                // }
-                if (
-                    isset($date) && $curr_time >
-                    $date
-                ) {
-                    $company->active = 2;
-                    $company->subscription_id = "";
-                    $company->save();
+            // $date_three = json_encode($date_three->timezone($tz));
+            // $date_seven = json_encode($date_seven->timezone($tz));
+            // print_r('curr date');
+            $current_time = Carbon::now();
+            // print_r($current_time);
+            // $current_time = $current_time->timezone($tz);
+            $curr_time = $current_time->getTimeStamp();
+            // print_r('date one');
+            // $date_one = json_encode($date_one->timezone($tz));
+            // if ($current_time == $date_three) {
+            //     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 3));
+            // } else if ($current_time == $date_seven) {
+            //     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 7));
+            // } else if (
+            //     $current_time >= $date_one
+            // ) {
+            //     print_r('true');
+            //     Mail::to($company->business_email)->send(new
+            //         TrialPeriodMail($company->end_date, 1));
+            // } else if ($current_time == $date) {
+            //     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 0));
+            // }
+            if (
+                isset($date) && $curr_time >
+                $date
+            ) {
+                $company->active = 2;
+                $company->subscription_id = "";
+                $company->save();
+                $token = Token::where('user_id', $company->admin)->get();
+                foreach ($token as $tokens) {
+                    $tokens->delete();
                 }
+            }
             // }
         }
     }
