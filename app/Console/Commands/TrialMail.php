@@ -50,7 +50,7 @@ class TrialMail extends Command
         // dd(Carbon::parse($tz)->format("Y-m-d H:i:s"));
         $company = Company::where('id', 91)->get();
         foreach ($company as $company) {
-            if ($company->package == "trial") {
+            // if ($company->package == "trial") {
                 $date = $company->end_date;
                 // $date_one = Carbon::parse($date)->subDays(1);
                 // $date_three = Carbon::parse($date)->subDays(3);
@@ -91,7 +91,7 @@ class TrialMail extends Command
                     $company->subscription_id = "";
                     $company->save();
                 }
-            }
+            // }
         }
     }
 }
