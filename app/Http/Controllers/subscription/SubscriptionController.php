@@ -127,6 +127,7 @@ class SubscriptionController extends Controller
                     ) {
                         // dd($request->sub_id);                        
                         $response = $this->createSubscriptions->createSubscription($data);
+                        dd($request->sub_id);
                         $this->cancelSubscription->cancelSubscription($request->sub_id);
                         if ($response) {
                             Mail::to($company->business_email)->send(new
