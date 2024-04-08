@@ -124,7 +124,7 @@ class SubscriptionController extends Controller
                             ], 200);
                         }
                     }
-                    dd('dfdfgsdf');
+                    dd($request->sub_id);
                     if (($company->interval == 'day' || $company->interval == 'week' || $company->interval == 'month')
                         && ($company->package != $request->package_name && $company->package != 'trial')
                     ) {
