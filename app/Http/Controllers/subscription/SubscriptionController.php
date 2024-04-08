@@ -23,16 +23,14 @@ class SubscriptionController extends Controller
 {
     private $getAllSubscriptions;
     private $createSubscriptions;
-    private $createYearlySubscriptions;
     private $upgradeSubscriptions;
     private $retrieveSubscription;
     public function __construct(GetAllSubscription $getAllSubscriptions, CreateSubscriptionService
-    $createSubscriptions, CreateYearlySubscriptionService $createYearlySubscriptions, UpgradeSubscriptionService
+    $createSubscriptions, UpgradeSubscriptionService
     $upgradeSubscriptions, RetrieveASubscriptionService $retrieveSubscription)
     {
         $this->getAllSubscriptions = $getAllSubscriptions;
         $this->createSubscriptions = $createSubscriptions;
-        $this->createYearlySubscriptions = $createYearlySubscriptions;
         $this->upgradeSubscriptions = $upgradeSubscriptions;
         $this->retrieveSubscription = $retrieveSubscription;
     }
@@ -67,8 +65,7 @@ class SubscriptionController extends Controller
                     ];
 
                     $response = "";
-                    if (($company->interval == 'day' || $company->interval == 'week' || $company->interval == 'month') &&
-                    $request->interval == 'year') {
+                    if ($company->interval == 'day'  || $company->interval == 'week' || $company->interval == 'month') {
                         // dd($request->sub_id);
                         array_push($data, $request->sub_id);
                         $s_id = $this->retrieveSubscription->retrieveSubscription($request->sub_id);
