@@ -14,11 +14,11 @@ use App\Mail\SubscriptionUpgradeMail;
 use App\Http\Requests\CustomerIdRequest;
 use App\Services\stripe\GetAllSubscription;
 use App\Interfaces\CreateSubscriptionInterface;
-use App\Services\stripe\CancelSubscription;
+use App\Services\stripe\CancelSubscriptionService;
+use App\Services\stripe\CreateSubscriptionService;
 use App\Services\stripe\UpgradeSubscriptionService;
 use App\Services\stripe\RetrieveASubscriptionService;
 use App\Services\stripe\CreateYearlySubscriptionService;
-use App\Services\stripe\CreateSubscriptionService;
 
 class SubscriptionController extends Controller
 {
@@ -29,7 +29,7 @@ class SubscriptionController extends Controller
     private $cancelSubscription;
     public function __construct(GetAllSubscription $getAllSubscriptions, CreateSubscriptionService
     $createSubscriptions, UpgradeSubscriptionService
-    $upgradeSubscriptions, RetrieveASubscriptionService $retrieveSubscription, CancelSubscription $cancelSubscription)
+    $upgradeSubscriptions, RetrieveASubscriptionService $retrieveSubscription, CancelSubscriptionService $cancelSubscription)
     {
         $this->getAllSubscriptions = $getAllSubscriptions;
         $this->createSubscriptions = $createSubscriptions;

@@ -2,7 +2,7 @@
 
 namespace App\Services\stripe;
 
-class CancelSubscription{
+class CancelSubscriptionService{
     public function cancelSubscription($data){
         $stripe = new
         \Stripe\StripeClient(config("app.stripe_secret"));
