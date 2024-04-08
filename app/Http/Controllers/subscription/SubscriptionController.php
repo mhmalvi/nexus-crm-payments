@@ -17,21 +17,21 @@ use App\Interfaces\CreateSubscriptionInterface;
 use App\Services\stripe\UpgradeSubscriptionService;
 use App\Services\stripe\RetrieveASubscriptionService;
 use App\Services\stripe\CreateYearlySubscriptionService;
-use App\Services\stripe\CreateMonthlySubscriptionService;
+use App\Services\stripe\CreateSubscriptionService;
 
 class SubscriptionController extends Controller
 {
     private $getAllSubscriptions;
-    private $createMonthlySubscriptions;
+    private $createSubscriptions;
     private $createYearlySubscriptions;
     private $upgradeSubscriptions;
     private $retrieveSubscription;
-    public function __construct(GetAllSubscription $getAllSubscriptions, CreateMonthlySubscriptionService
-    $createMonthlySubscriptions, CreateYearlySubscriptionService $createYearlySubscriptions, UpgradeSubscriptionService
+    public function __construct(GetAllSubscription $getAllSubscriptions, CreateSubscriptionService
+    $createSubscriptions, CreateYearlySubscriptionService $createYearlySubscriptions, UpgradeSubscriptionService
     $upgradeSubscriptions, RetrieveASubscriptionService $retrieveSubscription)
     {
         $this->getAllSubscriptions = $getAllSubscriptions;
-        $this->createMonthlySubscriptions = $createMonthlySubscriptions;
+        $this->createSubscriptions = $createSubscriptions;
         $this->createYearlySubscriptions = $createYearlySubscriptions;
         $this->upgradeSubscriptions = $upgradeSubscriptions;
         $this->retrieveSubscription = $retrieveSubscription;
@@ -90,7 +90,7 @@ class SubscriptionController extends Controller
                     if($company->package == 'trial') {
                         // dd('day');
                         // dd($data);
-                        $response = $this->createMonthlySubscriptions->createSubscription($data);
+                        $response = $this->createSubscriptions->createSubscription($data);
                         // dd($response);
                         if ($response) {
                             Mail::to($company->business_email)->send(new
