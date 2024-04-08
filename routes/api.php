@@ -51,11 +51,15 @@ Route::group(['middleware' => 'companyAuthentication'], function () {
     Route::post('create-subscriptions', [SubscriptionController::class, 'create_subscription']);
     Route::post('get-customer-transactions', [PaymentHistoryController::class, 'index']);
 });
+
+Route::group(['middleware' => 'superAdminAuthentication'], function () {
+    Route::post('create-prices', [PriceController::class, 'createPrice']);
+    Route::get('products', [ProductController::class, 'getProduct']);
+});
 // Route::get('get-invoice',[InvoiceController::class,'generatePDF']);
 Route::get('subscriptions', [SubscriptionController::class, 'getAllSubscriptions']);
-Route::post('trial-check', [SubscriptionController::class, 'trialCheck']);
+// Route::post('trial-check', [SubscriptionController::class, 'trialCheck']);
 Route::post('charge', [MakePaymentController::class, 'makePayment']);
-Route::post('create-prices', [PriceController::class, 'createPrice']);
-Route::get('products', [ProductController::class, 'getProduct']);
+
 Route::post('prices', [PriceController::class, 'getPrices']);
 // Route::post('prices', [PriceController::class, 'getPrices']);
