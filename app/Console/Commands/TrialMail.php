@@ -52,9 +52,9 @@ class TrialMail extends Command
         foreach ($company as $company) {
             if ($company->package == "trial") {
                 $date = $company->end_date;
-                $date_one = Carbon::parse($date)->subDays(1);
-                $date_three = Carbon::parse($date)->subDays(3);
-                $date_seven = Carbon::parse($date)->subDays(7);
+                // $date_one = Carbon::parse($date)->subDays(1);
+                // $date_three = Carbon::parse($date)->subDays(3);
+                // $date_seven = Carbon::parse($date)->subDays(7);
 
                 print_r('end date');
 
@@ -67,22 +67,21 @@ class TrialMail extends Command
                 $current_time = Carbon::now()->addHours(6);
                 $current_time = $current_time->timezone($tz);
                 print_r($current_time = json_encode($current_time));
-                print_r('date one');
-                $date_one = json_encode($date_one->timezone($tz));
-                print_r($date_one);
-                if ($current_time == $date_three) {
-                    Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 3));
-                } else if ($current_time == $date_seven) {
-                    Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 7));
-                } else if (
-                    $current_time >= $date_one
-                ) {
-                    print_r('true');
-                    Mail::to($company->business_email)->send(new
-                        TrialPeriodMail($company->end_date, 1));
-                } else if ($current_time == $date) {
-                    Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 0));
-                }
+                // print_r('date one');
+                // $date_one = json_encode($date_one->timezone($tz));
+                // if ($current_time == $date_three) {
+                //     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 3));
+                // } else if ($current_time == $date_seven) {
+                //     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 7));
+                // } else if (
+                //     $current_time >= $date_one
+                // ) {
+                //     print_r('true');
+                //     Mail::to($company->business_email)->send(new
+                //         TrialPeriodMail($company->end_date, 1));
+                // } else if ($current_time == $date) {
+                //     Mail::to($company->business_email)->send(new TrialPeriodMail($company->end_date, 0));
+                // }
                 if (
                     isset($company->end_date) && $current_time >
                     $company->end_date
