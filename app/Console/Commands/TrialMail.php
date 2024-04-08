@@ -61,8 +61,8 @@ class TrialMail extends Command
                 $end_date = Carbon::parse($date);
                 // $date = json_encode($date->timezone($tz));
                 print_r($end_date = json_encode($end_date->timezone($tz)));
-                $date_three = json_encode($date_three->timezone($tz));
-                $date_seven = json_encode($date_seven->timezone($tz));
+                // $date_three = json_encode($date_three->timezone($tz));
+                // $date_seven = json_encode($date_seven->timezone($tz));
                 print_r('curr date');
                 $current_time = Carbon::now()->addHours(6);
                 $current_time = $current_time->timezone($tz);
