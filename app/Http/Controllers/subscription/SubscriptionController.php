@@ -107,6 +107,13 @@ class SubscriptionController extends Controller
                             ], 200);
                         }
                     }
+                    if($company->package == 'year' && ($request->interval=='day' || $request->interval=='week' ||
+                    $request->interval=='month')){
+                        return response()->json([
+                            'message'=>'cannot select this package',
+                            'status'=>422
+                        ],422);
+                    }
                     // if ($request->interval == "year" && $company->interval != 'day') {
                     //     $response = $this->createMonthlySubscriptions->createSubscription($data);
                     //     // dd($response);
