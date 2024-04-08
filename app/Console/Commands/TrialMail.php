@@ -57,7 +57,7 @@ class TrialMail extends Command
                 // $date_seven = Carbon::parse($date)->subDays(7);
 
                 print_r('end date');
-                print_r($date);
+                // print_r($date);
                 // $end_date = Carbon::parse($date);
                 // $date = json_encode($date->timezone($tz));
 
@@ -69,7 +69,7 @@ class TrialMail extends Command
                 $current_time = Carbon::now();
                 // print_r($current_time);
                 // $current_time = $current_time->timezone($tz);
-                print_r($curr_time=$current_time->getTimeStamp());
+                $curr_time=$current_time->getTimeStamp();
                 // print_r('date one');
                 // $date_one = json_encode($date_one->timezone($tz));
                 // if ($current_time == $date_three) {
