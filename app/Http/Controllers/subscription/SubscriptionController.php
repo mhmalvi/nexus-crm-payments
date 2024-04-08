@@ -127,7 +127,7 @@ class SubscriptionController extends Controller
                     ) {
                         // dd($request->sub_id);                        
                         $response = $this->createSubscriptions->createSubscription($data);
-                        dd($request->sub_id);
+                        
                         $this->cancelSubscription->cancelSubscription($request->sub_id);
                         if ($response) {
                             Mail::to($company->business_email)->send(new
@@ -165,13 +165,13 @@ class SubscriptionController extends Controller
                             ], 200);
                         }
                     }
-                    if ($company->package == 'year' && ($request->interval == 'day' || $request->interval == 'week' ||
-                        $request->interval == 'month')) {
-                        return response()->json([
-                            'message' => 'cannot select this package',
-                            'status' => 422
-                        ], 422);
-                    }
+                    // if ($company->package == 'year' && ($request->interval == 'day' || $request->interval == 'week' ||
+                    //     $request->interval == 'month')) {
+                    //     return response()->json([
+                    //         'message' => 'cannot select this package',
+                    //         'status' => 422
+                    //     ], 422);
+                    // }
                     // if ($request->interval == "year" && $company->interval != 'day') {
                     //     $response = $this->createMonthlySubscriptions->createSubscription($data);
                     //     // dd($response);
