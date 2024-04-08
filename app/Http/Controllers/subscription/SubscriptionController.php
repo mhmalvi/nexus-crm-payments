@@ -47,8 +47,41 @@ class SubscriptionController extends Controller
                 ], 423);
             } else {
                 if (
-                    $company->package == $request->package_name && $company->interval == 'year' && $request->interval
-                    == 'day'
+                    $company->package == $request->package_name && $company->interval == 'year' && ($request->interval
+                        == 'day' || $request->interval
+                        == 'week' || $request->interval
+                        == 'month' || $request->interval
+                        == 'year')
+                ) {
+                    return response()->json([
+                        'message' => 'Cannot use the monthly subscription of this package',
+                        'status' => 422
+                    ], 422);
+                } else if (
+                    $company->package == $request->package_name && $company->interval == 'month' &&
+                    ($request->interval
+                        == 'day' || $request->interval
+                        == 'week' || $request->interval
+                        == 'month')
+                ) {
+                    return response()->json([
+                        'message' => 'Cannot use the monthly subscription of this package',
+                        'status' => 422
+                    ], 422);
+                } else if (
+                    $company->package == $request->package_name && $company->interval == 'week' &&
+                    ($request->interval
+                        == 'day' || $request->interval
+                        == 'week')
+                ) {
+                    return response()->json([
+                        'message' => 'Cannot use the monthly subscription of this package',
+                        'status' => 422
+                    ], 422);
+                } else if (
+                    $company->package == $request->package_name && $company->interval == 'day' &&
+                    ($request->interval
+                        == 'day')
                 ) {
                     return response()->json([
                         'message' => 'Cannot use the monthly subscription of this package',
@@ -65,7 +98,9 @@ class SubscriptionController extends Controller
                     ];
 
                     $response = "";
-                    if ($company->interval == 'day'  || $company->interval == 'week' || $company->interval == 'month') {
+                    if (($company->interval == 'day' || $company->interval == 'week' || $company->interval == 'month')
+                        && $company->package != "trial"
+                    ) {
                         // dd($request->sub_id);
                         array_push($data, $request->sub_id);
                         $s_id = $this->retrieveSubscription->retrieveSubscription($request->sub_id);
@@ -84,7 +119,7 @@ class SubscriptionController extends Controller
                         }
                     }
                     // dd(json_decode($company)->package);
-                    if($company->package == 'trial') {
+                    if ($company->package == 'trial') {
                         // dd('day');
                         // dd($data);
                         $response = $this->createSubscriptions->createSubscription($data);
@@ -104,12 +139,12 @@ class SubscriptionController extends Controller
                             ], 200);
                         }
                     }
-                    if($company->package == 'year' && ($request->interval=='day' || $request->interval=='week' ||
-                    $request->interval=='month')){
+                    if ($company->package == 'year' && ($request->interval == 'day' || $request->interval == 'week' ||
+                        $request->interval == 'month')) {
                         return response()->json([
-                            'message'=>'cannot select this package',
-                            'status'=>422
-                        ],422);
+                            'message' => 'cannot select this package',
+                            'status' => 422
+                        ], 422);
                     }
                     // if ($request->interval == "year" && $company->interval != 'day') {
                     //     $response = $this->createMonthlySubscriptions->createSubscription($data);
