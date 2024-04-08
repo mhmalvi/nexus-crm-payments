@@ -53,9 +53,14 @@ Route::group(['middleware' => 'companyAuthentication'], function () {
 });
 
 Route::group(['middleware' => 'superAdminAndAdminAuthentication'], function () {
-    Route::post('create-prices', [PriceController::class, 'createPrice']);
+
     Route::get('products', [ProductController::class, 'getProduct']);
 });
+Route::group(['middleware' => 'superAdminAndAdminAuthentication'], function () {
+
+    Route::post('create-prices', [PriceController::class, 'createPrice']);
+});
+
 // Route::get('get-invoice',[InvoiceController::class,'generatePDF']);
 Route::get('subscriptions', [SubscriptionController::class, 'getAllSubscriptions']);
 // Route::post('trial-check', [SubscriptionController::class, 'trialCheck']);
