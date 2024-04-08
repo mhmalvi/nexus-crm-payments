@@ -14,6 +14,7 @@ use App\Mail\SubscriptionUpgradeMail;
 use App\Http\Requests\CustomerIdRequest;
 use App\Services\stripe\GetAllSubscription;
 use App\Interfaces\CreateSubscriptionInterface;
+use App\Services\stripe\CancelSubscription;
 use App\Services\stripe\UpgradeSubscriptionService;
 use App\Services\stripe\RetrieveASubscriptionService;
 use App\Services\stripe\CreateYearlySubscriptionService;
@@ -25,14 +26,16 @@ class SubscriptionController extends Controller
     private $createSubscriptions;
     private $upgradeSubscriptions;
     private $retrieveSubscription;
+    private $cancelSubscription;
     public function __construct(GetAllSubscription $getAllSubscriptions, CreateSubscriptionService
     $createSubscriptions, UpgradeSubscriptionService
-    $upgradeSubscriptions, RetrieveASubscriptionService $retrieveSubscription)
+    $upgradeSubscriptions, RetrieveASubscriptionService $retrieveSubscription, CancelSubscription $cancelSubscription)
     {
         $this->getAllSubscriptions = $getAllSubscriptions;
         $this->createSubscriptions = $createSubscriptions;
         $this->upgradeSubscriptions = $upgradeSubscriptions;
         $this->retrieveSubscription = $retrieveSubscription;
+        $this->cancelSubscription = $cancelSubscription;
     }
     public function create_subscription(CustomerIdRequest $request)
     {
@@ -99,7 +102,7 @@ class SubscriptionController extends Controller
 
                     $response = "";
                     if (($company->interval == 'day' || $company->interval == 'week' || $company->interval == 'month')
-                        && $company->package != "trial"
+                        && ($company->package == $request->package_name && $company->package != 'trial')
                     ) {
                         // dd($request->sub_id);
                         array_push($data, $request->sub_id);
@@ -111,6 +114,27 @@ class SubscriptionController extends Controller
                         if ($response) {
                             Mail::to($company->business_email)->send(new
                                 SubscriptionUpgradeMail($company->business_email, $company->name, $request->interval, $request->package_name));
+                            return response()->json([
+                                'message' => 'success',
+                                'status' => 200,
+                                'data' => $response
+                            ], 200);
+                        }
+                    }
+                    if (($company->interval == 'day' || $company->interval == 'week' || $company->interval == 'month')
+                        && ($company->package != $request->package_name && $company->package != 'trial')
+                    ) {
+                        // dd($request->sub_id);                        
+                        $response = $this->createSubscriptions->createSubscription($data);
+                        $this->cancelSubscription->cancelSubscription($request->sub_id);
+                        if ($response) {
+                            Mail::to($company->business_email)->send(new
+                                SubscriptionUpgradeMail(
+                                    $company->business_email,
+                                    $company->name,
+                                    $request->interval,
+                                    $request->package_name
+                                ));
                             return response()->json([
                                 'message' => 'success',
                                 'status' => 200,
