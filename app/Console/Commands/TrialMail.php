@@ -48,15 +48,15 @@ class TrialMail extends Command
         // $date_time_str = $date_str . ' ' . $time_str;
         // dd($date_time_str);
         // dd(Carbon::parse($tz)->format("Y-m-d H:i:s"));
-        $company = Company::where('id', 91)->get();
+        $company = Company::where('active', 1)->get();
         foreach ($company as $company) {
-            // if ($company->package == "trial") {
+            if ($company->package == "trial") {
                 $date = $company->end_date;
                 // $date_one = Carbon::parse($date)->subDays(1);
                 // $date_three = Carbon::parse($date)->subDays(3);
                 // $date_seven = Carbon::parse($date)->subDays(7);
 
-                print_r('end date');
+                // print_r('end date');
                 // print_r($date);
                 // $end_date = Carbon::parse($date);
                 // $date = json_encode($date->timezone($tz));
@@ -65,7 +65,7 @@ class TrialMail extends Command
 
                 // $date_three = json_encode($date_three->timezone($tz));
                 // $date_seven = json_encode($date_seven->timezone($tz));
-                print_r('curr date');
+                // print_r('curr date');
                 $current_time = Carbon::now();
                 // print_r($current_time);
                 // $current_time = $current_time->timezone($tz);
@@ -93,7 +93,7 @@ class TrialMail extends Command
                     $company->subscription_id = "";
                     $company->save();
                 }
-            // }
+            }
         }
     }
 }
