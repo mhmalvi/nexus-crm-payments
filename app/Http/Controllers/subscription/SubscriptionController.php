@@ -67,7 +67,8 @@ class SubscriptionController extends Controller
                     ];
 
                     $response = "";
-                    if ($company->interval == 'day' && $request->interval == 'year') {
+                    if (($company->interval == 'day' || $company->interval == 'week' || $company->interval == 'month') &&
+                    $request->interval == 'year') {
                         // dd($request->sub_id);
                         array_push($data, $request->sub_id);
                         $s_id = $this->retrieveSubscription->retrieveSubscription($request->sub_id);
@@ -86,7 +87,7 @@ class SubscriptionController extends Controller
                         }
                     }
                     // dd(json_decode($company)->package);
-                    if ($request->interval == "day" && $company->package == 'trial') {
+                    if($company->package == 'trial') {
                         // dd('day');
                         // dd($data);
                         $response = $this->createMonthlySubscriptions->createSubscription($data);
@@ -106,24 +107,24 @@ class SubscriptionController extends Controller
                             ], 200);
                         }
                     }
-                    if ($request->interval == "year" && $company->interval != 'day') {
-                        $response = $this->createMonthlySubscriptions->createSubscription($data);
-                        // dd($response);
-                        if ($response) {
-                            Mail::to($company->business_email)->send(new
-                                SubscriptionMail(
-                                    $company->business_email,
-                                    $company->name,
-                                    $request->interval,
-                                    $request->package_name
-                                ));
-                            return response()->json([
-                                'message' => 'success',
-                                'status' => 200,
-                                'data' => $response
-                            ], 200);
-                        }
-                    }
+                    // if ($request->interval == "year" && $company->interval != 'day') {
+                    //     $response = $this->createMonthlySubscriptions->createSubscription($data);
+                    //     // dd($response);
+                    //     if ($response) {
+                    //         Mail::to($company->business_email)->send(new
+                    //             SubscriptionMail(
+                    //                 $company->business_email,
+                    //                 $company->name,
+                    //                 $request->interval,
+                    //                 $request->package_name
+                    //             ));
+                    //         return response()->json([
+                    //             'message' => 'success',
+                    //             'status' => 200,
+                    //             'data' => $response
+                    //         ], 200);
+                    //     }
+                    // }
                     // dd($response);
                     // if ($response) {
                     //     Mail::to($company->business_email)->send(new
