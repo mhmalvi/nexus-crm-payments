@@ -93,9 +93,12 @@ class TrialMail extends Command
                 $company->active = 2;
                 $company->subscription_id = "";
                 $company->save();
-                $token = Token::where('user_id', $company->admin)->get();
-                foreach ($token as $tokens) {
-                    $tokens->delete();
+                $token_is_exist = Token::where('user_id', $company->admin)->exists();
+                if ($token_is_exist) {
+                    $token = Token::where('user_id', $company->admin)->get();
+                    foreach ($token as $tokens) {
+                        $tokens->delete();
+                    }
                 }
             }
             // }
