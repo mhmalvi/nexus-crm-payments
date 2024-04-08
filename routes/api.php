@@ -52,7 +52,7 @@ Route::group(['middleware' => 'companyAuthentication'], function () {
     Route::post('get-customer-transactions', [PaymentHistoryController::class, 'index']);
 });
 
-Route::group(['middleware' => 'superAdminAuthentication'], function () {
+Route::group(['middleware' => 'superAdminAndAdminAuthentication'], function () {
     Route::post('create-prices', [PriceController::class, 'createPrice']);
     Route::get('products', [ProductController::class, 'getProduct']);
 });

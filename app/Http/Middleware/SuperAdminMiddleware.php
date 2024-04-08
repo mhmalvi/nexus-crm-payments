@@ -7,7 +7,7 @@ use App\Models\Auth;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class SuperAdminMiddleware
+class SuperAdminAndAdminMiddleware
 {
     /**
      * Handle an incoming request.
