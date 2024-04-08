@@ -48,7 +48,7 @@ class TrialMail extends Command
         // $date_time_str = $date_str . ' ' . $time_str;
         // dd($date_time_str);
         // dd(Carbon::parse($tz)->format("Y-m-d H:i:s"));
-        $company = Company::where('active', 1)->get();
+        $company = Company::where('id', 91)->get();
         foreach ($company as $company) {
             if ($company->package == "trial") {
                 $date = $company->end_date;
@@ -58,16 +58,17 @@ class TrialMail extends Command
 
                 print_r('end date');
 
-                $end_date = Carbon::parse($date);
+                // $end_date = Carbon::parse($date);
+                $end_date = 1712630308;
                 // $date = json_encode($date->timezone($tz));
-                print_r($end_date = $end_date->format("Y-m-d H:i:s"));
+                print_r($end_date = date("Y-m-d H:i:s", $end_date));
                 // $date_three = json_encode($date_three->timezone($tz));
                 // $date_seven = json_encode($date_seven->timezone($tz));
                 print_r('curr date');
-                $current_time = Carbon::now();
+                $current_time = Carbon::parse()->format("Y-m-d H:i:s");
                 print_r($current_time);
                 // $current_time = $current_time->timezone($tz);
-                print_r($current_time->getTimeStamp());
+                // print_r($current_time->getTimeStamp());
                 // print_r('date one');
                 // $date_one = json_encode($date_one->timezone($tz));
                 // if ($current_time == $date_three) {
