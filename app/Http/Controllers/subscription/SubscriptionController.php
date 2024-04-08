@@ -50,6 +50,7 @@ class SubscriptionController extends Controller
                     'status' => 423
                 ], 423);
             } else {
+                dd('sffsfd');
                 if (
                     $company->package == $request->package_name && $company->interval == 'year' && ($request->interval
                         == 'day' || $request->interval
