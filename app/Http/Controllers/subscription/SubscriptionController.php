@@ -93,7 +93,7 @@ class SubscriptionController extends Controller
                         'status' => 422
                     ], 422);
                 } else {
-                    dd('dfdfgsdf')
+                    dd('dfdfgsdf');
                     // dd($request->all());
                     $data = [
                         $customer_id = $request->customer_id,
