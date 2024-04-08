@@ -107,7 +107,7 @@ class SubscriptionController extends Controller
                         }
                     }
                     if ($request->interval == "year" && $company->interval != 'day') {
-                        $response = $this->createYearlySubscriptions->createSubscription($data);
+                        $response = $this->createMonthlySubscriptions->createSubscription($data);
                         // dd($response);
                         if ($response) {
                             Mail::to($company->business_email)->send(new
