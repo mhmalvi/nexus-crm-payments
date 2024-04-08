@@ -10,7 +10,14 @@ class CreateMonthlySubscriptionService
 {
     public function createSubscription($data)
     {
-        // dd($data);
+        $stripe = new
+        \Stripe\StripeClient(config("app.stripe_secret"));
+        $response = $stripe->subscriptions->create([
+        'customer' => $data[0],
+
+        'items' => [['price' => $data[3]]],
+        ]);
+        dd($response);
         $current_date = Carbon::now();
             $end_date = $current_date->addDays(1);            
         $company = Company::where('connect_id',$data[0])->first();
@@ -19,13 +26,7 @@ class CreateMonthlySubscriptionService
         $company->interval = $data[1];
         $company->end_date = $end_date;
         $company->save();
-        $stripe = new
-            \Stripe\StripeClient(config("app.stripe_secret"));
-        $response = $stripe->subscriptions->create([
-            'customer' => $data[0],
-
-            'items' => [['price' => $data[3]]],
-        ]);
+        
         // dd($response);
         $company->subscription_id = $response->id;
         $company->save();
