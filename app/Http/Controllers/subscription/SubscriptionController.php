@@ -128,8 +128,7 @@ class SubscriptionController extends Controller
                     if (($company->interval == 'day' || $company->interval == 'week' || $company->interval == 'month' ||
                     $company->interval == 'year')
                         && ($company->package != $request->package_name && $company->package != 'trial')
-                    ) {
-                        dd($request->sub_id);     
+                    ) {    
                         $this->cancelSubscription->cancelSubscription($request->sub_id);
                         $response = $this->createSubscriptions->createSubscription($data);
                         
