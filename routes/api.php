@@ -38,7 +38,7 @@ Route::post('payment/setting/create', [\App\Http\Controllers\account\PaymentSett
 Route::put('payment/setting/{id}/update', [\App\Http\Controllers\account\PaymentSettingController::class, 'updatePaymentSetting']);
 Route::post('store-payment-history', [\App\Http\Controllers\payment\PaymentHistoryController::class, 'store']);
 Route::get('payment-history-delete/{id}', [\App\Http\Controllers\payment\PaymentHistoryController::class, 'destroy']);
-
+Route::get('products', [ProductController::class, 'getProduct']);
 
 
 //
