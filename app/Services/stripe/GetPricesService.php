@@ -8,6 +8,6 @@ class GetPricesService
     {
         $stripe = new
             \Stripe\StripeClient(config("app.stripe_secret"));
-        return $stripe->prices->all(['product' => $data]);
+        return $stripe->prices->all(['product' => $data, 'active'=>'true']);
     }
 }
