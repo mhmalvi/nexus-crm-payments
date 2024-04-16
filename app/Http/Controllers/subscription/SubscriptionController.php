@@ -59,7 +59,7 @@ class SubscriptionController extends Controller
                         == 'year')
                 ) {
                     return response()->json([
-                        'message' => 'Cannot use the monthly subscription of this package',
+                        'message' => 'Cannot use the '.$request->interval.' '.'subscription of this package',
                         'status' => 422
                     ], 422);
                 } else if (
