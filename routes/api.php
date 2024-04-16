@@ -54,7 +54,7 @@ Route::group(['middleware' => 'companyAuthentication'], function () {
 
 Route::group(['middleware' => 'superAdminAndAdminAuthentication'], function () {
 
-    Route::get('products', [ProductController::class, 'getProduct']);
+    
 });
 Route::group(['middleware' => 'SuperAdminAuthentication'], function () {
 
