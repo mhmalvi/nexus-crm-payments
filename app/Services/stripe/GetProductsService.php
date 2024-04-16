@@ -8,7 +8,7 @@ class GetProductsService
     {
         $stripe = new
         \Stripe\StripeClient(config("app.stripe_secret"));
-        return $stripe->products->all();
+        return $stripe->products->all(['active'=>'true']);
         // dd
     }
 }
