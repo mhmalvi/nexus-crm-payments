@@ -49,6 +49,7 @@ class SubscriptionController extends Controller
                 $price_id = $request->priceId,
                 $active = 1,
             ];
+            dd($data);
             $response = $this->createSubscriptions->createSubscription($data);
         } else {
             return response()->json([
