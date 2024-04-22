@@ -39,10 +39,25 @@ class SubscriptionController extends Controller
     }
     public function create_subscription(CustomerIdRequest $request)
     {
-        dd($request->all());
-        $isCompanyExists = Company::where('connect_id', $request->customer_id)->exists();
         // dd($request->all());
-        
+        $isCompanyExists = Company::where('connect_id', $request->customer_id)->exists();
+        if ($isCompanyExists) {
+            $data = [
+                $customer_id = $request->customer_id,
+                $interval = $request->interval,
+                $package_name = $request->package_name,
+                $price_id = $request->price_id,
+                $active = 1,
+            ];
+            $response = $this->createSubscriptions->createSubscription($data);
+        } else {
+            return response()->json([
+                'message' => 'Customer Id not found',
+                'status' => 404
+            ], 404);
+        }
+        // dd($request->all());
+
     }
     public function getAllSubscriptions()
     {

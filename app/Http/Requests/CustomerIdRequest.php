@@ -23,6 +23,9 @@ class CustomerIdRequest extends FormRequest
     {
         return [
             'customer_id'=>'required',
+            'interval'=>'required',
+            'package_name'=>'required',
+            'price_id'=>'required'
         ];
     }
 }
