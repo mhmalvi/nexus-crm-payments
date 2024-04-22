@@ -46,7 +46,7 @@ class SubscriptionController extends Controller
                 $customer_id = $request->customer_id,
                 $interval = $request->interval,
                 $package_name = $request->package_name,
-                $price_id = $request->price_id,
+                $price_id = $request->priceId,
                 $active = 1,
             ];
             $response = $this->createSubscriptions->createSubscription($data);
