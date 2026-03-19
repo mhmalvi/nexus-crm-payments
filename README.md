@@ -1,64 +1,118 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Nexus CRM Payments
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+The payment processing microservice for the **Nexus CRM** platform. This Laravel-based API manages payment gateways, transaction history, invoicing, subscription billing, and financial analytics with Docker support for containerized deployment.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Multi-Gateway Support** — Integrated with Stripe, PayPal, and eWAY payment processors
+- **Payment Processing** — Secure charge creation and payment confirmation workflows
+- **Transaction History** — Full payment history with per-lead and per-company filtering
+- **Invoice Management** — Generate and list invoices with PDF export via DomPDF
+- **Subscription Billing** — Create and manage recurring subscriptions with plan tiers
+- **Card Management** — Securely store, update, and remove payment card details
+- **Product & Pricing** — Manage product catalogs and dynamic pricing plans
+- **Campaign Revenue Tracking** — Analyze payments attributed to specific marketing campaigns
+- **Monthly & Weekly Reports** — Aggregated payment analytics by time period
+- **Payment Settings** — Configurable payment gateway settings per company
+- **Docker Support** — Multi-version PHP Docker configurations (7.4, 8.0, 8.1, 8.2)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tech Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Layer | Technology |
+|-------|-----------|
+| Framework | Laravel 10 |
+| Language | PHP 8.1+ |
+| Authentication | Laravel Sanctum |
+| Payments | Stripe PHP SDK, PayPal, eWAY |
+| PDF Generation | barryvdh/laravel-dompdf |
+| Database | MySQL |
+| DB Migrations | Doctrine DBAL |
+| HTTP Client | Guzzle |
+| Containerization | Docker |
+| Testing | PHPUnit 10 |
+| Code Style | StyleCI |
 
-## Learning Laravel
+## Prerequisites
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- PHP >= 8.1 (or Docker)
+- Composer
+- MySQL 5.7+ or MariaDB 10.3+
+- Stripe API keys
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Getting Started
 
-## Laravel Sponsors
+### Standard Setup
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+1. **Clone the repository**
 
-### Premium Partners
+   ```bash
+   git clone https://github.com/mhmalvi/nexus-crm-payments.git
+   cd nexus-crm-payments
+   ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+2. **Install dependencies**
 
-## Contributing
+   ```bash
+   composer install
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+3. **Configure environment**
 
-## Code of Conduct
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+   Update `.env` with database credentials, Stripe/PayPal API keys, and service URLs.
 
-## Security Vulnerabilities
+4. **Run database migrations**
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+   ```bash
+   php artisan migrate
+   ```
+
+   Alternatively, import the provided `crm_payment.sql` schema file.
+
+5. **Start the development server**
+
+   ```bash
+   php artisan serve
+   ```
+
+### Docker Setup
+
+```bash
+./vendor/bin/sail up -d
+```
+
+Docker configurations are provided in the `docker/` directory for PHP versions 7.4, 8.0, 8.1, and 8.2.
+
+## API Overview
+
+| Endpoint Group | Description |
+|---------------|-------------|
+| `POST /api/stripe` | Process a Stripe payment |
+| `POST /api/charge` | Execute a direct charge |
+| `POST /api/payment/list` | List payment history |
+| `POST /api/invoice/list` | List invoices |
+| `GET /api/payment/{lead_id}/details` | Payment details for a lead |
+| `POST /api/card-details-save` | Store card information |
+| `POST /api/create-subscriptions` | Create a new subscription |
+| `GET /api/subscriptions` | List all subscriptions |
+| `POST /api/create-prices` | Define pricing plans |
+| `POST /api/prices` | Retrieve available prices |
+| `POST /api/campaign-wise-payment` | Revenue by campaign |
+| `POST /api/monthly-payment` | Monthly payment analytics |
+
+## Microservices Integration
+
+| Service | Interaction |
+|---------|------------|
+| nexus-crm-users | Validates authentication and retrieves customer data |
+| nexus-crm-leads | Links payments to specific leads |
+| nexus-crm-orgs | Retrieves company context for multi-tenant billing |
+| nexus-crm-client | Frontend consumes payment and invoice APIs |
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is proprietary software. All rights reserved.
