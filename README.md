@@ -1,3 +1,6 @@
+<!-- repo-card -->
+![nexus-crm-payments](docs/assets/social-card.png)
+
 # Nexus CRM Payments
 
 The payment processing microservice for the **Nexus CRM** platform. This Laravel-based API manages payment gateways, transaction history, invoicing, subscription billing, and financial analytics with Docker support for containerized deployment.
